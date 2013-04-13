@@ -7,6 +7,8 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
+  , https = require('https')
+  , fs = require('fs')
   , path = require('path');
 
 var app = express();
@@ -33,6 +35,27 @@ app.configure('development', function(){
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
+
+app.post('/kioskdata',function(req,res) {
+    console.log(req);
 });
+
+app.post('/slotdata',function(req,res){
+
+});
+
+var options = {
+    key: fs.readFileSync('./m3key.pem'),
+    cert: fs.readFileSync('./m3-cert.pem')
+};
+
+
+https.createServer(options, app).listen(app.get('port'),function(){
+
+    console.log("https Express server listening on port " + app.get('port'));
+});
+
+
+//http.createServer(app).listen(app.get('port'), function(){
+//  console.log("Express server listening on port " + app.get('port'));
+//});
