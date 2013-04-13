@@ -37,7 +37,9 @@ app.get('/users', user.list);
 
 
 app.post('/kioskdata',function(req,res) {
-    console.log(req);
+    var data = req.body;
+    console.log('Ticket Status: ' + data.TicketStatus);
+    console.log(JSON.stringify(req.body));
 });
 
 app.post('/slotdata',function(req,res){
