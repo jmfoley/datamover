@@ -13,7 +13,7 @@ describe('Array', function(){
 describe('Addition',function(){
   describe('basic',function(){  
     it('should return 3',function(){
-        assert.equal(10, 1+9);
+        assert.equal(10, 1+8);
     });
 });
 });
