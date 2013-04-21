@@ -9,7 +9,7 @@ var express = require('express')
   , http = require('http')
   , https = require('https')
   , fs = require('fs')
-  , db = require('./db/azureDb')
+  //, db = require('./db/azureDb')
   , dbConnect = require('./db/DbConnectionPool')
   , path = require('path')
   , KioskEvents = require('./db/Events')
@@ -44,46 +44,19 @@ app.post('/kioskdata',function(req,res) {
 
 
      tableFilter.ProcessTrans(req.body,function(err,results){
-         if(err) {
+         if (err) {
               console.log(err);
+              res.writeHead(401, {'Content-Type': 'text/plain'});
+              res.end('');
+
          } else {
-              console.log('Event written');
+              console.log('data written');
+              res.writeHead(200, {'Content-Type': 'text/plain'});
+              res.end('');
+
          }
      });
 
-    // dbConnect.GetDbConnection(function(err,results) {
-    //     if(err){
-    //       console.log(err);
-    //     }
-    //     else {
-    //       console.log('connected');
-    //     }
-    // });
-
-
-
-
-
-
-
-    // var data = req.body;
-    // console.log('Ticket Status: ' + data.TicketStatus);
-    // console.log(JSON.stringify(req.body));
-
-
-    // db.WriteKioskData(req.body,function(err,results){
-    //   if(err){
-    //     res.writeHead(401, {'Content-Type': 'text/plain'});
-    //     res.end('');
-
-    //   }
-    //   else{
-    //     res.writeHead(200, {'Content-Type': 'text/plain'});
-    //     res.end('');
-
-    //   }
-
-    // });
        
 });
 
@@ -103,6 +76,6 @@ https.createServer(options, app).listen(app.get('port'),function(){
 });
 
 
-//http.createServer(app).listen(app.get('port'), function(){
+// http.createServer(app).listen(app.get('port'), function(){
 //  console.log("Express server listening on port " + app.get('port'));
-//});
+// });

@@ -10,19 +10,23 @@ function ProcessTrans(data,callback){
 
     if(data.table === 'db_unitevents') {
  	    KioskEvents.WriteKioskEvent(data,function(err,results){
- 		    if(err){
+ 		    if (err) {
  			    console.log('WriteEvents error: ' + err);
- 		    } else{
+ 			    callback(err,null);
+ 		    } else {
  			    console.log('Event written');
+ 			    callback(null,results);
  		    }
 
  	    });
      } else if ( data.table === 'db_onlinemeters') {
  	    KioskMeters.UpdateOnlineMeters(data,function(err,results){
- 		    if(err){
+ 		    if (err) {
  			    console.log('Update Online Meters error: ' + err);
- 		    } else{
+ 			    callback(err,null);
+ 		    } else {
  			    console.log('Online meters written');
+ 			    callback(null,results);
  		    }
 
  	    });
