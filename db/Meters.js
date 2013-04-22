@@ -326,3 +326,70 @@ function UpdateLTDMeters(data,callback){
 
 
 //End LTD meters 
+
+
+//Begin Kents meter funciton
+
+
+function WriteOnlineMeterSnapshot(data,callback) {
+
+    var sql = '';
+    var connection;
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+
+        if (err) {
+            callback(err,null);
+        } else {
+            connection = results;
+            sql = 'insert into db_unitTransMeters(operatorID,unitId, unitPropId,transNumber,vc1,vc2,vt1,vt2,cc1,cc2,cc3,cc4,cc5,'  +
+                  'ch1,ch2,ch3,ccr,updated,atm,hpt,mtr,tcd,tdt,tft)values(@oper,@unitid,@propid,@trans,@vc1,@vc2,@vt1,@vt2,@cc1,@cc2,@cc3,@cc4,@cc5,' +
+                  '@ch1,@ch2,@ch3,@ccr,@date,@atm,@hpt,@mtr,@tcd,@tdt,@tft)';
+
+            var request = new Request(sql,function(err,rowCount) {
+            if(err) {
+                connection.close();
+                callback(err,null) ;
+            } else {
+                connection.close();
+                callback(null,rowCount);
+            }
+         }); 
+
+         request.addParameter('oper', TYPES.Int,data.operatorid);
+         request.addParameter('unitid', TYPES.Int,data.unitid);
+         request.addParameter('propid', TYPES.Int,data.propid);
+         request.addParameter('trans', TYPES.Int,data.trans);
+         request.addParameter('vc1', TYPES.Int,data.vc1);
+         request.addParameter('vc2', TYPES.Int, data.vc2);
+         request.addParameter('vt1', TYPES.Int,data.vt1);
+         request.addParameter('vt2', TYPES.Int,data.vt2);
+         request.addParameter('cc1', TYPES.Int,data.cc1);
+         request.addParameter('cc2', TYPES.Int,data.cc2);
+         request.addParameter('cc3', TYPES.Int,data.cc3);
+         request.addParameter('cc4', TYPES.Int,data.cc4);
+         request.addParameter('cc5', TYPES.Int,data.cc5);
+         request.addParameter('ch1', TYPES.Int,data.ch1);
+         request.addParameter('ch2', TYPES.Int,data.ch2);
+         request.addParameter('ch3', TYPES.Int,data.ch2);
+         request.addParameter('ccr', TYPES.Int,data.ccr);
+         request.addParameter('date', TYPES.DateTime,new Date());
+         request.addParameter('atm', TYPES.Int,data.atm);
+         request.addParameter('hpt', TYPES.Int,data.hpt);
+         request.addParameter('mtr', TYPES.Int,data.mtr);
+         request.addParameter('tcd', TYPES.Int,data.tcd);
+         request.addParameter('tdt', TYPES.Int,data.tdt);
+         request.addParameter('tft', TYPES.Int,data.tft);
+
+
+         connection.execSql(request);
+
+        }
+
+    });
+
+} exports.WriteOnlineMeterSnapshot = WriteOnlineMeterSnapshot
+;
+
+
+//End Kents meter function
