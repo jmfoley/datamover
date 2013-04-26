@@ -393,3 +393,99 @@ function WriteOnlineMeterSnapshot(data,callback) {
 
 
 //End Kents meter function
+
+
+//Begin Occur meters 
+
+function CheckSwitchMeter(connection,data,callback) {
+
+    var sql = 'select meterValue from db_LtdOccurMeters where unitId = @unitid and eventId = @eventid ' +
+              'and unitPropid = @propid';
+
+    var request = new Request(sql,function(err,rowCount) {
+      if (err) {
+
+        callback(err,null);
+      } else {
+             
+        callback(null,rowCount);
+      }
+
+    });          
+
+        request.addParameter('unitid', TYPES.Int,data.unit);
+        request.addParameter('eventid', TYPES.Int,data.eventid);
+        request.addParameter('propid', TYPES.Int,data.propid);
+        
+        connection.execSql(request);
+
+};
+
+
+function UpdateDoorSwitchMeters(data,callback) {
+
+    var sql = '';
+    var connection;
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+    
+        if (err) {
+            callback(err,null);
+        } else {
+
+            connection = results;
+            CheckSwitchMeter(connection,data,function(err,results) {
+
+                if (err) {
+                    
+                    connection.close();
+                    callback(err,null);
+                } else {
+                    
+                    if (results > 0) {
+
+                        sql = 'update db_LtdOccurMeters set meterValue = meterValue + @value,updated = @date where unitId = @unitid and ' +
+                              'unitPropid = @propid and eventId = @eventid and operatorid = @oper';
+                    } else {
+
+                       sql = 'insert into db_LtdOccurMeters(unitid,unitpropid,eventid,metervalue,updated,operatorid) values(@unitid,@propid,' +
+                             '@eventid,@value,@date,@oper)';
+                    }
+
+                    var request = new Request(sql,function(err,rowCount) {
+
+                         if (err) {
+                             connection.close();
+                             callback(err,null);
+                         } else {
+                             connection.close();
+                             callback(null,rowCount);
+                         }
+                    });
+                
+                    
+                     request.addParameter('unitid', TYPES.Int,data.unit);
+                     request.addParameter('eventid', TYPES.Int,data.eventid);
+                     request.addParameter('propid', TYPES.Int,data.propid);
+                     request.addParameter('oper', TYPES.Int,data.operatorid);
+                     request.addParameter('value', TYPES.Int,1);
+                     request.addParameter('date', TYPES.DateTime,new Date());
+
+        
+                    connection.execSql(request);
+
+
+                }
+
+            });
+
+        }
+
+
+    });
+
+} exports.UpdateDoorSwitchMeters = UpdateDoorSwitchMeters
+;
+
+
+//End Occur meters 

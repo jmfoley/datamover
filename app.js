@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 
+
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
@@ -13,7 +14,9 @@ var express = require('express')
   , dbConnect = require('./db/DbConnectionPool')
   , path = require('path')
   , KioskEvents = require('./db/Events')
-  ,tableFilter = require('./db/TableFilter');
+  , tableFilter = require('./db/TableFilter')
+  , cluster = require('cluster')
+  , numCPUs = require('os').cpus().length;
 
 var app = express();
 
@@ -70,12 +73,27 @@ var options = {
 };
 
 
-https.createServer(options, app).listen(app.get('port'),function(){
+
+if (cluster.isMaster) {
+  // Fork workers.
+  for (var i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', function(worker, code, signal) {
+    console.log('worker ' + worker.process.pid + ' died');
+  });
+} else {
+  
+    https.createServer(options, app).listen(app.get('port'),function(){
 
     console.log("https Express server listening on port " + app.get('port'));
 });
 
 
-// http.createServer(app).listen(app.get('port'), function(){
-//  console.log("Express server listening on port " + app.get('port'));
-// });
+
+ // http.createServer(app).listen(app.get('port'), function(){
+ //  console.log("Express server listening on port " + app.get('port'));
+ // });
+
+}

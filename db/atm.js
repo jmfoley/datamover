@@ -23,11 +23,11 @@ function WriteAtmTrans( data,callback) {
        
             connection = results;
             sql = 'insert into db_atmTrans(recid,operatorID,unitId,unitPropId,terminalId,transCode,acctType,sequenceNum,responseCode,authNum,transDate,' +
-            	  'transTime,businessDate,amount1,amount2,cardLast4,updated)values(newid(),@oper,@unitid,@propid,@termid,@transcode,@accttype,@seqnum,@rescode,' +
-            	  '@authnum,@transdate,@transtime,@busdate,@amt1,@amt2,@last4,@updated)';
+            	    'transTime,businessDate,amount1,amount2,cardLast4,updated)values(newid(),@oper,@unitid,@propid,@termid,@transcode,@accttype,@seqnum,@rescode,' +
+            	    '@authnum,@transdate,@transtime,@busdate,@amt1,@amt2,@last4,@updated)';
 
                   var request = new Request(sql,function(err,rowCount) {
-                  if(err) {
+                  if (err) {
                       connection.close();
                   	  callback(err,null) ;
                   } else {
@@ -37,7 +37,7 @@ function WriteAtmTrans( data,callback) {
               }); 
  
 
-              request.addParameter('oper', TYPES.Int,data.operatorid);
+            request.addParameter('oper', TYPES.Int,data.operatorid);
 	          request.addParameter('unitid', TYPES.Int,data.unit);
 	          request.addParameter('propid', TYPES.Int,data.propid);
 	          request.addParameter('termid', TYPES.NVarChar,data.terminalid);
