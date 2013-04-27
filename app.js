@@ -4,16 +4,20 @@
  */
 
 
+// require('nodetime').profile({
+//     accountKey: '88e4906e6971ed06be1ccf957192b9c6254acb81', 
+//     appName: 'datamover'
+//   });
+
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
   , https = require('https')
   , fs = require('fs')
-  //, db = require('./db/azureDb')
   , dbConnect = require('./db/DbConnectionPool')
   , path = require('path')
-  , KioskEvents = require('./db/Events')
+  //, KioskEvents = require('./db/Events')
   , tableFilter = require('./db/TableFilter')
   , cluster = require('cluster')
   , numCPUs = require('os').cpus().length;
@@ -85,15 +89,15 @@ if (cluster.isMaster) {
   });
 } else {
   
-    https.createServer(options, app).listen(app.get('port'),function(){
+//     https.createServer(options, app).listen(app.get('port'),function(){
 
-    console.log("https Express server listening on port " + app.get('port'));
-});
+//     console.log("https Express server listening on port " + app.get('port'));
+// });
 
 
 
- // http.createServer(app).listen(app.get('port'), function(){
- //  console.log("Express server listening on port " + app.get('port'));
- // });
+ http.createServer(app).listen(app.get('port'), function(){
+  console.log("Express server listening on port " + app.get('port'));
+ });
 
 }

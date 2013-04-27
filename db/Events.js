@@ -9,15 +9,17 @@ function callback(error,results){};
 
 function WriteKioskEvents(data,callback) {
 
-    
+    var sql = '';
+    var connection;
+
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
          if(err){
          	callback(err,null);
          } else {
 
-            var connection = results;
-            var sql = 'insert into db_unitEvents(operatorid, recid,unitid,unitPropid,eventId,eventTime,cardId,cardCasinoId,amount,transactionNumber,deviceId,eventtypeid) ' +
+            connection = results;
+            sql = 'insert into db_unitEvents(operatorid, recid,unitid,unitPropid,eventId,eventTime,cardId,cardCasinoId,amount,transactionNumber,deviceId,eventtypeid) ' +
     	              'values(@operatorid,@recid,@unitid,@unitpropid,@eventid,@date,@cardid,@cardcasinoid,@amount,@trans,@deviceid,@eventtypeid)';
 
 	        var request = new Request(sql,function(err,rowCount) {
@@ -25,10 +27,12 @@ function WriteKioskEvents(data,callback) {
         
             if(err){
         	    connection.close();
+                sql = null;
         	    callback(err,null);
         	
             } else{
         	    connection.close();
+                sql = null;
         	    callback(null,connection);
         	
             }

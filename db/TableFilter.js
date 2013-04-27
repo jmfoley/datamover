@@ -15,9 +15,11 @@ function ProcessTrans(data,callback){
  	    KioskEvents.WriteKioskEvent(data,function(err,results){
  		    if (err) {
  			    console.log('WriteEvents error: ' + err);
+                data = null;
  			    callback(err,null);
  		    } else {
  			    console.log('Event written');
+                data = null;
  			    callback(null,results);
  		    }
 
@@ -26,9 +28,11 @@ function ProcessTrans(data,callback){
  	    KioskMeters.UpdateOnlineMeters(data,function(err,results){
  		    if (err) {
  			    console.log('Update Online Meters error: ' + err);
+                data = null;
  			    callback(err,null);
  		    } else {
  			    console.log('Online meters written');
+                data = null;
  			    callback(null,results);
  		    }
 
@@ -42,9 +46,11 @@ function ProcessTrans(data,callback){
          
              if (err) {
              	console.log('WriteAtmTrans error: ' + err);
+                data = null;
              	callback(err,null);
              } else {
              	 console.log('atm trans written');
+                 data = null;
              	 callback(null,results);
              }
          });
@@ -53,9 +59,11 @@ function ProcessTrans(data,callback){
 
              if (err) {
              	console.log('WriteOnlineMeterSnapshot error: ' + err);
+                data = null;
              	callback(err,null);
              } else {
              	 console.log('WriteOnlineMeterSnapshot written');
+                 data = null;
              	 callback(null,results);
              }
 
@@ -68,9 +76,11 @@ function ProcessTrans(data,callback){
 
              if (err) {
                 console.log('UpdateDoorSwitchMeters error: ' + err);
+                data = null;
                 callback(err,null);
              } else {
                  console.log('UpdateDoorSwitchMeters written');
+                 data = null;
                  callback(null,results);
              }
  
@@ -85,9 +95,11 @@ function ProcessTrans(data,callback){
 
              if (err) {
                 console.log('WriteKioskTrans error: ' + err);
+                data = null;
                 callback(err,null);
              } else {
                  console.log('WriteKioskTrans written');
+                 data = null;
                  callback(null,results);
              }
 
@@ -98,9 +110,11 @@ function ProcessTrans(data,callback){
 
              if (err) {
                 console.log('CompleteCurrentTrans error: ' + err);
+                data = null;
                 callback(err,null);
              } else {
                  console.log('CompleteCurrentTrans written');
+                 data = null;
                  callback(null,results);
              }
 
@@ -113,9 +127,11 @@ function ProcessTrans(data,callback){
 
              if (err) {
                 console.log('SetPendingTransToComplete error: ' + err);
+                data = null;
                 callback(err,null);
              } else {
                  console.log('SetPendingTransToComplete written');
+                 data = null;
                  callback(null,results);
              }
 
@@ -130,10 +146,12 @@ function ProcessTrans(data,callback){
    
             if (err) {
                 console.log('WriteUnitTransDetail error: ' + err);
+                data = null;
                 callback(err,null);
 
             } else {
                  console.log('WriteUnitTransDetail written');
+                 data = null;
                  callback(null,results);
 
             }
@@ -150,10 +168,12 @@ function ProcessTrans(data,callback){
 
                 if (err) {
                     console.log('UpdateKioskUnit error: ' + err);
+                    data = null;
                     callback(err,null);
 
                 } else {
                      console.log('UpdateKioskUnit written');
+                     data = null;
                      callback(null,results);
 
                 }
@@ -165,10 +185,12 @@ function ProcessTrans(data,callback){
   
               if (err) {
                     console.log('UpdateAppVersion error: ' + err);
+                    data = null;
                     callback(err,null);
 
                 } else {
                      console.log('UpdateAppVersion written');
+                     data = null;
                      callback(null,results);
 
                 }
@@ -182,10 +204,12 @@ function ProcessTrans(data,callback){
   
               if (err) {
                     console.log('UpdateCreditCardOption error: ' + err);
+                    data = null;
                     callback(err,null);
 
                 } else {
                      console.log('UpdateCreditCardOption written');
+                     data = null;
                      callback(null,results);
 
                 }
@@ -202,10 +226,12 @@ function ProcessTrans(data,callback){
 
             if (err) {
                 console.log('DeleteUnitDenomConfig error: ' + err);
+                data = null;
                 callback(err,null);
 
             } else {
                  console.log('DeleteUnitDenomConfig written');
+                 data = null;
                  callback(null,results);
 
             }
@@ -220,10 +246,12 @@ function ProcessTrans(data,callback){
 
             if (err) {
                 console.log('UpdateDenomConfig error: ' + err);
+                data = null;
                 callback(err,null);
 
             } else {
                  console.log('UpdateDenomConfig written');
+                 data = null;
                  callback(null,results);
 
             }
@@ -242,10 +270,12 @@ function ProcessTrans(data,callback){
 
             if (err) {
                 console.log('InsertUnitDevice error: ' + err);
+                data = null;
                 callback(err,null);
 
             } else {
                  console.log('InsertUnitDevice written');
+                 data = null;
                  callback(null,results);
 
             }
@@ -259,10 +289,12 @@ function ProcessTrans(data,callback){
 
             if (err) {
                 console.log('UpdateUnitDevice error: ' + err);
+                data = null;
                 callback(err,null);
 
             } else {
                  console.log('UpdateUnitDevice written');
+                 data = null;
                  callback(null,results);
 
             }
@@ -277,10 +309,12 @@ function ProcessTrans(data,callback){
 
             if (err) {
                 console.log('DeleteUnitDevice error: ' + err);
+                data = null;
                 callback(err,null);
 
             } else {
                  console.log('DeleteUnitDevice written');
+                 data = null;
                  callback(null,results);
 
             }
