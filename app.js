@@ -89,15 +89,15 @@ if (cluster.isMaster) {
   });
 } else {
   
-//     https.createServer(options, app).listen(app.get('port'),function(){
+    https.createServer(options, app).listen(app.get('port'),function(){
 
-//     console.log("https Express server listening on port " + app.get('port'));
-// });
+    console.log("https Express server listening on port " + app.get('port'));
+});
 
 
 
- http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
- });
+ // http.createServer(app).listen(app.get('port'), function(){
+ //  console.log("Express server listening on port " + app.get('port'));
+ // });
 
 }
