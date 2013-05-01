@@ -1,16 +1,16 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 10px;
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 a {
   color: #00b7ff;
 }
 #wrap {
   margin: 0 auto;
-  width: 550px;
+  width: 290px;
   text-align: center;
   text-shadow: 2px 2px 2px #ccc;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: bold;
   border: 1px solid #ccc;
   -moz-border-radius: 7px;
@@ -46,9 +46,10 @@ label1 {
   font-family: Arial, Verdana;
   text-shadow: 2px 2px 2px #ccc;
   display: block;
+  float: left;
   font-weight: bold;
   margin-right: 10px;
   text-align: center;
   width: 220px;
-  font-size: 12px;
+  font-size: 10px;
 }

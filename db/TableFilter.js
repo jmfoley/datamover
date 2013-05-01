@@ -42,18 +42,40 @@ function ProcessTrans(data,callback){
     
      } else if (data.table === 'db_atmTrans') {
 
-         atm.WriteAtmTrans(data,function(err,results) {
-         
-             if (err) {
-             	console.log('WriteAtmTrans error: ' + err);
-                data = null;
-             	callback(err,null);
-             } else {
-             	 console.log('atm trans written');
-                 data = null;
-             	 callback(null,results);
-             }
-         });
+ 
+         if(data.operation ==='insert'){
+
+
+                 atm.WriteAtmTrans(data,function(err,results) {
+                 
+                 if (err) {
+                 	console.log('WriteAtmTrans error: ' + err);
+                    data = null;
+                 	callback(err,null);
+                 } else {
+                 	 console.log('atm trans written');
+                     data = null;
+                 	 callback(null,results);
+                 }
+             });
+         } else if (data.operation === 'update') {
+
+                 atm.UpdateAtmTrans(data,function(err,results) {
+                 
+                 if (err) {
+                    console.log('UpdateAtmTrans error: ' + err);
+                    data = null;
+                    callback(err,null);
+                 } else {
+                     console.log('UpdateAtmTrans written');
+                     data = null;
+                     callback(null,results);
+                 }
+             });
+
+
+         }
+
      } else if (data.table === 'db_unitTransMeters') {
      	KioskMeters.WriteOnlineMeterSnapshot(data,function(err,results) {
 

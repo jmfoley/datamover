@@ -20,7 +20,13 @@ var express = require('express')
   //, KioskEvents = require('./db/Events')
   , tableFilter = require('./db/TableFilter')
   , cluster = require('cluster')
-  , numCPUs = require('os').cpus().length;
+  , numCPUs = require('os').cpus().length
+  , ua = require('mobile-agent');
+
+  var startDate = new Date();
+  var totalTransReceived = new Number(0);
+  var totalSuccessfulTrans = new Number(0);
+  var totalErrorTrans = new Number(0);
 
 var app = express();
 
@@ -43,20 +49,59 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', routes.index);
-app.get('/users', user.list);
+//app.get('/', routes.index);
+app.get('/',function(req,res) {
+    var agent = ua(req.headers['user-agent']);
+    if( agent.Mobile === true && agent.iPad === false){
+          console.log('mobile');
+          res.render('index-mobile',{
+              title:'mobile'
+          });
+    }else {
+      console.log('desktop');
+      res.render('index',{
+        title:'Desktop View'
+      });
+    }
+});
+
+
+
+app.get('/stats', function(req,res){
+
+var stats =
+    {
+      "startDate": startDate.getMonth() + 1 + '-' + startDate.getDate() + '-' + startDate.getFullYear() + ' ' + startDate.getHours() +
+                   ':' + startDate.getMinutes() + ':' + startDate.getSeconds(),
+      "totalTrans":totalTransReceived,
+      "totalErrTrans":totalErrorTrans,
+      "totalSuccessfulTrans":totalSuccessfulTrans
+    }
+
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify(stats));
+
+
+});
 
 
 app.post('/kioskdata',function(req,res) {
 
 
      tableFilter.ProcessTrans(req.body,function(err,results){
+         totalTransReceived++;
+
          if (err) {
+              totalErrorTrans++;
+              
               console.log(err);
               res.writeHead(401, {'Content-Type': 'text/plain'});
               res.end('');
 
          } else {
+
+              totalSuccessfulTrans++;
+
               console.log('data written');
               res.writeHead(200, {'Content-Type': 'text/plain'});
               res.end('');
@@ -66,6 +111,16 @@ app.post('/kioskdata',function(req,res) {
 
        
 });
+
+
+
+app.get('/commcheck',function(req,res){
+      res.writeHead(200, {'Content-Type': 'text/plain'});
+      res.end('OK');
+
+});
+
+
 
 app.post('/slotdata',function(req,res){
 
