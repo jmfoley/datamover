@@ -2,6 +2,7 @@ var Connection = require('tedious').Connection;
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var dbConnect = require('./DbConnectionPool')
+var errMsg = '';
 
 function callback(error,results){};
 
@@ -13,9 +14,9 @@ function CheckOnlineMeters(connection,data,callback) {
               'and unitPropid = @propid';
 
     var request = new Request(sql,function(err,rowCount) {
-    	if(err) {
-
-    		callback(err,null);
+    	if (err) {
+            errMsg = 'CheckOnlineMeters error: '  + err;
+    		callback(errMsg,null);
     	} else {
              
     		callback(null,rowCount);
@@ -45,7 +46,8 @@ function UpdateOnlineMeters(data,callback){
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
          if(err){
-         	callback(err,null);
+            errMsg = 'GetDbConnection error: ' + err;
+         	callback(errMsg,null);
          } else {
              
              connection = results;
@@ -84,9 +86,10 @@ function UpdateOnlineMeters(data,callback){
 
 			          
                       var request = new Request(sql,function(err,rowCount) {
-                          if(err) {
+                          if (err) {
+                              errMsg = 'UpdateOnlineMeters error: ' + err;
                               connection.close();
-                          	  callback(err,null) ;
+                          	  callback(errMsg,null) ;
                           } else {
                                connection.close();
                           	   callback(null,rowCount);
@@ -156,8 +159,8 @@ function UpdateTotalInMeter(connection,data,item,amount,callback) {
 
          var request = new Request(sql,function(err,rowCount) {
          if(err) {
-             
-             callback(err,null) ;
+             errMsg = 'UpdateTotalInMeter error: ' + err;
+             callback(errMsg,null) ;
           } else {
               
               callback(null,rowCount);
@@ -214,8 +217,8 @@ function UpdateTotalOutMeter(connection,data,item,amount,callback) {
 
          var request = new Request(sql,function(err,rowCount) {
          if(err) {
-             
-             callback(err,null) ;
+             errMsg = 'GetDbConnection error: ' + err;
+             callback(errMsg,null) ;
           } else {
               
               callback(null,rowCount);
@@ -339,7 +342,8 @@ function WriteOnlineMeterSnapshot(data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
-            callback(err,null);
+            errMsg = 'GetDbConnection error: ' + err;
+            callback(errMsg,null);
         } else {
             connection = results;
             sql = 'insert into db_unitTransMeters(operatorID,unitId, unitPropId,transNumber,vc1,vc2,vt1,vt2,cc1,cc2,cc3,cc4,cc5,'  +
@@ -348,8 +352,9 @@ function WriteOnlineMeterSnapshot(data,callback) {
 
             var request = new Request(sql,function(err,rowCount) {
             if(err) {
+                errMsg = 'WriteOnlineMeterSnapshot error: ' + err;
                 connection.close();
-                callback(err,null) ;
+                callback(errMsg,null) ;
             } else {
                 connection.close();
                 callback(null,rowCount);
@@ -404,8 +409,8 @@ function CheckSwitchMeter(connection,data,callback) {
 
     var request = new Request(sql,function(err,rowCount) {
       if (err) {
-
-        callback(err,null);
+        errMsg = 'CheckSwitchMeter error: ' + err;
+        callback(errMsg,null);
       } else {
              
         callback(null,rowCount);
@@ -430,7 +435,8 @@ function UpdateDoorSwitchMeters(data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     
         if (err) {
-            callback(err,null);
+            errMsg = 'GetDbConnection error: ' + err;
+            callback(errMsg,null);
         } else {
 
             connection = results;
@@ -455,8 +461,9 @@ function UpdateDoorSwitchMeters(data,callback) {
                     var request = new Request(sql,function(err,rowCount) {
 
                          if (err) {
+                             errMsg = 'UpdateDoorSwitchMeters error: ' + err;
                              connection.close();
-                             callback(err,null);
+                             callback(errMsg,null);
                          } else {
                              connection.close();
                              callback(null,rowCount);

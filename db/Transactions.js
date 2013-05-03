@@ -2,6 +2,7 @@ var Connection = require('tedious').Connection;
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var dbConnect = require('./DbConnectionPool')
+var errMsg = '';
 
 function callback(error,results){};
 
@@ -16,8 +17,8 @@ function CheckUnitTransDetail(connection,data,callback) {
 
     var request = new Request(sql,function(err,rowCount) {
         if(err) {
-
-            callback(err,null);
+            errMsg = 'CheckUnitTransDetail error: ' + err;
+            callback(errMsg,null);
 
         } else {
              
@@ -46,8 +47,8 @@ function WriteUnitTransDetail( data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
-             
-             callback(err,null);
+             errMsg = 'GetDbConnection error: ' + err;
+             callback(errMsg,null);
  
         } else {
             
@@ -77,8 +78,9 @@ function WriteUnitTransDetail( data,callback) {
 
                               var request = new Request(sql,function(err,rowCount) {
                                   if(err) {
+                                    errMsg = 'WriteUnitTransDetail error: ' + err;
                                       connection.close();
-                                      callback(err,null) ;
+                                      callback(errMsg,null) ;
                                   } else {
                                        connection.close();
                                        callback(null,rowCount);
@@ -127,7 +129,7 @@ function SetPendingTransToComplete( data, callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
-
+            errMsg = 'GetDbConnection error: ' + err;
             callback(err,null);
         } else {
             
@@ -139,9 +141,10 @@ function SetPendingTransToComplete( data, callback) {
             var request = new Request(sql,function(err,rowCount) {
         
         
-            if(err){
+            if (err) {
+                errMsg = 'SetPendingTransToComplete error: '  + err;
                 connection.close();
-                callback(err,null);
+                callback(errMsg,null);
             
             } else{
                 connection.close();
@@ -176,7 +179,8 @@ function CompleteCurrentTrans( data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     
         if (err) {
-            callback(err,null);
+          errMsg = 'GetDbConnection error: ' + err;
+          callback(errMsg,null);
         } else {
             connection = results;
 
@@ -196,8 +200,9 @@ function CompleteCurrentTrans( data,callback) {
         
         
             if(err){
+                errMsg = 'CompleteCurrentTrans error: '  + err;
                 connection.close();
-                callback(err,null);
+                callback(errMsg,null);
             
             } else{
                 connection.close();
@@ -234,8 +239,9 @@ function WriteKioskTrans(data,callback) {
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
-         if(err){
-         	callback(err,null);
+         if (err) {
+          errMsg = 'GetDbConnection error: ' + err;          
+         	callback(errMsg,null);
          } else {
             console.log("data = : " + data.transtarttime);
             var connection = results;
@@ -247,9 +253,10 @@ function WriteKioskTrans(data,callback) {
 	        var request = new Request(sql,function(err,rowCount) {
         
         
-            if(err){
+            if (err) {
+              errMsg = 'WriteKioskTrans error: ' + err;
         	    connection.close();
-        	    callback(err,null);
+        	    callback(errMsg,null);
         	
             } else{
         	    connection.close();

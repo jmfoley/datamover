@@ -2,6 +2,7 @@ var Connection = require('tedious').Connection;
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var dbConnect = require('./DbConnectionPool')
+var errMsg = '';
 
 function callback(error,results){};
 
@@ -15,8 +16,8 @@ function UpdateCreditCardOption(data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
-
-             callback(err,null);
+             errMsg = 'GetDbConnection error: ' + err;
+             callback(errMsg,null);
 
         } else {
    
@@ -27,8 +28,9 @@ function UpdateCreditCardOption(data,callback) {
         
         
             if(err){
+                errMsg = 'UpdateCreditCardConfig error: ' + err;
                 connection.close();
-                callback(err,null);
+                callback(errMsg,null);
             
             } else{
                 connection.close();
@@ -65,8 +67,8 @@ function UpdateAppVersion(data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
-
-             callback(err,null);
+             errMsg = 'GetDbConnection error: ' + err;
+             callback(errMsg,null);
 
         } else {
    
@@ -77,8 +79,9 @@ function UpdateAppVersion(data,callback) {
         
         
             if(err){
+                errMsg = 'UpdateAppVersion error: ' + err;
                 connection.close();
-                callback(err,null);
+                callback(errMsg,null);
             
             } else{
                 connection.close();
@@ -113,8 +116,8 @@ function DeleteUnitDevice(data, callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
-
-             callback(err,null);
+             errMsg = 'GetDbConnection error: ' + err;
+             callback(errMsg,null);
 
         } else {
    
@@ -124,9 +127,10 @@ function DeleteUnitDevice(data, callback) {
             var request = new Request(sql,function(err,rowCount) {
         
         
-            if(err){
+            if (err) {
+                errMsg = 'DeleteUnitDevice error: ' + err;
                 connection.close();
-                callback(err,null);
+                callback(errMsg,null);
             
             } else{
                 connection.close();
@@ -164,8 +168,8 @@ function UpdateUnitDevice(data, callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
-
-             callback(err,null);
+             errMsg = 'GetDbConnection error: ' + err;
+             callback(errMsg,null);
 
         } else {
    
@@ -176,9 +180,10 @@ function UpdateUnitDevice(data, callback) {
             var request = new Request(sql,function(err,rowCount) {
         
         
-            if(err){
+            if (err) {
+                errMsg = 'UpdateUnitDeviceError: ' + err;
                 connection.close();
-                callback(err,null);
+                callback(errMsg,null);
             
             } else{
                 connection.close();
@@ -222,8 +227,8 @@ function InsertUnitDevice(data, callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
-
-             callback(err,null);
+             errMsg = 'GetDbConnection error: ' + err;
+             callback(errMsg,null);
 
         } else {
    
@@ -235,8 +240,9 @@ function InsertUnitDevice(data, callback) {
         
         
             if(err){
+                errMsg = 'InsertUNitDevice error: ' + err;
                 connection.close();
-                callback(err,null);
+                callback(errMsg,null);
             
             } else{
                 connection.close();
@@ -277,8 +283,8 @@ function DeleteUnitDenomConfig(data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     
         if (err) {
-
-            callback(err,null);
+            errMsg = 'GetDbConnection error: ' + err;
+            callback(errMsg,null);
 
         } else {
 
@@ -288,11 +294,12 @@ function DeleteUnitDenomConfig(data,callback) {
             var request = new Request(sql,function(err,rowCount) {
         
         
-            if(err){
+            if (err) {
+                errMsg = 'DeleteUnitDenomConfig error: ' + err;
                 connection.close();
-                callback(err,null);
+                callback(errMsg,null);
             
-            } else{
+            } else {
                 connection.close();
                 callback(null,connection);
             
@@ -324,8 +331,9 @@ function UpdateDenomConfig(data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
+            errMsg = 'GetDbConnection error: ' + err;
+            callback(errMsg,null);
 
-            callback(err,null)
         } else {
 
             connection = results;
@@ -334,9 +342,10 @@ function UpdateDenomConfig(data,callback) {
             var request = new Request(sql,function(err,rowCount) {
         
         
-            if(err){
+            if (err) {
+                errMsg = 'DeleteUnitDenomConfig error: ' + err;
                 connection.close();
-                callback(err,null);
+                callback(errMsg,null);
             
             } else{
                 connection.close();
@@ -374,8 +383,9 @@ function UpdateKioskUnit(data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
+            errMsg = 'GetDbConnection error: ' + err;
+        	callback(errMsg,null);
 
-        	callback(err,null);
         } else {
             console.log("Ticket Redeem = : " + data.ticketredeem);
             console.log("Bill Break = : " + data.billbreak);
@@ -390,9 +400,10 @@ function UpdateKioskUnit(data,callback) {
 	        var request = new Request(sql,function(err,rowCount) {
         
         
-            if(err){
+            if (err) {
+                errMsg = 'UpdateKioskUnit error: ' + err;
         	    connection.close();
-        	    callback(err,null);
+        	    callback(errMsg,null);
         	
             } else{
         	    connection.close();

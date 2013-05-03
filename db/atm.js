@@ -2,6 +2,7 @@ var Connection = require('tedious').Connection;
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var dbConnect = require('./DbConnectionPool')
+var errMsg = '';
 
 function callback(error,results){};
 
@@ -13,21 +14,22 @@ function UpdateAtmTrans( data,callback){
     var sql = '';
     var connection;
 
-
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         
         if(err) {
-          callback(err,null);
+          errMsg = 'GetDbConnection error: ' + err;
+          callback(errMsg,null);
         } else {
         
              connection = results;
-             sql = 'update db_atmTrans set transNumber = @trans,updated = @date where sequenceNum = @seq and unitId = @unit and unitPropId = @prop';
+             sql = 'update db_atmTrans set transNumber = @trans,updated = @date where sequenceNum = @seq and unitId = @unitid and unitPropId = @prop';
 
              var request = new Request(sql,function(err,rowCount) {
              
                if(err){
+                   errMsg = 'UpdateAtmTrans error: ' + err;
                    connection.close();
-                   callback(err,null);               
+                   callback(errMsg,null);               
                } else {
                    connection.close();
                    callback(null,rowCount);
@@ -37,7 +39,7 @@ function UpdateAtmTrans( data,callback){
 
             //request.addParameter('oper', TYPES.Int,data.operatorid);
             request.addParameter('unitid', TYPES.Int,data.unit);
-            request.addParameter('propid', TYPES.Int,data.propid);
+            request.addParameter('prop', TYPES.Int,data.propid);
             request.addParameter('trans', TYPES.Int,data.trans);
             request.addParameter('seq', TYPES.Int,data.seq);
             request.addParameter('date', TYPES.DateTime, new Date());
@@ -63,7 +65,8 @@ function WriteAtmTrans( data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         
         if (err) {
-        	callback(err,null);
+          errMsg = 'GetDbConnection error: ' + err;
+        	callback(errMsg,null);
         } else {
        
             connection = results;
@@ -73,8 +76,9 @@ function WriteAtmTrans( data,callback) {
 
                   var request = new Request(sql,function(err,rowCount) {
                   if (err) {
+                    errMsg = 'WriteAtmTrans Error: ' + err;
                       connection.close();
-                  	  callback(err,null) ;
+                  	  callback(errMsg,null) ;
                   } else {
                        connection.close();
                   	   callback(null,rowCount);

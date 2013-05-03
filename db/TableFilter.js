@@ -3,6 +3,7 @@ var KioskMeters = require('./Meters');
 var atm = require('./atm');
 var KioskTrans = require('./Transactions');
 var KioskUnit = require('./Config');
+var Utils  = require('./Utils');
 
 
 
@@ -15,6 +16,10 @@ function ProcessTrans(data,callback){
  	    KioskEvents.WriteKioskEvent(data,function(err,results){
  		    if (err) {
  			    console.log('WriteEvents error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
  			    callback(err,null);
  		    } else {
@@ -28,6 +33,10 @@ function ProcessTrans(data,callback){
  	    KioskMeters.UpdateOnlineMeters(data,function(err,results){
  		    if (err) {
  			    console.log('Update Online Meters error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
  			    callback(err,null);
  		    } else {
@@ -50,6 +59,10 @@ function ProcessTrans(data,callback){
                  
                  if (err) {
                  	console.log('WriteAtmTrans error: ' + err);
+                    Utils.LogError(data,err,function(err,results) {
+
+                    });
+
                     data = null;
                  	callback(err,null);
                  } else {
@@ -64,6 +77,10 @@ function ProcessTrans(data,callback){
                  
                  if (err) {
                     console.log('UpdateAtmTrans error: ' + err);
+                    Utils.LogError(data,err,function(err,results) {
+
+                    });
+
                     data = null;
                     callback(err,null);
                  } else {
@@ -81,6 +98,10 @@ function ProcessTrans(data,callback){
 
              if (err) {
              	console.log('WriteOnlineMeterSnapshot error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
              	callback(err,null);
              } else {
@@ -98,6 +119,10 @@ function ProcessTrans(data,callback){
 
              if (err) {
                 console.log('UpdateDoorSwitchMeters error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
                 callback(err,null);
              } else {
@@ -117,6 +142,10 @@ function ProcessTrans(data,callback){
 
              if (err) {
                 console.log('WriteKioskTrans error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
                 callback(err,null);
              } else {
@@ -132,6 +161,10 @@ function ProcessTrans(data,callback){
 
              if (err) {
                 console.log('CompleteCurrentTrans error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
                 callback(err,null);
              } else {
@@ -149,6 +182,10 @@ function ProcessTrans(data,callback){
 
              if (err) {
                 console.log('SetPendingTransToComplete error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
                 callback(err,null);
              } else {
@@ -168,6 +205,10 @@ function ProcessTrans(data,callback){
    
             if (err) {
                 console.log('WriteUnitTransDetail error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
                 callback(err,null);
 
@@ -190,6 +231,10 @@ function ProcessTrans(data,callback){
 
                 if (err) {
                     console.log('UpdateKioskUnit error: ' + err);
+                    Utils.LogError(data,err,function(err,results) {
+
+                    });
+
                     data = null;
                     callback(err,null);
 
@@ -207,6 +252,10 @@ function ProcessTrans(data,callback){
   
               if (err) {
                     console.log('UpdateAppVersion error: ' + err);
+                    Utils.LogError(data,err,function(err,results) {
+
+                    });
+
                     data = null;
                     callback(err,null);
 
@@ -226,6 +275,10 @@ function ProcessTrans(data,callback){
   
               if (err) {
                     console.log('UpdateCreditCardOption error: ' + err);
+                    Utils.LogError(data,err,function(err,results) {
+
+                    });
+
                     data = null;
                     callback(err,null);
 
@@ -248,6 +301,10 @@ function ProcessTrans(data,callback){
 
             if (err) {
                 console.log('DeleteUnitDenomConfig error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
                 callback(err,null);
 
@@ -268,6 +325,10 @@ function ProcessTrans(data,callback){
 
             if (err) {
                 console.log('UpdateDenomConfig error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
                 callback(err,null);
 
@@ -292,6 +353,10 @@ function ProcessTrans(data,callback){
 
             if (err) {
                 console.log('InsertUnitDevice error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
                 callback(err,null);
 
@@ -311,6 +376,10 @@ function ProcessTrans(data,callback){
 
             if (err) {
                 console.log('UpdateUnitDevice error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
                 callback(err,null);
 
@@ -331,6 +400,10 @@ function ProcessTrans(data,callback){
 
             if (err) {
                 console.log('DeleteUnitDevice error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
                 data = null;
                 callback(err,null);
 
