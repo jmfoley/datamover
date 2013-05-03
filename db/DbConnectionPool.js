@@ -6,13 +6,13 @@ var Request = require('tedious').Request;
 function DbConnectCallback(error,results){};
 
     var config = {
-        userName: 'your db user name here',
-        password: 'your db password here',
-        server: 'your db server name here',
+        userName: 'M3tech!@ncn55muurk',
+        password: 'r@fdM3Al!',
+        server: 'ncn55muurk.database.windows.net',
          tdsVersion: '7_2',
             options: {
                 encrypt: true,
-                database: 'default db here',
+                database: 'm3_Fed_Root',
         
             debug: {
                packet:  true,
