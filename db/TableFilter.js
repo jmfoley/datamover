@@ -421,6 +421,20 @@ function ProcessTrans(data,callback){
 
 
         }
+   } else if (data.table === 'db_LTDMeters') {
+
+        KioskMeters.UpdateLTDMeters(data,function(err,results) {
+        
+            if (err) {
+                data = null;
+                console.log('UpdateLTDMeters error: ' + err);
+                callback(err,null);
+            } else {
+                data = null;
+                console.log('UdpateLTDMeters written');
+                callback(null,results);
+            }
+        });
    }
     
 } exports.ProcessTrans = ProcessTrans
