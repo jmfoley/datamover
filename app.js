@@ -127,8 +127,8 @@ app.post('/slotdata',function(req,res){
 });
 
 var options = {
-    key: fs.readFileSync('./m3key.pem'),
-    cert: fs.readFileSync('./m3-cert.pem')
+    key: fs.readFileSync('ssl key here'),
+    cert: fs.readFileSync('ssl cert here')
 };
 
 
