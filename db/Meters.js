@@ -148,12 +148,12 @@ function UpdateTotalInMeter(connection,data,item,amount,callback) {
          if(results > 0) {
              //update
              insert = false;
-             sql = 'update db_LTDMeters set meterAmount = meterAmount + @amount,updated = @date where unitId = @unitid and unitPropId = @prop ' +
+             sql = 'update db_LTDMeters set meterAmount = meterAmount + @amount,updated = @date where unitId = @unitid and unitPropId = @propid ' +
                    'and itemId = @item';
          } else {
              //insert
              insert = true;
-             sql = 'insert into db_LTDMeters(unitId,unitPropId,itemId,meterAmount,updated,denom,operatorId)values(@unitid,@prop,' +
+             sql = 'insert into db_LTDMeters(unitId,unitPropId,itemId,meterAmount,updated,denom,operatorId)values(@unitid,@propid,' +
                    '@amount,@date,@oper)';
          }
 
@@ -206,12 +206,12 @@ function UpdateTotalOutMeter(connection,data,item,amount,callback) {
          if(results > 0) {
              //update
              insert = false;
-             sql = 'update db_LTDMeters set meterAmount = meterAmount + @amount,updated = @date where unitId = @unitid and unitPropId = @prop ' +
+             sql = 'update db_LTDMeters set meterAmount = meterAmount + @amount,updated = @date where unitId = @unitid and unitPropId = @propid ' +
                    'and itemId = @item';
          } else {
              //insert
              insert = true;
-             sql = 'insert into db_LTDMeters(unitId,unitPropId,itemId,meterAmount,updated,denom,operatorId)values(@unitid,@prop,' +
+             sql = 'insert into db_LTDMeters(unitId,unitPropId,itemId,meterAmount,updated,denom,operatorId)values(@unitid,@propid,' +
                    '@amount,@date,@oper)';
          }
 
@@ -273,8 +273,61 @@ function CheckLtdMeters(connection,data,callback) {
 
 
 
-function WriteLTDMeter( connection,data,amount,callback) {
+function WriteLTDMeter( connection,data,callback) {
+    var sql= '';
+    var insert;
 
+    CheckLtdMeters(connection,data,function(err,results) {
+        if (err) {
+            callback(err,results);
+        } else {
+
+         if (results > 0) {
+            insert = false;
+
+            if(data.item != 'ccr') {
+                sql = 'update db_LTDMeters set meterAmount = meterAmount + @amount,updated = @date where unitId = @unitid and ' +
+                      'unitPropId = @propid and itemId = @item and denom = @denom';
+
+            }
+            else {
+                sql = 'update db_LTDMeters set meterAmount = meterAmount - @amount,updated = @date where unitId = @unitid and ' +
+                      'unitPropId = @propid and itemId = @item and denom = @denom';
+
+            }
+         } else {
+            insert = true;
+            sql = 'insert into db_LTDMeters(unitId,unitPropId,itemId,meterAmount,updated,denom,operatorId)values(@unitid,@propid,' +
+                  '@item,@amount,@date,@denom,@oper)';
+         }
+
+            var request = new Request(sql,function(err,rowCount) {
+                if (err) {
+
+                    callback(err,null);
+                } else {
+                     
+                    callback(null,rowCount);
+                }
+            });
+
+            request.addParameter('unitid', TYPES.Int,data.unit);
+            request.addParameter('item', TYPES.NVarChar,data.item);
+            request.addParameter('denom', TYPES.Int,data.denom);
+            request.addParameter('propid', TYPES.Int,data.propid);
+            request.addParameter('amount', TYPES.Int,data.amount);
+            request.addParameter('date', TYPES.DateTime,new Date());
+            if (insert) {
+                request.addParameter('oper', TYPES.Int,data.operatorid);
+            }
+
+            
+            connection.execSql(request);
+
+
+        }
+
+    });
 };
 
 
@@ -302,16 +355,64 @@ function UpdateLTDMeters(data,callback){
 
           value = data.amount;
           UpdateTotalInMeter(connection,data,'TI',data.amount,function(err,results) {
+             if ( err ) {
 
-          });
+                connection.close();
+                callback(err,null);
+             } else {
+
+                WriteLTDMeter(connection,data,function(err,results) {
+
+                    if (err) {
+                        connection.close();
+                        callback(err,null);
+                    } else {
+                        connection.close();
+                        callback(null,results);
+                    }
+                });
+             }
+          //}
+       });
 
     } else {
         if(data.item != 'CCR') {
           UpdateTotalOutMeter(connection,data,'TO',data.amount,function(err,results) {
+            if (err) {
+                connection.close();
+                callback(err,null);
+
+            } else {
+                WriteLTDMeter(connection,data,function(err,results){
+                    if (err) {
+                        connection.close();
+                        callback(err,null);
+                    } else {
+                        connection.close();
+                        callback(null,results);
+                    }
+
+                });
+            }
           
           });
         }  else {
             UpdateTotalOutMeter(connection,data,'TO',-data.amount,function(err,results) {
+                if (err) {
+                    connection.close();
+                    callback(err,null);
+                } else {
+                    WriteLTDMeter(connection,data,function(err,results) {
+                    
+                        if (err) {
+                            connection.close();
+                            callback(err,null);
+                        } else {
+                            connection.close();
+                            callback(null,results);
+                        }
+                    });
+                }
 
             });
         }  
