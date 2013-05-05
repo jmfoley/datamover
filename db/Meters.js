@@ -285,7 +285,7 @@ function WriteLTDMeter( connection,data,callback) {
          if (results > 0) {
             insert = false;
 
-            if(data.item != 'ccr') {
+            if(data.item != 'CCR') {
                 sql = 'update db_LTDMeters set meterAmount = meterAmount + @amount,updated = @date where unitId = @unitid and ' +
                       'unitPropId = @propid and itemId = @item and denom = @denom';
 
