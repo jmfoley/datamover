@@ -63,8 +63,9 @@ function UpdateBillbreakConfig(data,callback) {
         } else {
             connection = results;
             sql = 'update sc_billbreaks set bill1 = @bill1,bill2 = @bill2,bill5 = @bill5, bill10 = @bill10,bill20 = @bill20,' +
-                  'bill50 = @bill50,bill100 = @bill100 where billDenom = @denom and propId = @propid and operatorID = @oper ' +
-                  'updated = @date';
+                  'bill50 = @bill50,bill100 = @bill100,updated = @date where billDenom = @denom and propId = @prop and ' +
+                  'operatorID = @oper';
+                  
 
             var request = new Request(sql,function(err,results) {
 
