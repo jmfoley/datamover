@@ -435,6 +435,82 @@ function ProcessTrans(data,callback){
                 callback(null,results);
             }
         });
+   } else if (data.table === 'sc_billbreaks') {
+
+        if (data.operation === 'add') {
+
+            KioskUnit.AddBillbreakConfig(data,function(err,results) {
+
+                if (err) {
+
+                    console.log('Add Billbreak error: ' + err);
+                    Utils.LogError(data,err,function(err,results) {
+
+
+                  });
+                 data = null;
+                 callback(err,null);
+
+                } else {
+
+                   console.log('AddBillbreakConfig written');
+                   data = null;
+                   callback(null,results);
+              }
+
+            });
+        } else if (data.operation === 'update') {
+
+            KioskUnit.UpdateBillbreakConfig(data,function(err,results) {
+
+                if (err) {
+
+                    console.log('UpdateBillbreakConfig: ' + err);
+                    Utils.LogError(data,err,function(err,results) {
+
+
+                  });
+                 data = null;
+                 callback(err,null);
+
+                } else {
+
+                   console.log('UpdateBillbreakConfig written');
+                   data = null;
+                   callback(null,results);
+              }
+
+            });
+
+        } else if( data.operation === 'delete') {
+
+            KioskUnit.DeleteBillbreakConfig(data,function(err,results) {
+
+                if (err) {
+
+                    console.log('DeleteBillbreakConfig: ' + err);
+                    Utils.LogError(data,err,function(err,results) {
+
+
+                  });
+                 data = null;
+                 callback(err,null);
+
+                } else {
+
+                   console.log('DeleteBillbreakConfig written');
+                   data = null;
+                   callback(null,results);
+              }
+
+            });
+
+
+
+        }
+
+
+
    }
     
 } exports.ProcessTrans = ProcessTrans

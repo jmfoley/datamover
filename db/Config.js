@@ -8,6 +8,150 @@ function callback(error,results){};
 
 
 
+function DeleteBillbreakConfig( data,callback ) {
+
+    var sql = '';
+    var connection;
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+
+        if (err) {
+            errMsg = 'DeleteBillbreakConfig error: ' + err;
+            callback(errMsg,null);
+        } else {
+            connection = results;
+            sql = 'delete from sc_billBreaks where billdenom = @denom and propId = @prop and operatorID = @oper';
+
+            var request = new Request(sql,function(err,results){
+
+                if (err) {
+                    errMsg = 'DeleteBillbreakConfig error: ' + err;
+                    callback(errMsg,null);
+                } else {
+                    connection.close();
+                    callback(err,results);
+                }
+
+            });
+            request.addParameter('denom',TYPES.Int,data.denom);
+            request.addParameter('prop',TYPES.Int,data.propid);
+            request.addParameter('oper',TYPES.Int,data.operatorid);
+
+            connection.execSql(request);
+
+
+        }
+
+
+    });
+
+
+
+}exports.DeleteBillbreakConfig = DeleteBillbreakConfig
+;
+
+function UpdateBillbreakConfig(data,callback) {
+
+    var sql = '';
+    var connection;
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+
+        if (err) {
+            errMsg = 'UpdateBillbreakConfig error: ' + err;
+            callback(errMsg,null);
+        } else {
+            connection = results;
+            sql = 'update sc_billbreaks set bill1 = @bill1,bill2 = @bill2,bill5 = @bill5, bill10 = @bill10,bill20 = @bill20,' +
+                  'bill50 = @bill50,bill100 = @bill100 where billDenom = @denom and propId = @propid and operatorID = @oper ' +
+                  'updated = @date';
+
+            var request = new Request(sql,function(err,results) {
+
+                if (err) {
+                    errMsg = 'UpdateBillbreakConfig error: ' + err;
+                    callback(errMsg,null);
+                } else {
+                    connection.close();
+                    callback(err,results);
+                }
+
+
+            });
+
+            request.addParameter('denom',TYPES.Int,data.denom);
+            request.addParameter('bill1',TYPES.Int,data.bill1);
+            request.addParameter('bill2',TYPES.Int,data.bill2);
+            request.addParameter('bill5',TYPES.Int,data.bill5);
+            request.addParameter('bill10',TYPES.Int,data.bill10);
+            request.addParameter('bill20',TYPES.Int,data.bill20);
+            request.addParameter('bill50',TYPES.Int,data.bill50);
+            request.addParameter('bill100',TYPES.Int,data.bill100);
+            request.addParameter('prop',TYPES.Int,data.propid);
+            request.addParameter('date',TYPES.DateTime,new Date());
+            request.addParameter('oper',TYPES.Int,data.operatorid);
+
+            connection.execSql(request);
+
+
+        }
+
+
+    });    
+
+}exports.UpdateBillbreakConfig = UpdateBillbreakConfig
+;
+
+
+function AddBillbreakConfig(data,callback) {
+
+    var sql = '';
+    var connection;
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+
+        if (err) {
+            errMsg = 'AddBillbreakConfig error: ' + err;
+            callback(errMsg,null);
+        } else {
+            connection = results;
+            sql = 'insert into sc_billbreaks(billDenom,bill1,bill2,bill5,bill10,bill20,bill50,bill100,propid,updated,operatorID)values(' +
+                  '@denom,@bill1,@bill2,@bill5,@bill10,@bill20,@bill50,@bill100,@prop,@date,@oper)';
+
+            var request = new Request(sql,function(err,results) {
+
+                if (err) {
+                    errMsg = 'AddBillbreakConfig error: ' + err;
+                    callback(errMsg,null);
+                } else {
+                    connection.close();
+                    callback(err,results);
+                }
+
+            });
+
+            request.addParameter('denom',TYPES.Int,data.denom);
+            request.addParameter('bill1',TYPES.Int,data.bill1);
+            request.addParameter('bill2',TYPES.Int,data.bill2);
+            request.addParameter('bill5',TYPES.Int,data.bill5);
+            request.addParameter('bill10',TYPES.Int,data.bill10);
+            request.addParameter('bill20',TYPES.Int,data.bill20);
+            request.addParameter('bill50',TYPES.Int,data.bill50);
+            request.addParameter('bill100',TYPES.Int,data.bill100);
+            request.addParameter('prop',TYPES.Int,data.propid);
+            request.addParameter('date',TYPES.DateTime,new Date());
+            request.addParameter('oper',TYPES.Int,data.operatorid);
+
+            connection.execSql(request);
+
+        }
+    });
+
+
+}exports.AddBillbreakConfig = AddBillbreakConfig
+;
+
+
 function UpdateCreditCardOption(data,callback) {
 
     var sql = '';
