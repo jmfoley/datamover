@@ -30,6 +30,9 @@ function ProcessTrans(data,callback){
 
  	    });
      } else if ( data.table === 'db_onlinemeters') {
+
+         if(data.operation === 'update') {
+
  	    KioskMeters.UpdateOnlineMeters(data,function(err,results){
  		    if (err) {
  			    console.log('Update Online Meters error: ' + err);
@@ -45,8 +48,27 @@ function ProcessTrans(data,callback){
  			    callback(null,results);
  		    }
 
- 	    });
-      
+ 	     });
+      } else if (data.operation === 'purge') {
+
+          KioskMeters.ZeroCoinHopper(data,function(err,results)
+            if (err) {
+                console.log('ZeroCoinHopper error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
+                data = null;
+                callback(err,null);
+            } else {
+                console.log('ZeroCoinHopper written');
+                data = null;
+                callback(null,results);
+            }
+
+
+          });
+      }
 
     
      } else if (data.table === 'db_atmTrans') {

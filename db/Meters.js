@@ -7,6 +7,50 @@ var errMsg = '';
 function callback(error,results){};
 
 
+function ZeroCoinHopper(data,callback){
+
+    var sql = '';
+    var connection;
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+         if(err){
+            errMsg = 'GetDbConnection error: ' + err;
+            callback(errMsg,null);
+         } else {
+             connection = results;
+             sql = 'update db_onlinemeters set itemAmount = @amount,itemQty = @qty where unitId = @unitid and unitPropid = @propid and ' +
+                   'itemId = @item';
+
+             var request = new Request(sql,function(err,results) {
+
+                if (err) {
+                    errMsg = 'ZeroCoinHopper error: '  + err;
+                    callback(errMsg,null);
+                } else {
+                     
+                    callback(null,rowCount);
+                }
+
+            });
+
+                request.addParameter('unitid', TYPES.Int,data.unit);
+                request.addParameter('itemid', TYPES.NVarChar,data.item);
+                request.addParameter('qty', TYPES.Int,0);
+                request.addParameter('amount', TYPES.Int,0);
+                request.addParameter('propid', TYPES.Int,data.propid);
+                
+                connection.execSql(request);
+
+         }
+
+    });
+
+
+} exports.ZeroCoinHopper = ZeroCoinHopper
+;
+
+
+
 //Online meters
 function CheckOnlineMeters(connection,data,callback) {
 
