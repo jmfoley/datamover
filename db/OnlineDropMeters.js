@@ -14,7 +14,7 @@ function callback(error,results){};
 function CheckOnlineDropMeters(connection,data,callback) {
 
     var sql = 'select unitPropId from db_onlinemeters where unitId = @unitid and itemId = @itemid and ' +
-              'unitPropid = @propid';
+              'unitPropid = @propid and denom = @denom';
 
     var request = new Request(sql,function(err,rowCount) {
     	if (err) {
@@ -26,6 +26,7 @@ function CheckOnlineDropMeters(connection,data,callback) {
     	}
 
     });          
+
 
         request.addParameter('unitid', TYPES.Int,data.unit);
         request.addParameter('itemid', TYPES.VarChar,data.item);
@@ -56,11 +57,14 @@ function UpdateOnlineDropMeters( data,callback) {
                 if (err) {
                     callback(err,null);                    
                 } else {
+                    console.log('***Count = ' + results);
                     if (results > 0) {
-                        sql = 'update db_onlinemeters set itemAmount = @amount, denom = @denom, impressamt = @impress,canId = @can, ' +
+                      console.log('In Update Code');
+                        sql = 'update db_onlinemeters set itemAmount = @amount, impressamt = @impress,canId = @can, ' +
                               'itemQty = @qty,fillAmt = @fillamt,updated = @date where unitId = @unit and unitPropId = @propid and ' +
-                              'itemId = @item';
+                              'itemId = @item and denom = @denom';
                     } else {
+                      console.log('In Insert Code');
                         sql = 'insert into db_onlinemeters(operatorID,unitId,unitPropId,itemId,itemAmount,updated,denom,impressAmt,' +
                               'canId,itemQty,fillAmt)values(@oper,@unit,@propid,@item,@amount,@date,@denom,@impress,@can,@qty,@fillamt)';
                               insert = true;
@@ -69,6 +73,7 @@ function UpdateOnlineDropMeters( data,callback) {
                     var request = new Request(sql,function(err,results) {
                         if (err) {
                             connection.close();
+                            console.log('Denom = ' + data.denom);
                             callback(err,null);
                         } else {
                             connection.close();
