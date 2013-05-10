@@ -54,7 +54,7 @@ function ZeroCoinHopper(data,callback){
 //Online meters
 function CheckOnlineMeters(connection,data,callback) {
 
-    var sql = 'select unitPropId from db_onlinemeters where unitId = @unitid and itemId = @itemid and denom = @denom ' +
+    var sql = 'select count(*) from db_onlinemeters where unitId = @unitid and itemId = @itemid and denom = @denom ' +
               'and unitPropid = @propid';
 
     var request = new Request(sql,function(err,rowCount) {
@@ -67,6 +67,7 @@ function CheckOnlineMeters(connection,data,callback) {
     	}
 
     });          
+
 
         request.addParameter('unitid', TYPES.Int,data.unit);
         request.addParameter('itemid', TYPES.NVarChar,data.item);
