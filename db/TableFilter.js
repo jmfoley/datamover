@@ -4,6 +4,7 @@ var atm = require('./atm');
 var KioskTrans = require('./Transactions');
 var KioskUnit = require('./Config');
 var Utils  = require('./Utils');
+var DropMeters = require('./OnlineDropMeters');
 
 
 
@@ -51,7 +52,7 @@ function ProcessTrans(data,callback){
  	     });
       } else if (data.operation === 'purge') {
 
-          KioskMeters.ZeroCoinHopper(data,function(err,results)
+          KioskMeters.ZeroCoinHopper(data,function(err,results) {
             if (err) {
                 console.log('ZeroCoinHopper error: ' + err);
                 Utils.LogError(data,err,function(err,results) {
@@ -68,7 +69,16 @@ function ProcessTrans(data,callback){
 
 
           });
-      }
+         } else if (data.operation === 'drop') {
+              DropMeters.UpdateOnlineDropMeters(data,function(err,results) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('donline drop meters updated');
+                }
+
+              });
+         }
 
     
      } else if (data.table === 'db_atmTrans') {
