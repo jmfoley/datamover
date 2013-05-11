@@ -543,6 +543,58 @@ function ProcessTrans(data,callback){
 
 
 
+   } else if (data.table === 'db_unittransdrop') {
+
+        DropMeters.WriteDropDetail(data,function(err,results){
+
+            if (err) {
+                console.log('WriteDropDetails: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+
+               });
+                data = null;
+                callback(err,null);
+  
+            } else {
+               console.log('WriteDropDetails written');
+               data = null;
+               callback(null,results);
+
+
+            }
+
+
+
+        });
+ 
+
+   } else if (data.table === 'db_unitdropmeters') {
+
+        DropMeters.WriteDropMeters(data,function(err,results){
+
+            if (err) {
+                console.log('WriteDropMeters: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+
+               });
+                data = null;
+                callback(err,null);
+  
+            } else {
+               console.log('WriteDropMeters written');
+               data = null;
+               callback(null,results);
+                
+
+            }
+
+
+
+        });
+ 
+
    }
     
 } exports.ProcessTrans = ProcessTrans
