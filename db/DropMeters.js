@@ -10,6 +10,115 @@ var dbConnect = require('./DbConnectionPool')
 function callback(error,results){};
 
 
+function WriteDropMeters( data,callback) {
+
+   var connection;
+   var errMsg = '';
+   var sql = '';
+
+   dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+      if (err) {
+          errMsg = 'GetDbConnection error: ' + err;
+          callback(errMsg,null);
+      } else {
+          connection = results; 
+          sql = 'insert into db_unitDropMeters(operatorID,transNumber,unitId,propId,itemId,itemDenom,itemAmount,' +
+                'canId,fillAmt,impressAmt,updated)values(@oper,@trans,@unitId,@propid,@item,@denom,@amount,@can,@fill,' +
+                '@impress,@date)';
+          var request = new Request(sql,function(err,rowCount) {
+               if (err) {
+                  connection.close();
+                  errMsg = 'WriteDropDetail error: '  + err;
+                  callback(errmsg,null);
+
+               } else {
+                  connection.close();
+                  callback(null,rowCount);
+               }
+
+          });
+
+          request.addParameter('oper', TYPES.Int,data.operatorid);
+          request.addParameter('trans', TYPES.Int,data.trans);
+          request.addParameter('unitid', TYPES.Int,data.unit);
+          request.addParameter('propid', TYPES.Int,data.propid);
+          request.addParameter('item', TYPES.VarChar,data.item);
+          request.addParameter('denom', TYPES.Int,data.denom);
+          request.addParameter('amount', TYPES.Int,data.amount);
+          request.addParameter('can', TYPES.Int,data.canid);
+          request.addParameter('fill', TYPES.Int,data.fillamt);
+          request.addParameter('impress', TYPES.Int,data.impress);          
+          request.addParameter('date', TYPES.DateTime,new Date());
+
+          
+          connection.execSql(request);
+ 
+      }
+
+
+   });
+
+
+
+}exports.WriteDropMeters = WriteDropMeters;
+
+
+
+
+
+
+function WriteDropDetail( data,callback) {
+
+   var connection;
+   var errMsg = '';
+   var sql = '';
+
+   dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+      if (err) {
+          errMsg = 'GetDbConnection error: ' + err;
+          callback(errMsg,null);
+      } else {
+          connection = results; 
+          sql = 'insert into db_unitTransDrop(operatorID,transNumber,unitId,propId,itemId,itemDenom,itemAmount,actualAmount,' +
+                'canId,updated,kioskTransNumber)values(@oper,@trans,@unitId,@propid,@item,@denom,@amount,@actamount,@can,@date,' +
+                '@trans1)';
+          var request = new Request(sql,function(err,rowCount) {
+               if (err) {
+                  connection.close();
+                  errMsg = 'WriteDropDetail error: '  + err;
+                  callback(errmsg,null);
+
+               } else {
+                  connection.close();
+                  callback(null,rowCount);
+               }
+
+          });
+
+          request.addParameter('oper', TYPES.Int,data.operatorid);
+          request.addParameter('trans', TYPES.Int,data.trans);
+          request.addParameter('unitid', TYPES.Int,data.unit);
+          request.addParameter('propid', TYPES.Int,data.propid);
+          request.addParameter('item', TYPES.VarChar,data.item);
+          request.addParameter('denom', TYPES.Int,data.denom);
+          request.addParameter('amount', TYPES.Int,data.amount);
+          request.addParameter('actamount', TYPES.Int,data.actualamount);
+          request.addParameter('can', TYPES.Int,data.canid);
+          request.addParameter('date', TYPES.DateTime,new Date());
+          request.addParameter('trans1', TYPES.Int,data.kiosktrans);
+          
+          connection.execSql(request);
+ 
+      }
+
+
+   });
+
+
+
+}exports.WriteDropDetail = WriteDropDetail;
+
+
 function CheckOnlineDropMeters(connection,data,callback) {
 
     var errMsg = '';
