@@ -8,6 +8,47 @@ function callback(error,results){};
 
 
 
+function UpdateUnitSession( data, callback) {
+
+    var sql = '';
+    var connection;
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+        if (err) {
+            errMsg = 'UpdateUnitSession error: ' + err;
+            callback(errMsg,null);
+
+        } else {
+
+            connection = results;
+            sql = 'update sc_units set sessionId = sessionId + 1, updated = @date where unitId = @unit and unitPropId = @propid';
+
+            var request = new Request(sql,function(err,rowCount) {
+
+                if (err) {
+                    errMsg = 'UpdateUnitSession error: ' + err;
+                    callback(errMsg,null);
+                } else {
+                    connection.close();
+                    callback(err,results);
+                }
+
+            });
+
+            request.addParameter('date',TYPES.DateTime,new Date());
+            request.addParameter('propid',TYPES.Int,data.propid);
+            request.addParameter('unit',TYPES.Int,data.unit);
+
+            connection.execSql(request);
+
+
+        }
+    });
+
+
+}exports.UpdateUnitSession = UpdateUnitSession;
+
+
 function DeleteBillbreakConfig( data,callback ) {
 
     var sql = '';

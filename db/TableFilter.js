@@ -324,6 +324,26 @@ function ProcessTrans(data,callback){
 
 
            });
+       } else if (data.operation === 'session') {
+
+           KioskUnit.UpdateUnitSession(data,function(err,results) {
+              if (err) {
+                    console.log('UpdateSession error: ' + err);
+                    Utils.LogError(data,err,function(err,results) {
+
+                    });
+
+                    data = null;
+                    callback(err,null);
+
+                } else {
+                     console.log('UpdateSession written');
+                     data = null;
+                     callback(null,results);
+
+                }
+           
+           });
        }
    } else if (data.table === 'sc_unitConfig') {
 
