@@ -12,7 +12,7 @@
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
-  , http = require('http')
+  //, http = require('http')
   , https = require('https')
   , fs = require('fs')
   , dbConnect = require('./db/DbConnectionPool')
@@ -22,6 +22,10 @@ var express = require('express')
   , cluster = require('cluster')
   , numCPUs = require('os').cpus().length
   , ua = require('mobile-agent');
+
+
+
+//var heapdump = require('heapdump');
 
   var startDate = new Date();
   var totalTransReceived = new Number(0);
@@ -91,9 +95,14 @@ app.post('/kioskdata',function(req,res) {
      tableFilter.ProcessTrans(req.body,function(err,results){
          totalTransReceived++;
 
+         // if(totalTransReceived === 200) {
+         //    heapdump.writeSnapshot();
+         //}
+
          if (err) {
               totalErrorTrans++;
-              
+
+              delete req;
               console.log(err);
               res.writeHead(401, {'Content-Type': 'text/plain'});
               res.end('');
@@ -101,8 +110,8 @@ app.post('/kioskdata',function(req,res) {
          } else {
 
               totalSuccessfulTrans++;
-
-              console.log('data written');
+              delete req; 
+              //console.log('data written');
               res.writeHead(200, {'Content-Type': 'text/plain'});
               res.end('');
 
@@ -132,7 +141,6 @@ var options = {
 };
 
 
-
 if (cluster.isMaster) {
   // Fork workers.
   for (var i = 0; i < numCPUs; i++) {
@@ -149,10 +157,10 @@ if (cluster.isMaster) {
     console.log("https Express server listening on port " + app.get('port'));
 });
 
-
+}
 
  // http.createServer(app).listen(app.get('port'), function(){
  //  console.log("Express server listening on port " + app.get('port'));
  // });
 
-}
+//});
