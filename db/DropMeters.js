@@ -28,11 +28,19 @@ function WriteDropMeters( data,callback) {
           var request = new Request(sql,function(err,rowCount) {
                if (err) {
                   connection.close();
+                  connection = null;
+                  sql = null;
+                  delete request;
+
                   errMsg = 'WriteDropDetail error: '  + err;
                   callback(errmsg,null);
 
                } else {
                   connection.close();
+                  connection = null;
+                  sql = null;
+                  delete request;
+
                   callback(null,rowCount);
                }
 
@@ -85,11 +93,19 @@ function WriteDropDetail( data,callback) {
           var request = new Request(sql,function(err,rowCount) {
                if (err) {
                   connection.close();
+                  connection = null;
+                  sql = null;
+                  delete request;
+
                   errMsg = 'WriteDropDetail error: '  + err;
                   callback(errmsg,null);
 
                } else {
                   connection.close();
+                  connection = null;
+                  sql = null;
+                  delete request;
+
                   callback(null,rowCount);
                }
 
@@ -129,10 +145,11 @@ function CheckOnlineDropMeters(connection,data,callback) {
     var request = new Request(sql,function(err,rowCount) {
     	if (err) {
             errMsg = 'CheckOnlineDropMeters error: '  + err;
-    		callback(errMsg,null);
+            sql = null;
+    		    callback(errMsg,null);
     	} else {
-             
-    		callback(null,rowCount);
+          sql = null;            
+    		  callback(null,rowCount);
     	}
 
     });          
@@ -182,9 +199,17 @@ function UpdateOnlineDropMeters( data,callback) {
                     var request = new Request(sql,function(err,results) {
                         if (err) {
                             connection.close();
+                            connection = null;
+                            sql = null;
+                            delete request;
+
                             callback(err,null);
                         } else {
                             connection.close();
+                            connection = null;
+                            sql = null;
+                            delete request;
+
                             callback(null,results);
                         }
 

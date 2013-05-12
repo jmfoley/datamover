@@ -27,9 +27,16 @@ function UpdateUnitSession( data, callback) {
 
                 if (err) {
                     errMsg = 'UpdateUnitSession error: ' + err;
+                    connection.close();
+                    connection = null;
+                    sql = null;
+                    delete request;
                     callback(errMsg,null);
                 } else {
                     connection.close();
+                    connection = null;
+                    sql = null;
+                    delete request;
                     callback(err,results);
                 }
 
@@ -67,9 +74,17 @@ function DeleteBillbreakConfig( data,callback ) {
 
                 if (err) {
                     errMsg = 'DeleteBillbreakConfig error: ' + err;
+                    connection = null;
+                    sql = null;
+                    delete request;
+
                     callback(errMsg,null);
                 } else {
                     connection.close();
+                    connection = null;
+                    sql = null;
+                    delete request;
+
                     callback(err,results);
                 }
 
@@ -112,9 +127,17 @@ function UpdateBillbreakConfig(data,callback) {
 
                 if (err) {
                     errMsg = 'UpdateBillbreakConfig error: ' + err;
+                    connection = null;
+                    sql = null;
+                    delete request;
+
                     callback(errMsg,null);
                 } else {
                     connection.close();
+                    connection = null;
+                    sql = null;
+                    delete request;
+
                     callback(err,results);
                 }
 
@@ -164,9 +187,17 @@ function AddBillbreakConfig(data,callback) {
 
                 if (err) {
                     errMsg = 'AddBillbreakConfig error: ' + err;
+                    connection = null;
+                    sql = null;
+                    delete request;
+
                     callback(errMsg,null);
                 } else {
                     connection.close();
+                    connection = null;
+                    sql = null;
+                    delete request;
+
                     callback(err,results);
                 }
 
@@ -216,10 +247,18 @@ function UpdateCreditCardOption(data,callback) {
             if(err){
                 errMsg = 'UpdateCreditCardConfig error: ' + err;
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(errMsg,null);
             
             } else{
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(null,connection);
             
             }
@@ -267,10 +306,18 @@ function UpdateAppVersion(data,callback) {
             if(err){
                 errMsg = 'UpdateAppVersion error: ' + err;
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(errMsg,null);
             
             } else{
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(null,connection);
             
             }
@@ -316,10 +363,18 @@ function DeleteUnitDevice(data, callback) {
             if (err) {
                 errMsg = 'DeleteUnitDevice error: ' + err;
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(errMsg,null);
             
             } else{
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(null,connection);
             
             }
@@ -369,10 +424,18 @@ function UpdateUnitDevice(data, callback) {
             if (err) {
                 errMsg = 'UpdateUnitDeviceError: ' + err;
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(errMsg,null);
             
             } else{
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(null,connection);
             
             }
@@ -426,12 +489,20 @@ function InsertUnitDevice(data, callback) {
         
         
             if(err){
-                errMsg = 'InsertUNitDevice error: ' + err;
+                errMsg = 'InsertUnitDevice error: ' + err;
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(errMsg,null);
             
             } else{
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(null,connection);
             
             }
@@ -483,10 +554,18 @@ function DeleteUnitDenomConfig(data,callback) {
             if (err) {
                 errMsg = 'DeleteUnitDenomConfig error: ' + err;
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(errMsg,null);
             
             } else {
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(null,connection);
             
             }
@@ -531,10 +610,18 @@ function UpdateDenomConfig(data,callback) {
             if (err) {
                 errMsg = 'DeleteUnitDenomConfig error: ' + err;
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(errMsg,null);
             
             } else{
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
                 callback(null,connection);
             
             }
@@ -573,8 +660,6 @@ function UpdateKioskUnit(data,callback) {
         	callback(errMsg,null);
 
         } else {
-            console.log("Ticket Redeem = : " + data.ticketredeem);
-            console.log("Bill Break = : " + data.billbreak);
             connection = results;
             sql = 'update sc_units set unitName = @unitname,unitStatus = @unitstatus,unitType = @unittype,billBreak = @billbreak,' +
                   'ticketRedeem = @ticketredeem,playersClub = @playersclub,ATM = @atm,checkCash = @checkcash,cashAdvance = @cashadvance,' +
@@ -589,10 +674,18 @@ function UpdateKioskUnit(data,callback) {
             if (err) {
                 errMsg = 'UpdateKioskUnit error: ' + err;
         	    connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
         	    callback(errMsg,null);
         	
             } else{
         	    connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+
         	    callback(null,connection);
         	
             }

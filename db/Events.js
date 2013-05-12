@@ -30,12 +30,16 @@ function WriteKioskEvents(data,callback) {
             if (err) {
                 errMsg = 'WriteKioskEvents error: ' + err;
         	    connection.close();
+                connection = null;
                 sql = null;
+                delete request;
         	    callback(errMsg,null);
         	
             } else {
         	    connection.close();
+                connection = null;
                 sql = null;
+                delete request;
         	    callback(null,connection);
         	
             }

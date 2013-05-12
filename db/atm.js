@@ -29,9 +29,17 @@ function UpdateAtmTrans( data,callback){
                if(err){
                    errMsg = 'UpdateAtmTrans error: ' + err;
                    connection.close();
+                   connection = null;
+                   sql = null;
+                   delete request;
+
                    callback(errMsg,null);               
                } else {
                    connection.close();
+                   connection = null;
+                   sql = null;
+                   delete request;
+
                    callback(null,rowCount);
                }
 
@@ -78,9 +86,17 @@ function WriteAtmTrans( data,callback) {
                   if (err) {
                     errMsg = 'WriteAtmTrans Error: ' + err;
                       connection.close();
+                      connection = null;
+                      sql = null;
+                      delete request;
+
                   	  callback(errMsg,null) ;
                   } else {
                        connection.close();
+                       connection = null;
+                       sql = null;
+                       delete request;
+
                   	   callback(null,rowCount);
                   }
               }); 

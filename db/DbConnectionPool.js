@@ -5,14 +5,14 @@ var Request = require('tedious').Request;
 
 function DbConnectCallback(error,results){};
 
-    var config = {
-        userName: 'db user here',
-        password: 'db password here',
-        server: 'db server herer',
+   var config = {
+        userName: 'M3tech!@ncn55muurk',
+        password: 'r@fdM3Al!',
+        server: 'ncn55muurk.database.windows.net',
          tdsVersion: '7_2',
             options: {
                 encrypt: true,
-                database: 'defaut db connection here',
+                database: 'm3_Fed_Root',
         
             debug: {
                packet:  true,
@@ -41,14 +41,14 @@ var poolConfig = {
          if(err) {
          	DbConnectCallback(err,null);
          } else {
-         	console.log('connected from pool');
+         	//console.log('connected from pool');
 
              var request = new Request('use federation [OperatorFederation] ([OperatorID]=' + operatorid + ') with reset,filtering=on', function(err, rowCount) {
              if(err) {
                 console.log('Federation error: ' + err);
                 DbConnectCallback(err,null);
              } else {
-                  console.log('changed fed');
+            //      console.log('changed fed');
                   DbConnectCallback(null,connection);
 
 
@@ -60,7 +60,7 @@ var poolConfig = {
           });
 
           connection.on('end', function(err){
-              console.log('Connection closed') ;
+              //console.log('Connection closed') ;
           });
 
               

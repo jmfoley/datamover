@@ -18,10 +18,13 @@ function CheckUnitTransDetail(connection,data,callback) {
     var request = new Request(sql,function(err,rowCount) {
         if(err) {
             errMsg = 'CheckUnitTransDetail error: ' + err;
+            sql = null;
+            delete request;
             callback(errMsg,null);
 
         } else {
-             
+             sql = null;
+             delete request;
             callback(null,rowCount);
         }
 
@@ -58,6 +61,7 @@ function WriteUnitTransDetail( data,callback) {
                     if (err) {
 
                         connection.close();
+                        connection = null;
                         callback(err,null);
 
                     } else {
@@ -80,9 +84,15 @@ function WriteUnitTransDetail( data,callback) {
                                   if(err) {
                                     errMsg = 'WriteUnitTransDetail error: ' + err;
                                       connection.close();
+                                      connection = null;
+                                      sql = null;
+                                      delete request;
                                       callback(errMsg,null) ;
                                   } else {
                                        connection.close();
+                                       connection = null;
+                                       sql = null;
+                                       delete request;
                                        callback(null,rowCount);
                                   }
                               }); 
@@ -144,10 +154,16 @@ function SetPendingTransToComplete( data, callback) {
             if (err) {
                 errMsg = 'SetPendingTransToComplete error: '  + err;
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
                 callback(errMsg,null);
             
             } else{
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
                 callback(null,rowCount);
             
             }
@@ -202,10 +218,16 @@ function CompleteCurrentTrans( data,callback) {
             if(err){
                 errMsg = 'CompleteCurrentTrans error: '  + err;
                 connection.close();
+                connection = null;
+                sql = null;
+                delete request;
                 callback(errMsg,null);
             
             } else{
                 connection.close();
+                conenction = null;
+                sql = null;
+                delete request;
                 callback(null,connection);
             
             }
@@ -256,10 +278,16 @@ function WriteKioskTrans(data,callback) {
             if (err) {
               errMsg = 'WriteKioskTrans error: ' + err;
         	    connection.close();
+              connection = null;
+              sql = null;
+              delete request;
         	    callback(errMsg,null);
         	
             } else{
         	    connection.close();
+              connection = null;
+              sql = null;
+              delete request;
         	    callback(null,connection);
         	
             }
