@@ -6,9 +6,9 @@ var Request = require('tedious').Request;
 function DbConnectCallback(error,results){};
 
    var config = {
-        userName: 'db user',
-        password: 'db password',
-        server: 'db server',
+        userName: 'db user name',
+        password: 'db password!',
+        server: 'db server url',
          tdsVersion: '7_2',
             options: {
                 encrypt: true,
@@ -34,14 +34,19 @@ var poolConfig = {
 
  pool = new ConnectionPool(poolConfig, config);
 
+
+
  function GetDbConnection(operatorid,DbConnectCallback) {
  
+
+
      pool.requestConnection(function (err, connection) {
          
          if(err) {
          	DbConnectCallback(err,null);
          } else {
          	//console.log('connected from pool');
+          
 
              var request = new Request('use federation [OperatorFederation] ([OperatorID]=' + operatorid + ') with reset,filtering=on', function(err, rowCount) {
              if(err) {
@@ -54,7 +59,7 @@ var poolConfig = {
 
              }
       });
-           
+
               connection.on('connect', function(err) {
               connection.execSqlBatch(request);
           });

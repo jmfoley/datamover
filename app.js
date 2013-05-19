@@ -21,7 +21,8 @@ var express = require('express')
   , tableFilter = require('./db/TableFilter')
   , cluster = require('cluster')
   , numCPUs = require('os').cpus().length
-  , ua = require('mobile-agent');
+  , ua = require('mobile-agent')
+  ,Utils  = require('./db/Utils');
 
 
 
@@ -33,6 +34,7 @@ var express = require('express')
   var totalErrorTrans = new Number(0);
 
 var app = express();
+
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
@@ -94,6 +96,7 @@ app.post('/kioskdata',function(req,res) {
 
      tableFilter.ProcessTrans(req.body,function(err,results){
          totalTransReceived++;
+         process.send({ cmd: 'totalTrans' });
 
          // if(totalTransReceived === 200) {
          //    heapdump.writeSnapshot();
@@ -101,17 +104,18 @@ app.post('/kioskdata',function(req,res) {
 
          if (err) {
               totalErrorTrans++;
-
+   
               delete req;
               console.log(err);
               res.writeHead(401, {'Content-Type': 'text/plain'});
               res.end('');
 
          } else {
-
+              process.send({ cmd: 'totalSuccess' });
               totalSuccessfulTrans++;
               delete req; 
               //console.log('data written');
+
               res.writeHead(200, {'Content-Type': 'text/plain'});
               res.end('');
 
@@ -136,16 +140,32 @@ app.post('/slotdata',function(req,res){
 });
 
 var options = {
-    key: fs.readFileSync('ssl key here'),
-    cert: fs.readFileSync('ssl cert here')
+
+    key: fs.readFileSync( __dirname + 'ssl key here'),
+    cert: fs.readFileSync(__dirname + 'ssl cert here')
+
 };
 
 
 if (cluster.isMaster) {
+  function messageHandler(msg) {
+    if (msg.cmd && msg.cmd == 'totalTrans') {
+       totalTransReceived++;
+    } else if (msg.cmd && msg.cmd == 'totalErrors') {
+      totalErrorTrans++;
+    } else if (msg.cmd && msg.cmd == 'totalSuccess') {
+      totalSuccessfulTrans++;
+    }
+  }
+
   // Fork workers.
   for (var i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
+
+Object.keys(cluster.workers).forEach(function(id) {
+    cluster.workers[id].on('message', messageHandler);
+  });
 
   cluster.on('exit', function(worker, code, signal) {
     console.log('worker ' + worker.process.pid + ' died');

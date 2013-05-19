@@ -7,6 +7,8 @@ var dbConnect = require('./DbConnectionPool')
 
 function callback(error,results){};
 
+
+
 function LogError(clientData,errorText,callback) {
     
     var sql = '';
