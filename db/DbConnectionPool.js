@@ -6,13 +6,13 @@ var Request = require('tedious').Request;
 function DbConnectCallback(error,results){};
 
    var config = {
-        userName: 'db user name',
-        password: 'db password!',
-        server: 'db server url',
+        userName: 'db user',
+        password: 'db password',
+        server: 'db server',
          tdsVersion: '7_2',
             options: {
                 encrypt: true,
-                database: 'db',
+                database: 'database',
         
             debug: {
                packet:  true,

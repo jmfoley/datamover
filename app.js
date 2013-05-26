@@ -18,11 +18,12 @@ var express = require('express')
   , dbConnect = require('./db/DbConnectionPool')
   , path = require('path')
   //, KioskEvents = require('./db/Events')
-  , tableFilter = require('./db/TableFilter')
+  , kioskTableFilter = require('./db/KioskTableFilter')
   , cluster = require('cluster')
   , numCPUs = require('os').cpus().length
   , ua = require('mobile-agent')
-  ,Utils  = require('./db/Utils');
+  , Utils  = require('./db/Utils')
+  , slotTableFilter = require('./db/SlotTableFilter');
 
 
 
@@ -94,7 +95,7 @@ var stats =
 app.post('/kioskdata',function(req,res) {
 
 
-     tableFilter.ProcessTrans(req.body,function(err,results){
+     kioskTableFilter.ProcessTrans(req.body,function(err,results){
          totalTransReceived++;
          process.send({ cmd: 'totalTrans' });
 
@@ -136,6 +137,31 @@ app.get('/commcheck',function(req,res){
 
 
 app.post('/slotdata',function(req,res){
+
+     slotTableFilter.ProcessTrans(req.body,function(err,results){
+         totalTransReceived++;
+         process.send({ cmd: 'totalTrans' });
+
+         if (err) {
+              totalErrorTrans++;
+   
+              delete req;
+              console.log(err);
+              res.writeHead(401, {'Content-Type': 'text/plain'});
+              res.end('');
+
+         } else {
+              process.send({ cmd: 'totalSuccess' });
+              totalSuccessfulTrans++;
+              delete req; 
+              //console.log('data written');
+
+              res.writeHead(200, {'Content-Type': 'text/plain'});
+              res.end('');
+
+         }
+     });
+
 
 });
 
