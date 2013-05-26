@@ -23,7 +23,8 @@ var express = require('express')
   , numCPUs = require('os').cpus().length
   , ua = require('mobile-agent')
   , Utils  = require('./db/Utils')
-  , slotTableFilter = require('./db/SlotTableFilter');
+  , slotTableFilter = require('./db/SlotTableFilter')
+  , mailer = require('./db/Mailer');
 
 
 
@@ -134,7 +135,15 @@ app.get('/commcheck',function(req,res){
 
 });
 
+app.post('/crash',function (req,res) {
+    console.log('crash called');
+    mailer.SendReport(req.body,function(err,results) {
+      if (err) {
+        console.log(err);
+      }
 
+    });
+});
 
 app.post('/slotdata',function(req,res){
 
@@ -167,9 +176,8 @@ app.post('/slotdata',function(req,res){
 
 var options = {
 
-    key: fs.readFileSync( __dirname + 'ssl key here'),
-    cert: fs.readFileSync(__dirname + 'ssl cert here')
-
+    key: fs.readFileSync( __dirname + 'ssl key'),
+    cert: fs.readFileSync(__dirname + 'ssl cert')
 };
 
 
