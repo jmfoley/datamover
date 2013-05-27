@@ -5,6 +5,7 @@ var KioskTrans = require('./Transactions');
 var KioskUnit = require('./Config');
 var Utils  = require('./Utils');
 var DropMeters = require('./DropMeters');
+var Tickets = require('./Tickets');
 
 
 
@@ -614,6 +615,32 @@ function ProcessTrans(data,callback){
 
         });
  
+
+   } else if (data.table === 'tk_tickets') {
+
+      Tickets.SaveHandpayVoucher(data,function(err,results){
+
+            if (err) {
+                console.log('SaveHandpayVoucher: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+
+               });
+                data = null;
+                callback(err,null);
+  
+            } else {
+               //console.log('WriteDropMeters written');
+               data = null;
+               callback(null,results);
+                
+
+            }
+
+
+
+      });
+
 
    }
     
