@@ -1,6 +1,6 @@
 var slotAlarms = require('./SlotAlarms');
 var slotTicketMeters = require('./SlotTicketMeters');
-
+var Utils = require('./Utils');
 
 function callback(error,results){};
 

@@ -18,9 +18,9 @@ function WriteSlotAlarm(data,callback){
        	  connection = results;
        	  sql = 'insert into sl_alarms(operatorID,propid,slot_id,alarm_code,alarm_priority,i_card,casinoid,initiated_time,initiated_date,ol_bill_1,' +
        	  	    'ol_bill_2,ol_bill_5,ol_bill_10,ol_bill_20,ol_bill_50,ol_bill_100,ol_coin_in,ol_coin_out,ol_coin_drop,' +
-       	  	    'ol_coin_games,ol_jackpot,ol_cancel_credit,ref_alarm_code,amount)values(@oper,@prop,@id,@code,@priority,@card,@casinoid,' +
-       	  	    '@time,@date,@olbill1,@olbill2,@olbill5,@olbill10,olbill20,@olbill50,@olbill100,@olcoinin,@olcoinout,@olcoindrop,' +
-       	  	    '@olcoingames,@oljackpot,@olcancelcredit,@refalarm,@amount)';
+       	  	    'ol_coin_games,ol_jackpot,ol_cancel_credit,ref_alarm_code,amount,alarm_id)values(@oper,@prop,@id,@code,@priority,@card,@casinoid,' +
+       	  	    '@time,@date,@olbill1,@olbill2,@olbill5,@olbill10,@olbill20,@olbill50,@olbill100,@olcoinin,@olcoinout,@olcoindrop,' +
+       	  	    '@olcoingames,@oljackpot,@olcancelcredit,@refalarm,@amount,@alarmid)';
 
 	      var request = new Request(sql,function(err,results) {
             if (err) {
@@ -64,6 +64,7 @@ function WriteSlotAlarm(data,callback){
             request.addParameter('olcancelcredit', TYPES.Int,data.cancelcredit);
             request.addParameter('refalarm', TYPES.Int,data.refalarm);
             request.addParameter('amount', TYPES.Int,data.amount);
+            request.addParameter('alarmid', TYPES.Int,data.alarmid);
             
             connection.execSql(request);
 
