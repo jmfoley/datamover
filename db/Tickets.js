@@ -69,3 +69,49 @@ function SaveHandpayVoucher(data,callback){
 
 
 }exports.SaveHandpayVoucher = SaveHandpayVoucher;
+
+
+
+function UpdatePendingTrans(data,callback){
+    var sql = '';
+    var connection;
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+        if (err) {
+            callback(err,null);
+        } else {
+            connection = results;
+            sql = 'update tk_tickets set state = 2,redeem_datetime = @date,cashier = @cashier,updated = @date ' +
+                  'where state = 0 and print_mach_num = @printmach';
+
+            var request = new Request(sql,function(err,results) {
+            if (err) {
+                errMsg = 'UpdatePendingTrans error: '  + err;
+                connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+                callback(errMsg,null);
+            } else {
+                 connection.close();
+                 connection = null;
+                 sql = null;
+                 delete request;
+                 callback(null,results);
+            }
+
+        });
+
+        request.addParameter('cashier', TYPES.VarChar,data.cashier);
+        request.addParameter('printmach', TYPES.Int,data.mach);
+        request.addParameter('date', TYPES.DateTime, new Date());
+
+        connection.execSql(request);
+
+
+        }
+
+    });
+
+
+}exports.UpdatePendingTrans = UpdatePendingTrans;

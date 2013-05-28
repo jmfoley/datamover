@@ -618,6 +618,8 @@ function ProcessTrans(data,callback){
 
    } else if (data.table === 'tk_tickets') {
 
+      if (data.operation === 'insert' ){
+
       Tickets.SaveHandpayVoucher(data,function(err,results){
 
             if (err) {
@@ -640,7 +642,32 @@ function ProcessTrans(data,callback){
 
 
       });
+    } else if (data.operation === 'update_pending') {
+      Tickets.UpdatePendingTrans(data,function(err,results){
 
+            if (err) {
+                console.log('UpdatePendingTrans: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+
+               });
+                data = null;
+                callback(err,null);
+  
+            } else {
+               //console.log('WriteDropMeters written');
+               data = null;
+               callback(null,results);
+                
+
+            }
+
+
+
+      });
+
+
+    }
 
    }
     
