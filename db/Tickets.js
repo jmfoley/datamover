@@ -18,9 +18,9 @@ function SaveHandpayVoucher(data,callback){
     		connection = results;
     		sql = 'insert into tk_tickets(operatorId,print_mach_num,validation_num,amount,state,print_datetime,' +
     			  'floorexpirationdatetime,cageexpirationdatetime,updated,valnum_last4,print_val_type,' +
-    			  'redeem_mach_num,seq,propid,transactionid)values(@oper,@printmach,@val,@amount,@state,' +
+    			  'redeem_mach_num,seq,propid,transactionid,seq_id)values(@oper,@printmach,@val,@amount,@state,' +
     			  '@printdatetime,@floorexpiration,@cageexpiration,@date,@last4,@printvaltype,@redeemmach,' +
-    			  '@seq,@prop,@trans)';
+    			  '@seq,@prop,@trans,@seqid)';
 
             var request = new Request(sql,function(err,results) {
                 if (err) {
@@ -57,6 +57,7 @@ function SaveHandpayVoucher(data,callback){
             request.addParameter('seq', TYPES.Int,data.seq);
             request.addParameter('prop', TYPES.Int,data.propid);
             request.addParameter('trans', TYPES.Int,data.transid);
+            request.addParameter('seqid', TYPES.Int,data.seqid);
             
             connection.execSql(request);
             
