@@ -103,7 +103,7 @@ function WriteDenomRecord(data,callback){
                 }
             });
         }
-
+    });
 
 
 } exports.WriteDenomRecord = WriteDenomRecord;

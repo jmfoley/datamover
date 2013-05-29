@@ -217,7 +217,7 @@ function WriteMultiGameRecord(data,callback){
             });
         }
 
-
+    });
 
 } exports.WriteMultiGameRecord = WriteMultiGameRecord;
 
