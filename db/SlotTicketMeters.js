@@ -9,8 +9,8 @@ function callback(error,results){};
 
 function CheckTicketMeters(connection,data,callback) {
 
-    var sql = 'select count(*) from ticketmeters where mach_num = @mach and propid = @prop ' +
-              'and unitPropid = @propid';
+    var sql = 'select count(*) from ticketmeters where mach_num = @mach and propid = @propid';
+
 
     var request = new Request(sql,function(err,rowCount) {
     	if (err) {
@@ -50,6 +50,7 @@ function UpdateTicketMeters(data,callback){
     		connection = results;
     		CheckTicketMeters(connection,data,function(err,results) {
     			if (err) {
+            connection.close();
     				callback(err,null);
     			} else {
     				if (results > 0) {
@@ -68,28 +69,49 @@ function UpdateTicketMeters(data,callback){
     				}
 
                    var request = new Request(sql,function(err,rowCount) {
-                   	 if (insert) {
-                   	 	request.addParameter('oper', TYPES.Int,data.operatorid);
-                   	 }
-               	 	request.addParameter('id', TYPES.Int,data.id);                   	 
-               	 	request.addParameter('mach', TYPES.Int,data.mach);
-               	 	request.addParameter('rcashct', TYPES.Int,data.redcashct);
-               	 	request.addParameter('rcashamt', TYPES.Int,data.redcashamt);
-               	 	request.addParameter('rpromoct', TYPES.Int,data.redpromoct);
-               	 	request.addParameter('rpromoamt', TYPES.Int,data.redpromoamt);
-               	 	request.addParameter('pcashct', TYPES.Int,data.printedcashct);
-               	 	request.addParameter('pcashamt', TYPES.Int,data.printedcashamt);
-               	 	request.addParameter('ppromoct', TYPES.Int,data.printedpromoct);
-               	 	request.addParameter('ppromoamt', TYPES.Int,data.printedpromoamt);
-               	 	request.addParameter('date', TYPES.DateTime,new Date());
-          	 		request.addParameter('machextbonus', TYPES.Int,data.machextbonus);
-          	 		request.addParameter('attpaidextbonus', TYPES.Int,data.attextbonus);
-          	 		request.addParameter('machprogbonus', TYPES.Int,data.machprogbonus);
-          	 		request.addParameter('attprogbonus', TYPES.Int,data.attprogbonus);
-                   
-                    connection.execSql(request);
+                      if (err) {
+                        errMsg = 'UpdateTicketMeters error: '  + err;
+                        connection.close();
+                        connection = null;
+                        sql = null;
+                        delete request;
+                        callback(errMsg,null);
+
+
+                      } else {
+                         connection.close();
+                         connection = null;
+                         sql = null;
+                         delete request;
+                         callback(null,rowCount);
+
+                      }
 
                    });
+
+                     if (insert) {
+                      request.addParameter('oper', TYPES.Int,data.operatorid);
+                     }
+
+
+                  request.addParameter('id', TYPES.Int,data.id);                     
+                  request.addParameter('mach', TYPES.Int,data.mach);
+                  request.addParameter('rcashct', TYPES.Int,data.redcashct);
+                  request.addParameter('rcashamt', TYPES.Int,data.redcashamt);
+                  request.addParameter('rpromoct', TYPES.Int,data.redpromoct);
+                  request.addParameter('rpromoamt', TYPES.Int,data.redpromoamt);
+                  request.addParameter('pcashct', TYPES.Int,data.printedcashct);
+                  request.addParameter('pcashamt', TYPES.Int,data.printedcashamt);
+                  request.addParameter('ppromoct', TYPES.Int,data.printedpromoct);
+                  request.addParameter('ppromoamt', TYPES.Int,data.printedpromoamt);
+                  request.addParameter('date', TYPES.DateTime,new Date());
+                  request.addParameter('machextbonus', TYPES.Int,data.machextbonus); 
+                  request.addParameter('attpaidextbonus', TYPES.Int,data.attextbonus);
+                  request.addParameter('machprogbonus', TYPES.Int,data.machprogbonus);
+                  request.addParameter('attprogbonus', TYPES.Int,data.attprogbonus);
+                   
+                  connection.execSql(request);
+
     			}
     		});
 
