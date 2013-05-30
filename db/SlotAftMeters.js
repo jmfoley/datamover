@@ -55,7 +55,7 @@ function WriteAftMeters(data,callback){
                     if (rowCount > 0 ) {
                         sql = 'update eftmeters set promocredits = @promoin,cashablecredits = @cashin,updated = @date,promocreditscnt = @promoincnt,' +
                               'cashablecreditscnt = @cashincnt,promocreditsout = @promoout,cashablecreditsout = @cashout, ' +
-                              'promocreditsoutcnt = @promooutcnt,cashablecreditsoutcnt = @cashoutcnt,slot_id = @id where mach_num = @mach and ';
+                              'promocreditsoutcnt = @promooutcnt,cashablecreditsoutcnt = @cashoutcnt,slot_id = @id where mach_num = @mach and ' +
                               'propid = @propid'
                     } else {
                         insert = true;

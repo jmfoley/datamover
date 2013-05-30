@@ -93,7 +93,7 @@ function WriteDenomRecord(data,callback){
                     request.addParameter('games', TYPES.Int,data.gamesplayed);
                     request.addParameter('jpot', TYPES.Int,data.jackpot);
                     request.addParameter('date', TYPES.DateTime, new Date());
-                    request.addParameter('denom', TYPES.Numberic,data.denomid);
+                    request.addParameter('denom', TYPES.Float,data.denomid);
                     request.addParameter('propid', TYPES.Int,data.propid);
 
                     connection.execSql(request);

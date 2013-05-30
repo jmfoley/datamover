@@ -200,10 +200,10 @@ function WriteMultiGameRecord(data,callback){
                     request.addParameter('jpot', TYPES.Int,data.jackpot);
                     request.addParameter('date', TYPES.DateTime, new Date());
                     request.addParameter('sas', TYPES.VarChar,data.sasver);
-                    request.addParameter('denom', TYPES.Numberic,data.denom);
+                    request.addParameter('denom', TYPES.Float,data.denom);
                     request.addParameter('max', TYPES.Int,data.maxbet);
                     request.addParameter('pay', TYPES.VarChar,data.paytable);
-                    request.addParameter('par', TYPES.Numeric,data.par);
+                    request.addParameter('par', TYPES.Float,data.par);
                     request.addParameter('enabled', TYPES.Bit,data.enabled);
                     request.addParameter('propid', TYPES.Int,data.propid);
                     request.addParameter('gamenumber', TYPES.Int,data.gamenumber);

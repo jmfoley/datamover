@@ -40,7 +40,7 @@ function UpdateTicketMeters(data,callback){
     var sql = '';
     var connection;
     var insert;
-
+    console.log('In Update ticket meters, Data = ' + data.printedcashamt); 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     	if (err) {
             errMsg = 'GetDbConnection error: ' + err;
@@ -94,21 +94,22 @@ function UpdateTicketMeters(data,callback){
                      }
 
 
-                  request.addParameter('id', TYPES.Int,data.id);                     
+                  request.addParameter('slotid', TYPES.Int,data.id);                     
                   request.addParameter('mach', TYPES.Int,data.mach);
                   request.addParameter('rcashct', TYPES.Int,data.redcashct);
-                  request.addParameter('rcashamt', TYPES.Int,data.redcashamt);
+                  request.addParameter('rcashamt', TYPES.Float,data.redcashamt);
                   request.addParameter('rpromoct', TYPES.Int,data.redpromoct);
-                  request.addParameter('rpromoamt', TYPES.Int,data.redpromoamt);
+                  request.addParameter('rpromoamt', TYPES.Float,data.redpromoamt);
                   request.addParameter('pcashct', TYPES.Int,data.printedcashct);
-                  request.addParameter('pcashamt', TYPES.Int,data.printedcashamt);
+                  request.addParameter('pcashamt', TYPES.Float,data.printedcashamt);
                   request.addParameter('ppromoct', TYPES.Int,data.printedpromoct);
-                  request.addParameter('ppromoamt', TYPES.Int,data.printedpromoamt);
+                  request.addParameter('ppromoamt', TYPES.Float,data.printedpromoamt);
                   request.addParameter('date', TYPES.DateTime,new Date());
                   request.addParameter('machextbonus', TYPES.Int,data.machextbonus); 
                   request.addParameter('attpaidextbonus', TYPES.Int,data.attextbonus);
                   request.addParameter('machprogbonus', TYPES.Int,data.machprogbonus);
                   request.addParameter('attprogbonus', TYPES.Int,data.attprogbonus);
+                  request.addParameter('propid', TYPES.Int,data.propid);                     
                    
                   connection.execSql(request);
 
