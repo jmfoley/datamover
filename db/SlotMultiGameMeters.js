@@ -9,7 +9,7 @@ function callback(error,results){};
 
 function CheckMultiGameConfig(connection,data,callback) {
 
-    var sql = 'select count(*) from sc_multigameconfig where machineNumber = @mach and multiTypeRecId = @recid and propid = @propid';
+    var sql = 'select count(*) from sc_multigameconfig where machineNumber = @mach and propid = @propid';
 
 
     var request = new Request(sql,function(err,rowCount) {
