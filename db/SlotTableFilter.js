@@ -3,7 +3,7 @@ var slotTicketMeters = require('./SlotTicketMeters');
 var Utils = require('./Utils');
 var multiGame = require('./SlotMultiGameMeters');
 var multiDenom = require('./SlotMultiDenomMeters');
-var aft = require('./SlotaftMeters');
+var aft = require('./SlotAftMeters');
 
 function callback(error,results){};
 
@@ -85,7 +85,7 @@ function ProcessTrans(data,callback){
 
     });
 
-  } eise if (data.table === 'db_denomMeters') {
+  } else if (data.table === 'db_denomMeters') {
 
     multiDenom.WriteDenomRecord(data,function(err,results) {
       if (err) {
