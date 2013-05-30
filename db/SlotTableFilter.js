@@ -3,6 +3,7 @@ var slotTicketMeters = require('./SlotTicketMeters');
 var Utils = require('./Utils');
 var multiGame = require('./SlotMultiGameMeters');
 var multiDenom = require('./SlotMultiDenomMeters');
+var aft = require('./SlotaftMeters');
 
 function callback(error,results){};
 
@@ -105,6 +106,26 @@ function ProcessTrans(data,callback){
     });
 
 
+
+  } else if (data.table === 'eftmeters') {
+
+    aft.WriteAftMeters(data,function(err,results) {
+      if (err) {
+        console.log('WriteAftMeters error: ' + err);
+        Utils.LogError(data,err,function(err,results) {
+
+        });
+
+        data = null;
+        callback(err,null);
+      } else {
+        //console.log('Event written');
+        data = null;
+        callback(null,results);
+      }
+
+
+    });
 
   }
 

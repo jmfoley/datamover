@@ -7,16 +7,16 @@ var errMsg = '';
 
 function callback(error,results){};
 
-function CheckDenomRecord(connection,data,callback) {
+function CheckAftRecord(connection,data,callback) {
 
-    var sql = 'select count(*) from db_denommeters where machineNumber = @mach and denomid = @denom and propid = @propid';
+    var sql = 'select count(*) from eftmeters where mach_num = @mach and propid = @propid';
 
 
     var request = new Request(sql,function(err,rowCount) {
         if (err) {
             sql = null;
             delete request;
-            errMsg = 'CheckMultiDenomRecord error: '  + err;
+            errMsg = 'CheckAftRecord error: '  + err;
             callback(errMsg,null);
         } else {
              sql = null;
@@ -28,14 +28,14 @@ function CheckDenomRecord(connection,data,callback) {
 
 
         request.addParameter('mach', TYPES.Int,data.mach);
-        request.addParameter('denom', TYPES.Int,data.denomid);
         request.addParameter('propid', TYPES.Int,data.propid);
         
         connection.execSql(request);
 
 };
 
-function WriteDenomRecord(data,callback){
+
+function WriteAftMeters(data,callback){
     var insert = false;
     var sql = '';
     var connection;
@@ -47,25 +47,27 @@ function WriteDenomRecord(data,callback){
 
         } else {
             connection = results;
-            CheckDenomRecord(connection,data,function(err,rowCount) {
+            CheckAftRecord(connection,data,function(err,rowCount) {
                 if (err) {
                     connection.close();
                     callback(err,null);
                 } else {
                     if (rowCount > 0 ) {
-                        sql = 'update db_denomMeters set coinin = @cin,coinout = @cout,jackpot = @jpot,gamesplayed = @games,' +
-                              'updated = @date where machinenumber = @mach and denomid = @denom and ' +
+                        sql = 'update eftmeters set promocredits = @promoin,cashablecredits = @cashin,updated = @date,promocreditscnt = @promoincnt,' +
+                              'cashablecreditscnt = @cashincnt,promocreditsout = @promoout,cashablecreditsout = @cashout, ' +
+                              'promocreditsoutcnt = @promooutcnt,cashablecreditsoutcnt = @cashoutcnt,slot_id = @id where mach_num = @mach and ';
                               'propid = @propid'
                     } else {
                         insert = true;
-                        sql = 'insert into db_denomMeters(operatorid,machinenumber,onlineid,denomid,coinin,coinout,' +
-                              'jackpot,gamesplayed,updated,propid) ' +
-                              'values(@oper,@mach,@id,@denom,@cin,@cout,@jpot,@games,@date,@propid)';  
+                        sql = 'insert into eftmeters(operatorid,slot_id,mach_num,promocredits,cashablecredits,noncashablecredits,transcredits, ' +
+                              'updated,promocreditscnt,cashablecreditscnt,promocreditsout,cashablecreditsout,promocreditsoutcnt,' +
+                              'cashablecreditsoutcnt,propid)values(@oper,@id,@mach,@promoin,@cashin,0,0,@date,@promoincnt,@cashincnt,@promoout, ' +
+                              '@cashout,@promooutcnt,@cashoutcnt,@propid)';
                     }
 
                     var request = new Request(sql,function(err,results) {
                         if (err) {
-                            errMsg = 'WriteMultiGameRecord error: '  + err;
+                            errMsg = 'WriteAftMeters error: '  + err;
                             connection.close();
                             connection = null;
                             sql = null;
@@ -84,16 +86,18 @@ function WriteDenomRecord(data,callback){
 
                     if (insert) {
                        request.addParameter('oper', TYPES.Int,data.operatorid);
-                       request.addParameter('id', TYPES.Int,data.onlineid);
-
                     }
+                    request.addParameter('id', TYPES.Int,data.onlineid);                    
                     request.addParameter('mach', TYPES.Int,data.mach);
-                    request.addParameter('cin', TYPES.Int,data.coinin);
-                    request.addParameter('cout', TYPES.Int,data.coinout);
-                    request.addParameter('games', TYPES.Int,data.gamesplayed);
-                    request.addParameter('jpot', TYPES.Int,data.jackpot);
+                    request.addParameter('promoin', TYPES.Int,data.promoin);
+                    request.addParameter('cashin', TYPES.Int,data.cashin);
                     request.addParameter('date', TYPES.DateTime, new Date());
-                    request.addParameter('denom', TYPES.Numberic,data.denomid);
+                    request.addParameter('promoincnt', TYPES.Int,data.promoincnt);
+                    request.addParameter('cashincnt', TYPES.Int,data.cashincnt);
+                    request.addParameter('promoout', TYPES.Int, data.promoout);
+                    request.addParameter('cashout', TYPES.Int,data.cashout);
+                    request.addParameter('promooutcnt', TYPES.Int,data.promooutcnt);                    
+                    request.addParameter('cashoutcnt', TYPES.Int,data.cashoutcnt);
                     request.addParameter('propid', TYPES.Int,data.propid);
 
                     connection.execSql(request);
@@ -106,4 +110,4 @@ function WriteDenomRecord(data,callback){
     });
 
 
-} exports.WriteDenomRecord = WriteDenomRecord;
+} exports.WriteAftMeters = WriteAftMeters;
