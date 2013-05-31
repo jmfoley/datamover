@@ -27,7 +27,7 @@ function CheckMultiGameConfig(connection,data,callback) {
     });          
 
 
-        request.addParameter('mach', TYPES.Int,data.machnum);
+        request.addParameter('mach', TYPES.Int,data.mach);
         request.addParameter('recid', TYPES.VarChar,data.recid);
         request.addParameter('propid', TYPES.Int,data.propid);
 
