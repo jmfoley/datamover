@@ -8,7 +8,7 @@ var errMsg = '';
 function callback(error,results){};
 
 function CheckDenomRecord(connection,data,callback) {
-
+    var records;
     var sql = 'select count(*) from db_denommeters where machineNumber = @mach and denomid = @denom and propid = @propid';
 
 
@@ -21,7 +21,7 @@ function CheckDenomRecord(connection,data,callback) {
         } else {
              sql = null;
              delete request;
-            callback(null,rowCount);
+            callback(null,records);
         }
 
     });          
@@ -30,6 +30,19 @@ function CheckDenomRecord(connection,data,callback) {
         request.addParameter('mach', TYPES.Int,data.mach);
         request.addParameter('denom', TYPES.Int,data.denomid);
         request.addParameter('propid', TYPES.Int,data.propid);
+
+          request.on('row', function(columns) {
+          columns.forEach(function(column) {
+            if (column.value === null) {
+             console.log('NULL');
+          } else {
+            console.log(column.value);
+            records = column.value;
+
+           }
+      });
+  });
+
         
         connection.execSql(request);
 
@@ -39,7 +52,7 @@ function WriteDenomRecord(data,callback){
     var insert = false;
     var sql = '';
     var connection;
-
+    console.log('In Denom Meters');
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         if (err) {
             errMsg = 'GetDbConnection error: ' + err;

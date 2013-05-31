@@ -8,7 +8,7 @@ var errMsg = '';
 function callback(error,results){};
 
 function CheckMultiGameConfig(connection,data,callback) {
-
+    var records;
     var sql = 'select count(*) from sc_multigameconfig where machineNumber = @mach and propid = @propid';
 
 
@@ -21,7 +21,7 @@ function CheckMultiGameConfig(connection,data,callback) {
     	} else {
              sql = null;
              delete request;
-    		callback(null,rowCount);
+    		callback(null,records);
     	}
 
     });          
@@ -30,6 +30,18 @@ function CheckMultiGameConfig(connection,data,callback) {
         request.addParameter('mach', TYPES.Int,data.machnum);
         request.addParameter('recid', TYPES.VarChar,data.recid);
         request.addParameter('propid', TYPES.Int,data.propid);
+
+       request.on('row', function(columns) {
+          columns.forEach(function(column) {
+            if (column.value === null) {
+             console.log('NULL');
+          } else {
+             records = column.value;
+
+           }
+      });
+  });
+
         
         connection.execSql(request);
 
@@ -56,8 +68,8 @@ function WriteMultiGameConfig(data,callback){
                 } else {
                    if (rowCount < 1) {
                        sql = 'insert into sc_multigameconfig (operatorId,machineNumber,multiTypeId,multiTypeDesc,payTableId,' +
-                             'parPct,maxBet,denom,gameEnabled,status,updatedBy,updatedFrom,updated)values(@oper,@mach,@type,' +
-                             '@desc,@pay,@par,@max,@denom,@enabled,@status,@updatedBy,@updatedFrom,@date)';
+                             'parPct,maxBet,denom,gameEnabled,status,updatedBy,updatedFrom,updated,multiTypeRecId)values(@oper,@mach,@type,' +
+                             '@desc,@pay,@par,@max,@denom,@enabled,@status,@updatedBy,@updatedFrom,@date@recid)';
 
                         var request = new Request(sql,function(err,results) {
                             if (err) {
@@ -93,6 +105,7 @@ function WriteMultiGameConfig(data,callback){
                         request.addParameter('updatedby', TYPES.VarChar,data.updatedby);
                         request.addParameter('updatedfrom', TYPES.VarChar,data.updatedfrom);
                         request.addParameter('date', TYPES.DateTime,new Date());
+                        request.addParameter('recid', TYPES.VarChar,data.recid);
 
                         connection.execSql(request);
 
@@ -114,7 +127,7 @@ function WriteMultiGameConfig(data,callback){
 function CheckMultiGameRecord(connection,data,callback) {
 
     var sql = 'select count(*) from db_multigamemeters where machineNumber = @mach and gamenumber = @game and propid = @propid';
-
+    var records;
 
     var request = new Request(sql,function(err,rowCount) {
         if (err) {
@@ -125,7 +138,8 @@ function CheckMultiGameRecord(connection,data,callback) {
         } else {
              sql = null;
              delete request;
-            callback(null,rowCount);
+             console.log('CheckMultigameRecord rowcount = ' + rowCount + ' mach = ' + data.mach + ' gamenumber = ' + data.gamenumber + ' propid = ' + data.propid);
+            callback(null,records);
         }
 
     });          
@@ -135,8 +149,22 @@ function CheckMultiGameRecord(connection,data,callback) {
         request.addParameter('game', TYPES.Int,data.gamenumber);
         request.addParameter('propid', TYPES.Int,data.propid);
         
-        connection.execSql(request);
 
+
+       request.on('row', function(columns) {
+          columns.forEach(function(column) {
+            if (column.value === null) {
+             console.log('NULL');
+          } else {
+            console.log(column.value);
+            records = column.value;
+
+           }
+      });
+  });
+
+
+    connection.execSql(request);
 };
 
 
@@ -145,6 +173,8 @@ function WriteMultiGameRecord(data,callback){
     var insert = false;
     var sql = '';
     var connection;
+    
+    console.log('In multigame meters');
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         if (err) {
@@ -158,6 +188,7 @@ function WriteMultiGameRecord(data,callback){
                     connection.close();
                     callback(err,null);
                 } else {
+                    console.log('rowcount = ' + rowCount + ' mach = ' + data.mach + ' gamenumber = ' + data.gamenumber + ' recid = ' + data.recid);
                     if (rowCount > 0 ) {
                         sql = 'update db_multigamemeters set coinin = @cin,coinout = @cout,gamesplayed = @games,jackpot = @jpot,' +
                               'updated = @date,sasversion = @sas,denom = @denom,maxbet = @max,paytableid = @pay,gamepar = @par,' +
@@ -166,9 +197,9 @@ function WriteMultiGameRecord(data,callback){
                     } else {
                         insert = true;
                         sql = 'insert into db_multigamemeters(operatorid,onlineid,gamenumber,machinenumber,coinin,coinout,' +
-                              'gamesplayed,jackpot,updated,sasversion,denom,maxbet,paytableid,gamepar,gameenabled,propid) ' +
+                              'gamesplayed,jackpot,updated,sasversion,denom,maxbet,paytableid,gamepar,gameenabled,propid,recid) ' +
                               'values(@oper,@id,@gamenumber,@mach,@cin,@cout,@games,@jpot,@date,@sas,@denom,@max,@pay,' +
-                              '@par,@enabled,@propid)';  
+                              '@par,@enabled,@propid,@recid)';  
                     }
 
                     var request = new Request(sql,function(err,results) {
@@ -192,6 +223,7 @@ function WriteMultiGameRecord(data,callback){
 
                     if (insert) {
                        request.addParameter('oper', TYPES.Int,data.operatorid);
+                       request.addParameter('recid', TYPES.Int,data.recid);
                     }
                     request.addParameter('id', TYPES.Int,data.onlineid);
                     request.addParameter('cin', TYPES.Int,data.coinin);

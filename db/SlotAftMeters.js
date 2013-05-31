@@ -9,6 +9,7 @@ function callback(error,results){};
 
 function CheckAftRecord(connection,data,callback) {
 
+    var records;
     var sql = 'select count(*) from eftmeters where mach_num = @mach and propid = @propid';
 
 
@@ -21,7 +22,7 @@ function CheckAftRecord(connection,data,callback) {
         } else {
              sql = null;
              delete request;
-            callback(null,rowCount);
+            callback(null,records);
         }
 
     });          
@@ -29,6 +30,19 @@ function CheckAftRecord(connection,data,callback) {
 
         request.addParameter('mach', TYPES.Int,data.mach);
         request.addParameter('propid', TYPES.Int,data.propid);
+
+       request.on('row', function(columns) {
+          columns.forEach(function(column) {
+            if (column.value === null) {
+             console.log('NULL');
+            } else {
+              console.log(column.value);
+              records = column.value;
+
+           }
+      });
+  });
+
         
         connection.execSql(request);
 
@@ -61,8 +75,8 @@ function WriteAftMeters(data,callback){
                         insert = true;
                         sql = 'insert into eftmeters(operatorid,slot_id,mach_num,promocredits,cashablecredits,noncashablecredits,transcredits, ' +
                               'updated,promocreditscnt,cashablecreditscnt,promocreditsout,cashablecreditsout,promocreditsoutcnt,' +
-                              'cashablecreditsoutcnt,propid)values(@oper,@id,@mach,@promoin,@cashin,0,0,@date,@promoincnt,@cashincnt,@promoout, ' +
-                              '@cashout,@promooutcnt,@cashoutcnt,@propid)';
+                              'cashablecreditsoutcnt,propid,eft_id)values(@oper,@id,@mach,@promoin,@cashin,0,0,@date,@promoincnt,@cashincnt,@promoout, ' +
+                              '@cashout,@promooutcnt,@cashoutcnt,@propid,@eftid)';
                     }
 
                     var request = new Request(sql,function(err,results) {
@@ -86,6 +100,8 @@ function WriteAftMeters(data,callback){
 
                     if (insert) {
                        request.addParameter('oper', TYPES.Int,data.operatorid);
+                       request.addParameter('eftid', TYPES.Int,data.eftid);
+
                     }
                     request.addParameter('id', TYPES.Int,data.onlineid);                    
                     request.addParameter('mach', TYPES.Int,data.mach);

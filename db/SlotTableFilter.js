@@ -109,7 +109,7 @@ function ProcessTrans(data,callback){
 
     });
 
-  } else if (data.table === 'db_denomMeters') {
+  } else if (data.table === 'db_denommeters') {
 
     multiDenom.WriteDenomRecord(data,function(err,results) {
       if (err) {

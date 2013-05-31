@@ -12,7 +12,8 @@ function callback(error,results){};
 
 function CheckUnitTransDetail(connection,data,callback) {
 
-    var sql = 'select transNumber from db_unitTransDetail where transNumber = @transnumber and unitId = @unitid and itemId = @itemid and itemDenom = @denom ' +
+    var records;
+    var sql = 'select count(*) from db_unitTransDetail where transNumber = @transnumber and unitId = @unitid and itemId = @itemid and itemDenom = @denom ' +
               'and propid = @propid';
 
     var request = new Request(sql,function(err,rowCount) {
@@ -25,7 +26,7 @@ function CheckUnitTransDetail(connection,data,callback) {
         } else {
              sql = null;
              delete request;
-            callback(null,rowCount);
+            callback(null,records);
         }
 
     });          
@@ -36,6 +37,18 @@ function CheckUnitTransDetail(connection,data,callback) {
         request.addParameter('denom', TYPES.Int,data.denom);
         request.addParameter('propid', TYPES.Int,data.propid);
         
+       request.on('row', function(columns) {
+          columns.forEach(function(column) {
+            if (column.value === null) {
+             console.log('NULL');
+          } else {
+            records = column.value;
+
+           }
+      });
+  });
+
+
         connection.execSql(request);
 
 };

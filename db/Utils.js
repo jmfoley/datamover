@@ -44,7 +44,7 @@ function LogError(clientData,errorText,callback) {
     	});
 
         request.addParameter('oper', TYPES.Int,clientData.operatorid);
-        request.addParameter('loc', TYPES.VarChar,clientData.unit);
+        request.addParameter('loc', TYPES.VarChar,'DataSync');
         request.addParameter('errText', TYPES.VarChar,errorText);
         request.addParameter('date', TYPES.DateTime,new Date());
 

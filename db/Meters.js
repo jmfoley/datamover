@@ -60,7 +60,7 @@ function ZeroCoinHopper(data,callback){
 
 //Online meters
 function CheckOnlineMeters(connection,data,callback) {
-
+    var records;
     var sql = 'select count(*) from db_onlinemeters where unitId = @unitid and itemId = @itemid and denom = @denom ' +
               'and unitPropid = @propid';
 
@@ -73,7 +73,7 @@ function CheckOnlineMeters(connection,data,callback) {
     	} else {
              sql = null;
              delete request;
-    		callback(null,rowCount);
+    		callback(null,records);
     	}
 
     });          
@@ -84,6 +84,19 @@ function CheckOnlineMeters(connection,data,callback) {
         request.addParameter('denom', TYPES.Int,data.denom);
         request.addParameter('propid', TYPES.Int,data.propid);
         
+       request.on('row', function(columns) {
+          columns.forEach(function(column) {
+            if (column.value === null) {
+             console.log('NULL');
+          } else {
+            //console.log(column.value);
+            records = column.value;
+
+           }
+      });
+  });
+
+
         connection.execSql(request);
 
 };
@@ -314,8 +327,8 @@ function UpdateTotalOutMeter(connection,data,item,amount,callback) {
 
 
 function CheckLtdMeters(connection,data,callback) {
-
-    var sql = 'select unitPropId from db_LTDMeters where unitId = @unitid and itemId = @itemid and denom = @denom ' +
+    var records;
+    var sql = 'select count(*) from db_LTDMeters where unitId = @unitid and itemId = @itemid and denom = @denom ' +
               'and unitPropid = @propid';
 
     var request = new Request(sql,function(err,rowCount) {
@@ -326,7 +339,7 @@ function CheckLtdMeters(connection,data,callback) {
     	} else {
              sql = null;
              delete request;
-    		callback(null,rowCount);
+    		callback(null,records);
     	}
 
     });          
@@ -335,6 +348,19 @@ function CheckLtdMeters(connection,data,callback) {
         request.addParameter('itemid', TYPES.NVarChar,data.item);
         request.addParameter('denom', TYPES.Int,data.denom);
         request.addParameter('propid', TYPES.Int,data.propid);
+
+       request.on('row', function(columns) {
+          columns.forEach(function(column) {
+            if (column.value === null) {
+             console.log('NULL');
+          } else {
+            console.log(column.value);
+            records = column.value;
+
+           }
+      });
+  });
+
         
         connection.execSql(request);
 
@@ -591,7 +617,8 @@ function WriteOnlineMeterSnapshot(data,callback) {
 
 function CheckSwitchMeter(connection,data,callback) {
 
-    var sql = 'select meterValue from db_LtdOccurMeters where unitId = @unitid and eventId = @eventid ' +
+    var records;
+    var sql = 'select count(*) from db_LtdOccurMeters where unitId = @unitid and eventId = @eventid ' +
               'and unitPropid = @propid';
 
     var request = new Request(sql,function(err,rowCount) {
@@ -601,7 +628,7 @@ function CheckSwitchMeter(connection,data,callback) {
         callback(errMsg,null);
       } else {
            sql = null;  
-           callback(null,rowCount);
+           callback(null,records);
       }
 
     });          
@@ -609,7 +636,21 @@ function CheckSwitchMeter(connection,data,callback) {
         request.addParameter('unitid', TYPES.Int,data.unit);
         request.addParameter('eventid', TYPES.Int,data.eventid);
         request.addParameter('propid', TYPES.Int,data.propid);
+
+        request.on('row', function(columns) {
+          columns.forEach(function(column) {
+            if (column.value === null) {
+             console.log('NULL');
+          } else {
+            console.log(column.value);
+            records = column.value;
+
+           }
+      });
+  });
         
+
+
         connection.execSql(request);
 
 };
