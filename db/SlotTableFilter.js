@@ -4,6 +4,7 @@ var Utils = require('./Utils');
 var multiGame = require('./SlotMultiGameMeters');
 var multiDenom = require('./SlotMultiDenomMeters');
 var aft = require('./SlotAftMeters');
+var slots = require('./SlotsTable');
 
 function callback(error,results){};
 
@@ -150,6 +151,28 @@ function ProcessTrans(data,callback){
 
 
     });
+
+  } else if (data.table === 'slots') {
+    if (data.operation === 'meterupdate') {
+      slots.UpdateSlotsMeters(data,function(err,results) {
+        if (err) {
+          console.log('UpdateSlotsMeters error: ' + err);
+          Utils.LogError(data,err,function(err,results) {
+
+          });
+
+          data = null;
+          callback(err,null);
+        } else {
+          //console.log('Event written');
+          data = null;
+          callback(null,results);
+        }
+
+      });
+
+    }
+
 
   }
 
