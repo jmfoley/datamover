@@ -719,6 +719,31 @@ function ProcessTrans(data,callback){
        }
 
 
+   } else if (data.table === 'sc_multigameconfig') {
+
+       KioskUnit.UpdateMultiGameDesc(data,function(err,results) {
+
+            if (err) {
+                console.log('UpdateMultiGameDesc: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+
+               });
+                data = null;
+                callback(err,null);
+  
+            } else {
+               //console.log('WriteDropMeters written');
+               data = null;
+               callback(null,results);
+                
+
+            }
+
+
+
+       });
+
    }
     
 } exports.ProcessTrans = ProcessTrans

@@ -8,6 +8,58 @@ var errMsg = '';
 function callback(error,results){};
 
 
+function UpdateLastCom( data,callback) {
+    var sql = '';
+    var connection;
+    
+    console.log('In UpdateLastCom');
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+        if (err) {
+            errMsg = 'GetDbConnection error: ' + err;
+            callback(errMsg,null);
+
+        } else {
+            connection = results;
+            sql = 'update slots set last_com_datetime = @lastcom,updated = @date,netsock_ip = @port where ' +
+                  'mach_num = @mach and propid = @propid';
+
+            var request = new Request(sql,function(err,results) {
+                if (err) {
+                    errMsg = 'UpdateLastCom error: '  + err;
+                    connection.close();
+                    connection = null;
+                    sql = null;
+                    delete request;
+                    callback(errMsg,null);
+
+                } else {
+                   connection.close();
+                   connection = null;
+                   sql = null;
+                   delete request;
+                   callback(null,results);
+
+                }
+            }); 
+
+
+            request.addParameter('lastcom', TYPES.DateTime, new Date(data.lastcom));
+            request.addParameter('date', TYPES.DateTime,new Date());
+            request.addParameter('port', TYPES.VarChar,data.port);
+            request.addParameter('mach', TYPES.Int,data.mach);
+            request.addParameter('propid', TYPES.Int,data.propid);
+
+
+            connection.execSql(request);
+        }
+
+    });
+
+}exports.UpdateLastCom = UpdateLastCom;
+
+
+
+
 function CheckSlotsTable(connection,data,callback) {
     var records;
     var sql = 'select count(*) from slots where mach_num = @mach and propid = @propid';

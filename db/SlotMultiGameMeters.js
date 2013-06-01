@@ -7,6 +7,9 @@ var errMsg = '';
 
 function callback(error,results){};
 
+
+
+
 function CheckMultiGameConfig(connection,data,callback) {
     var records;
     var sql = 'select count(*) from sc_multigameconfig where machineNumber = @mach and propid = @propid';

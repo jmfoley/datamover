@@ -171,6 +171,25 @@ function ProcessTrans(data,callback){
 
       });
 
+    } else if (data.operation === 'lastcom') {
+      slots.UpdateLastCom(data,function(err,results) {
+        if (err) {
+          console.log('UpdateLastCom error: ' + err);
+          Utils.LogError(data,err,function(err,results) {
+
+          });
+
+          data = null;
+          callback(err,null);
+        } else {
+          //console.log('Event written');
+          data = null;
+          callback(null,results);
+        }
+
+
+      });
+
     }
 
 
