@@ -5,6 +5,7 @@ var multiGame = require('./SlotMultiGameMeters');
 var multiDenom = require('./SlotMultiDenomMeters');
 var aft = require('./SlotAftMeters');
 var slots = require('./SlotsTable');
+var netSock = require('./NetSock');
 
 function callback(error,results){};
 
@@ -175,6 +176,26 @@ function ProcessTrans(data,callback){
       slots.UpdateLastCom(data,function(err,results) {
         if (err) {
           console.log('UpdateLastCom error: ' + err);
+          Utils.LogError(data,err,function(err,results) {
+
+          });
+
+          data = null;
+          callback(err,null);
+        } else {
+          //console.log('Event written');
+          data = null;
+          callback(null,results);
+        }
+
+
+      });
+
+    } else if( data.operation === 'addmachine') {
+      netSock.AddMachine(data,function(err,results) {
+
+        if (err) {
+          console.log('AddMachine error: ' + err);
           Utils.LogError(data,err,function(err,results) {
 
           });
