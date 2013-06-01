@@ -6,6 +6,7 @@ var KioskUnit = require('./Config');
 var Utils  = require('./Utils');
 var DropMeters = require('./DropMeters');
 var Tickets = require('./Tickets');
+var tenCoin = require('./TenCoin');
 
 
 
@@ -668,6 +669,55 @@ function ProcessTrans(data,callback){
 
 
     }
+
+   } else if( data.table === 'db_tencoin') {
+       if(data.operation === 'start') {
+         tenCoin.StartTenCoinTest(data,function(err,results) {
+            if (err) {
+                console.log('StartTenCoinTest: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+
+               });
+                data = null;
+                callback(err,null);
+  
+            } else {
+               //console.log('WriteDropMeters written');
+               data = null;
+               callback(null,results);
+                
+
+            }
+
+
+
+         });
+
+       } else if (data.operation === 'end'){
+         tenCoin.EndTenCoinTest(data,function(err,results) {
+            if (err) {
+                console.log('EndTenCoinTest: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+
+               });
+                data = null;
+                callback(err,null);
+  
+            } else {
+               //console.log('WriteDropMeters written');
+               data = null;
+               callback(null,results);
+                
+
+            }
+
+
+         });
+
+       }
+
 
    }
     
