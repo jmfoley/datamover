@@ -9,6 +9,9 @@
 //     appName: 'datamover'
 //   });
 
+//require('look').start();
+var memwatch = require('memwatch');
+
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
@@ -26,7 +29,7 @@ var express = require('express')
   , slotTableFilter = require('./db/SlotTableFilter')
   , mailer = require('./db/Mailer');
 
-
+  var util = require('util');
 
 //var heapdump = require('heapdump');
 
@@ -35,7 +38,25 @@ var express = require('express')
   var totalSuccessfulTrans = new Number(0);
   var totalErrorTrans = new Number(0);
 
+
+memwatch.on('leak', function(info) { 
+  console.log('Memory leak detected: ' + util.inspect(info));
+  var data = util.inspect(info);
+  mailer.SendMemLeakReport(data,function(err,results) {
+
+  });
+  
+});
+
+
+memwatch.on('stats', function(stats) { 
+  console.log('mem stats: ' + util.inspect(stats));
+});
+
 var app = express();
+
+
+
 
 
 app.configure(function(){
@@ -213,8 +234,15 @@ Object.keys(cluster.workers).forEach(function(id) {
 
 }
 
- // http.createServer(app).listen(app.get('port'), function(){
- //  console.log("Express server listening on port " + app.get('port'));
- // });
+//  http.createServer(app).listen(app.get('port'), function(){
+//   console.log("Express server listening on port " + app.get('port'));
+//  });
 
-//});
+// });
+
+
+
+//     https.createServer(options, app).listen(app.get('port'),function(){
+
+//     console.log("https Express server listening on port " + app.get('port'));
+// });
