@@ -11,6 +11,8 @@ function callback(error,results){};
 function UpdateLastCom( data,callback) {
     var sql = '';
     var connection;
+    var lastCom = new Date(data.lastcom);
+    var updated = new Date();
     
     console.log('In UpdateLastCom');
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
@@ -30,21 +32,26 @@ function UpdateLastCom( data,callback) {
                     connection = null;
                     sql = null;
                     delete request;
+                    delete lastCom;
+                    delete updated;
                     callback(errMsg,null);
+
 
                 } else {
                    connection.close();
                    connection = null;
                    sql = null;
                    delete request;
+                   delete lastCom;
+                   delete updated;
                    callback(null,results);
 
                 }
             }); 
 
 
-            request.addParameter('lastcom', TYPES.DateTime, new Date(data.lastcom));
-            request.addParameter('date', TYPES.DateTime,new Date());
+            request.addParameter('lastcom', TYPES.DateTime, lastCom);
+            request.addParameter('date', TYPES.DateTime,updated);
             request.addParameter('port', TYPES.VarChar,data.port);
             request.addParameter('mach', TYPES.Int,data.mach);
             request.addParameter('propid', TYPES.Int,data.propid);
@@ -108,6 +115,8 @@ function UpdateSlotsMeters(data,callback) {
     var sql = '';
     var connection;
     var update;
+    var lastCom = new Date(data.lastcom);
+    var updated = new Date();
 
     console.log('In updateSlotsMeters: Operatorid = ' + data.operatorid);
 
@@ -146,6 +155,8 @@ function UpdateSlotsMeters(data,callback) {
                             connection = null;
                             sql = null;
                             delete request;
+                            delete lastCom;
+                            delete updated;
                             callback(errMsg,null);
 
                         } else {
@@ -153,6 +164,8 @@ function UpdateSlotsMeters(data,callback) {
                            connection = null;
                            sql = null;
                            delete request;
+                           delete lastCom;
+                           delete updated;
                            callback(null,results);
 
                         }
@@ -181,8 +194,8 @@ function UpdateSlotsMeters(data,callback) {
                     request.addParameter('coin10', TYPES.Int,data.coin10);
                     request.addParameter('jack', TYPES.Int,data.jackpot);
                     request.addParameter('cc', TYPES.Int,data.cancelcredit);
-                    request.addParameter('lastcom', TYPES.DateTime,new Date(data.lastcom));
-                    request.addParameter('date', TYPES.DateTime, new Date());
+                    request.addParameter('lastcom', TYPES.DateTime,lastCom);
+                    request.addParameter('date', TYPES.DateTime, updated);
                     request.addParameter('mach', TYPES.Int,data.mach);
                     request.addParameter('propid', TYPES.Int,data.propid);
 
