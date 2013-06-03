@@ -59,6 +59,7 @@ function WriteUnitTransDetail( data,callback) {
     var connection;
     var insert;
     var sql = '';
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -100,12 +101,14 @@ function WriteUnitTransDetail( data,callback) {
                                       connection = null;
                                       sql = null;
                                       delete request;
+                                      delete updated;
                                       callback(errMsg,null) ;
                                   } else {
                                        connection.close();
                                        connection = null;
                                        sql = null;
                                        delete request;
+                                       delete updated;
                                        callback(null,rowCount);
                                   }
                               }); 
@@ -118,7 +121,7 @@ function WriteUnitTransDetail( data,callback) {
                             request.addParameter('denom', TYPES.Int,data.denom);
                             request.addParameter('propid', TYPES.Int,data.propid);
                             request.addParameter('transnumber', TYPES.Int,data.transnumber);
-                            request.addParameter('date', TYPES.DateTime,new Date());
+                            request.addParameter('date', TYPES.DateTime,updated);
 
                             if (insert) {
                                 request.addParameter('oper', TYPES.Int,data.operatorid);                                
@@ -148,6 +151,7 @@ function SetPendingTransToComplete( data, callback) {
 
     var conenction;
     var sql = '';
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -170,6 +174,7 @@ function SetPendingTransToComplete( data, callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
                 callback(errMsg,null);
             
             } else{
@@ -177,6 +182,7 @@ function SetPendingTransToComplete( data, callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
                 callback(null,rowCount);
             
             }
@@ -186,7 +192,7 @@ function SetPendingTransToComplete( data, callback) {
 
 
            request.addParameter('transstatus', TYPES.Int,data.transstatus);
-           request.addParameter('date', TYPES.DateTime,new Date());
+           request.addParameter('date', TYPES.DateTime,updated);
            request.addParameter('unitid', TYPES.Int,data.unit);
            request.addParameter('propid', TYPES.Int,data.propid);
            request.addParameter('transnumber', TYPES.Int,data.transnumber);
@@ -204,6 +210,7 @@ function CompleteCurrentTrans( data,callback) {
 
     var sql = '';
     var connection;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     
@@ -234,6 +241,7 @@ function CompleteCurrentTrans( data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
                 callback(errMsg,null);
             
             } else{
@@ -241,6 +249,7 @@ function CompleteCurrentTrans( data,callback) {
                 conenction = null;
                 sql = null;
                 delete request;
+                delete updated;
                 callback(null,connection);
             
             }
@@ -249,7 +258,7 @@ function CompleteCurrentTrans( data,callback) {
           });
   
            request.addParameter('transstatus', TYPES.Int,data.transstatus);
-           request.addParameter('date', TYPES.DateTime,new Date());
+           request.addParameter('date', TYPES.DateTime,updated);
            request.addParameter('unitid', TYPES.Int,data.unit);
            request.addParameter('unitpropid', TYPES.Int,data.propid);
            request.addParameter('transnumber', TYPES.Int,data.transnumber);
@@ -271,6 +280,9 @@ function CompleteCurrentTrans( data,callback) {
 
 
 function WriteKioskTrans(data,callback) {
+
+    var transTime = new Date(data.transtarttime);
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -294,6 +306,8 @@ function WriteKioskTrans(data,callback) {
               connection = null;
               sql = null;
               delete request;
+              delete transTime;
+              delete updated;
         	    callback(errMsg,null);
         	
             } else{
@@ -301,6 +315,8 @@ function WriteKioskTrans(data,callback) {
               connection = null;
               sql = null;
               delete request;
+              delete transTime;
+              delete updated;
         	    callback(null,connection);
         	
             }
@@ -314,15 +330,15 @@ function WriteKioskTrans(data,callback) {
         request.addParameter('transnumber', TYPES.Int,data.transnumber);
         request.addParameter('transamount', TYPES.Int,data.transamount);
         request.addParameter('transstatus', TYPES.Int,data.transstatus);
-        request.addParameter('transstarttime', TYPES.DateTime,new Date(data.transtarttime));
-        request.addParameter('gameday', TYPES.DateTime,new Date());
+        request.addParameter('transstarttime', TYPES.DateTime,transTime);
+        request.addParameter('gameday', TYPES.DateTime,updated);
         request.addParameter('valnum', TYPES.NVarChar,data.valnum);
         request.addParameter('sessionid', TYPES.Int,data.sessionid);
         request.addParameter('cardid', TYPES.Int,data.cardid);
         request.addParameter('cardcasinoid', TYPES.Int,data.cardcasinoid);
         request.addParameter('amount', TYPES.Int,data.amount);
         request.addParameter('bv', TYPES.Int,data.bv);
-        request.addParameter('date', TYPES.DateTime, new Date());
+        request.addParameter('date', TYPES.DateTime, updated);
 
         connection.execSql(request);
           
