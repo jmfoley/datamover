@@ -12,6 +12,7 @@ function WriteKioskEvents(data,callback) {
 
     var sql = '';
     var connection;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -33,6 +34,7 @@ function WriteKioskEvents(data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
         	    callback(errMsg,null);
         	
             } else {
@@ -40,6 +42,7 @@ function WriteKioskEvents(data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
         	    callback(null,connection);
         	
             }
@@ -51,7 +54,7 @@ function WriteKioskEvents(data,callback) {
         request.addParameter('unitid', TYPES.Int,data.unit);
         request.addParameter('unitpropid', TYPES.Int,data.propid);
         request.addParameter('eventid', TYPES.Int,data.eventid);
-        request.addParameter('date', TYPES.DateTime,new Date());
+        request.addParameter('date', TYPES.DateTime,updated);
         request.addParameter('cardid', TYPES.Int,data.cardid);
         request.addParameter('cardcasinoid', TYPES.Int,data.cardcasinoid);
         request.addParameter('amount', TYPES.Int,data.amount);
