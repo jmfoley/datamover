@@ -8,10 +8,64 @@ function callback(error,results){};
 
 
 
+function UpdateMultiGameDesc( data,callback) {
+
+  var sql = '';
+  var connection;
+  var updated =  new Date(); 
+
+  dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+    if (err){
+      errMsg = 'GetDbConnection error: ' + err;
+      callback(errMsg,null);
+    } else {
+      sql = 'update sc_multigameconfig set multitypedesc = @desc,updated = @date,updatedby = @updatedby,' +
+            'updatedfrom = @updatedfrom,maxbet = @max,denom = @denom where multitypeid = @gamenum and ' +
+            'machinenumber = @mach and propid = @propid';
+
+      var request = new Request(sql,function(err,results) {
+        if (err) {
+              sql = null;
+              delete request;
+              delete updated;
+              errMsg = 'UpdateMultiGameDesc error: '  + err;
+          callback(errMsg,null);
+        } else {
+               sql = null;
+               delete request;
+               delete updated;
+          callback(null,records);
+        }
+
+      });
+
+      request.addParameter('desc', TYPES.VarChar,data.desc);
+      request.addParameter('date', TYPES.DateTime, updated);
+      request.addParameter('updatedby', TYPES.VarChar,data.updatedby);
+      request.addParameter('updatedfrom', TYPES.VarChar,data.updatedfrom);
+      request.addParameter('max', TYPES.Int,data.maxbet);
+      request.addParameter('denom', TYPES.Int,data.denom);
+      request.addParameter('gamenum', TYPES.Int,data.gamenumber);
+      request.addParameter('mach', TYPES.Int,data.mach);
+      request.addParameter('propid', TYPES.Int,data.propid);
+
+
+
+    }
+
+});
+
+}exports.UpdateMultiGameDesc = UpdateMultiGameDesc;
+
+
+
+
+
 function UpdateUnitSession( data, callback) {
 
     var sql = '';
     var connection;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         if (err) {
@@ -31,18 +85,20 @@ function UpdateUnitSession( data, callback) {
                     connection = null;
                     sql = null;
                     delete request;
+                    delete updated;
                     callback(errMsg,null);
                 } else {
                     connection.close();
                     connection = null;
                     sql = null;
                     delete request;
+                    delete updated;
                     callback(err,results);
                 }
 
             });
 
-            request.addParameter('date',TYPES.DateTime,new Date());
+            request.addParameter('date',TYPES.DateTime,updated);
             request.addParameter('propid',TYPES.Int,data.propid);
             request.addParameter('unit',TYPES.Int,data.unit);
 
@@ -110,6 +166,7 @@ function UpdateBillbreakConfig(data,callback) {
 
     var sql = '';
     var connection;
+    var updated =  new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -130,13 +187,14 @@ function UpdateBillbreakConfig(data,callback) {
                     connection = null;
                     sql = null;
                     delete request;
-
+                    delete updated;
                     callback(errMsg,null);
                 } else {
                     connection.close();
                     connection = null;
                     sql = null;
                     delete request;
+                    delete updated;
 
                     callback(err,results);
                 }
@@ -153,7 +211,7 @@ function UpdateBillbreakConfig(data,callback) {
             request.addParameter('bill50',TYPES.Int,data.bill50);
             request.addParameter('bill100',TYPES.Int,data.bill100);
             request.addParameter('prop',TYPES.Int,data.propid);
-            request.addParameter('date',TYPES.DateTime,new Date());
+            request.addParameter('date',TYPES.DateTime,updated);
             request.addParameter('oper',TYPES.Int,data.operatorid);
 
             connection.execSql(request);
@@ -172,6 +230,7 @@ function AddBillbreakConfig(data,callback) {
 
     var sql = '';
     var connection;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -190,6 +249,7 @@ function AddBillbreakConfig(data,callback) {
                     connection = null;
                     sql = null;
                     delete request;
+                    delete updated;
 
                     callback(errMsg,null);
                 } else {
@@ -197,6 +257,7 @@ function AddBillbreakConfig(data,callback) {
                     connection = null;
                     sql = null;
                     delete request;
+                    delete updated;
 
                     callback(err,results);
                 }
@@ -212,7 +273,7 @@ function AddBillbreakConfig(data,callback) {
             request.addParameter('bill50',TYPES.Int,data.bill50);
             request.addParameter('bill100',TYPES.Int,data.bill100);
             request.addParameter('prop',TYPES.Int,data.propid);
-            request.addParameter('date',TYPES.DateTime,new Date());
+            request.addParameter('date',TYPES.DateTime,updated);
             request.addParameter('oper',TYPES.Int,data.operatorid);
 
             connection.execSql(request);
@@ -229,7 +290,7 @@ function UpdateCreditCardOption(data,callback) {
 
     var sql = '';
     var connection;
-
+    var updated = new Date();
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
@@ -250,6 +311,7 @@ function UpdateCreditCardOption(data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
                 callback(errMsg,null);
             
@@ -258,6 +320,7 @@ function UpdateCreditCardOption(data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
                 callback(null,connection);
             
@@ -269,7 +332,7 @@ function UpdateCreditCardOption(data,callback) {
         request.addParameter('unitid', TYPES.Int,data.unit);
         request.addParameter('prop', TYPES.Int,data.propid);
         request.addParameter('credit', TYPES.Int,data.credit);
-        request.addParameter('date', TYPES.DateTime,new Date());
+        request.addParameter('date', TYPES.DateTime,updated);
         
         connection.execSql(request);
 
@@ -288,6 +351,7 @@ function UpdateAppVersion(data,callback) {
 
     var sql = '';
     var connection;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -309,6 +373,7 @@ function UpdateAppVersion(data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
                 callback(errMsg,null);
             
@@ -317,7 +382,7 @@ function UpdateAppVersion(data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
-
+                delete updated;
                 callback(null,connection);
             
             }
@@ -328,7 +393,7 @@ function UpdateAppVersion(data,callback) {
         request.addParameter('unitid', TYPES.Int,data.unit);
         request.addParameter('prop', TYPES.Int,data.propid);
         request.addParameter('app', TYPES.VarChar,data.app);
-        request.addParameter('date', TYPES.DateTime,new Date());
+        request.addParameter('date', TYPES.DateTime,updated);
         
         connection.execSql(request);
 
@@ -405,6 +470,7 @@ function UpdateUnitDevice(data, callback) {
 
     var sql = '';
     var connection;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -427,6 +493,7 @@ function UpdateUnitDevice(data, callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
                 callback(errMsg,null);
             
@@ -435,6 +502,7 @@ function UpdateUnitDevice(data, callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
                 callback(null,connection);
             
@@ -447,7 +515,7 @@ function UpdateUnitDevice(data, callback) {
         request.addParameter('prop', TYPES.Int,data.propid);
         request.addParameter('device', TYPES.Int,data.device);
         request.addParameter('port', TYPES.VarChar,data.deviceport);
-        request.addParameter('date', TYPES.DateTime,new Date());
+        request.addParameter('date', TYPES.DateTime,updated);
         
         connection.execSql(request);
 
@@ -472,6 +540,7 @@ function InsertUnitDevice(data, callback) {
 
     var sql = '';
     var connection;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -494,6 +563,7 @@ function InsertUnitDevice(data, callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
                 callback(errMsg,null);
             
@@ -502,6 +572,7 @@ function InsertUnitDevice(data, callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
                 callback(null,connection);
             
@@ -514,7 +585,7 @@ function InsertUnitDevice(data, callback) {
         request.addParameter('prop', TYPES.Int,data.propid);
         request.addParameter('device', TYPES.Int,data.device);
         request.addParameter('port', TYPES.VarChar,data.deviceport);
-        request.addParameter('date', TYPES.DateTime,new Date());
+        request.addParameter('date', TYPES.DateTime,updated);
         request.addParameter('oper', TYPES.Int,data.operatorid);
         
         connection.execSql(request);
@@ -592,6 +663,7 @@ function UpdateDenomConfig(data,callback) {
 
     var sql = '';
     var connection;
+    var updated =  new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -613,6 +685,7 @@ function UpdateDenomConfig(data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
                 callback(errMsg,null);
             
@@ -621,6 +694,7 @@ function UpdateDenomConfig(data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
                 callback(null,connection);
             
@@ -634,7 +708,7 @@ function UpdateDenomConfig(data,callback) {
         request.addParameter('prop', TYPES.Int,data.propid);
         request.addParameter('item', TYPES.VarChar,data.item);
         request.addParameter('denom', TYPES.Int,data.denom);
-        request.addParameter('date', TYPES.DateTime,new Date());
+        request.addParameter('date', TYPES.DateTime,updated);
         request.addParameter('oper', TYPES.Int,data.operatorid);
 
         connection.execSql(request);
@@ -652,6 +726,7 @@ function UpdateKioskUnit(data,callback) {
 
     var sql = '';
     var connection;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
@@ -677,6 +752,7 @@ function UpdateKioskUnit(data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
         	    callback(errMsg,null);
         	
@@ -685,6 +761,7 @@ function UpdateKioskUnit(data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
 
         	    callback(null,connection);
         	
@@ -706,7 +783,7 @@ function UpdateKioskUnit(data,callback) {
         request.addParameter('checkcash', TYPES.Int,data.checkcash);
         request.addParameter('cashadvance', TYPES.Int,data.cashadvance);
         request.addParameter('updatedby', TYPES.VarChar, data.updatedby);
-        request.addParameter('date', TYPES.DateTime, new Date());
+        request.addParameter('date', TYPES.DateTime, updated);
         request.addParameter('updatedfrom', TYPES.VarChar,data.updatedfrom);
         request.addParameter('terminalid', TYPES.UniqueIdentifierN,data.terminalid);
         request.addParameter('sasport', TYPES.VarChar,data.sasport);

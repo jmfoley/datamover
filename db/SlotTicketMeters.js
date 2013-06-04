@@ -54,6 +54,7 @@ function UpdateTicketMeters(data,callback){
     var sql = '';
     var connection;
     var insert;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     	if (err) {
@@ -90,6 +91,7 @@ function UpdateTicketMeters(data,callback){
                         connection = null;
                         sql = null;
                         delete request;
+                        delete updated;
                         callback(errMsg,null);
 
 
@@ -98,6 +100,7 @@ function UpdateTicketMeters(data,callback){
                          connection = null;
                          sql = null;
                          delete request;
+                         delete updated;
                          callback(null,rowCount);
 
                       }
@@ -120,7 +123,7 @@ function UpdateTicketMeters(data,callback){
                   request.addParameter('pcashamt', TYPES.Float,data.printedcashamt);
                   request.addParameter('ppromoct', TYPES.Int,data.printedpromoct);
                   request.addParameter('ppromoamt', TYPES.Float,data.printedpromoamt);
-                  request.addParameter('date', TYPES.DateTime,new Date());
+                  request.addParameter('date', TYPES.DateTime,updated);
                   request.addParameter('machextbonus', TYPES.Int,data.machextbonus); 
                   request.addParameter('attpaidextbonus', TYPES.Int,data.attextbonus);
                   request.addParameter('machprogbonus', TYPES.Int,data.machprogbonus);

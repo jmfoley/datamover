@@ -13,6 +13,7 @@ function UpdateAtmTrans( data,callback){
 
     var sql = '';
     var connection;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         
@@ -32,6 +33,7 @@ function UpdateAtmTrans( data,callback){
                    connection = null;
                    sql = null;
                    delete request;
+                   delete updated;
 
                    callback(errMsg,null);               
                } else {
@@ -39,7 +41,7 @@ function UpdateAtmTrans( data,callback){
                    connection = null;
                    sql = null;
                    delete request;
-
+                   delete updated; 
                    callback(null,rowCount);
                }
 
@@ -50,7 +52,7 @@ function UpdateAtmTrans( data,callback){
             request.addParameter('prop', TYPES.Int,data.propid);
             request.addParameter('trans', TYPES.Int,data.trans);
             request.addParameter('seq', TYPES.Int,data.seq);
-            request.addParameter('date', TYPES.DateTime, new Date());
+            request.addParameter('date', TYPES.DateTime, updated);
 
             connection.execSql(request);
 
@@ -68,6 +70,7 @@ function WriteAtmTrans( data,callback) {
     
     var sql = '';
     var connection;
+    var updated = new Date();
 
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
@@ -89,14 +92,15 @@ function WriteAtmTrans( data,callback) {
                       connection = null;
                       sql = null;
                       delete request;
-
+                      delete updated;
                   	  callback(errMsg,null) ;
                   } else {
                        connection.close();
                        connection = null;
                        sql = null;
                        delete request;
-
+                       delete updated;
+                        
                   	   callback(null,rowCount);
                   }
               }); 

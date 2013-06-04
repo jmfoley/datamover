@@ -57,6 +57,7 @@ function WriteMultiGameConfig(data,callback){
     var sql = '';
     var connection;
     var insert;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     	if (err) {
@@ -81,6 +82,7 @@ function WriteMultiGameConfig(data,callback){
                                 connection = null;
                                 sql = null;
                                 delete request;
+                                delete updated;
                                 callback(errMsg,null);
 
                             } else {
@@ -88,6 +90,7 @@ function WriteMultiGameConfig(data,callback){
                                  connection = null;
                                  sql = null;
                                  delete request;
+                                 delete updated;
                                  callback(null,rowCount);
 
                             }
@@ -107,7 +110,7 @@ function WriteMultiGameConfig(data,callback){
                         request.addParameter('status', TYPES.Int,0);
                         request.addParameter('updatedby', TYPES.VarChar,data.updatedby);
                         request.addParameter('updatedfrom', TYPES.VarChar,data.updatedfrom);
-                        request.addParameter('date', TYPES.DateTime,new Date());
+                        request.addParameter('date', TYPES.DateTime,updated);
                         request.addParameter('recid', TYPES.VarChar,data.recid);
 
                         connection.execSql(request);
@@ -176,6 +179,7 @@ function WriteMultiGameRecord(data,callback){
     var insert = false;
     var sql = '';
     var connection;
+    var updated = new Date();
     
     console.log('In multigame meters');
 
@@ -212,6 +216,7 @@ function WriteMultiGameRecord(data,callback){
                             connection = null;
                             sql = null;
                             delete request;
+                            delete updated;
                             callback(errMsg,null);
 
                         } else {
@@ -219,6 +224,7 @@ function WriteMultiGameRecord(data,callback){
                            connection = null;
                            sql = null;
                            delete request;
+                           delete updated;
                            callback(null,results);
 
                         }
@@ -233,7 +239,7 @@ function WriteMultiGameRecord(data,callback){
                     request.addParameter('cout', TYPES.Int,data.coinout);
                     request.addParameter('games', TYPES.Int,data.gamesplayed);
                     request.addParameter('jpot', TYPES.Int,data.jackpot);
-                    request.addParameter('date', TYPES.DateTime, new Date());
+                    request.addParameter('date', TYPES.DateTime, updated);
                     request.addParameter('sas', TYPES.VarChar,data.sasver);
                     request.addParameter('denom', TYPES.Float,data.denom);
                     request.addParameter('max', TYPES.Int,data.maxbet);

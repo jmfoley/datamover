@@ -53,6 +53,7 @@ function WriteAftMeters(data,callback){
     var insert = false;
     var sql = '';
     var connection;
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         if (err) {
@@ -86,6 +87,7 @@ function WriteAftMeters(data,callback){
                             connection = null;
                             sql = null;
                             delete request;
+                            delete updated;
                             callback(errMsg,null);
 
                         } else {
@@ -93,6 +95,7 @@ function WriteAftMeters(data,callback){
                            connection = null;
                            sql = null;
                            delete request;
+                           delete updated;
                            callback(null,results);
 
                         }
@@ -107,7 +110,7 @@ function WriteAftMeters(data,callback){
                     request.addParameter('mach', TYPES.Int,data.mach);
                     request.addParameter('promoin', TYPES.Int,data.promoin);
                     request.addParameter('cashin', TYPES.Int,data.cashin);
-                    request.addParameter('date', TYPES.DateTime, new Date());
+                    request.addParameter('date', TYPES.DateTime, updated);
                     request.addParameter('promoincnt', TYPES.Int,data.promoincnt);
                     request.addParameter('cashincnt', TYPES.Int,data.cashincnt);
                     request.addParameter('promoout', TYPES.Int, data.promoout);

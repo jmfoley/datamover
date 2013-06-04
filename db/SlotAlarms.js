@@ -6,6 +6,10 @@ var dbConnect = require('./DbConnectionPool')
 
 function callback(error,results){};
 
+
+
+
+
 function WriteSlotAlarm(data,callback){
 	var sql = '';
 	var connection;
@@ -82,6 +86,8 @@ function WriteSlotAlarm(data,callback){
 function WriteRouteDropAlarm(data,callback){
     var sql = '';
     var connection;
+    var updated =  new Date();
+    var iDate = new Date(data.initdate);
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
       if(err){
@@ -90,7 +96,7 @@ function WriteRouteDropAlarm(data,callback){
        } else { 
           connection = results;
           sql = 'insert into sl_alarms(operatorid,mach_num,slot_id,alarm_code,initiated,initiated_date,initiated_time,' +
-                'install_mach,propid,alarm_id) select @oper,@mach,slot_id,@code,@date,@idate,@itime,@dropsession,@propid,@alarmid ' +
+                'install_mach,propid,alarm_id) select @oper,@mach,slot_id,@code,@initdate,@idate,@itime,@dropsession,@propid,@alarmid ' +
                 'from slots where mach_num = @mach and propid = @propid';
 
           var request = new Request(sql,function(err,results) {
@@ -100,12 +106,16 @@ function WriteRouteDropAlarm(data,callback){
                 connection = null;
                 sql = null;
                 delete request;
+                delete updated;
+                delete iDate;
                 callback(errMsg,null);
             } else {
                  connection.close();
                  connection = null;
                  sql = null;
                  delete request;
+                 delete updated;
+                 delete iDate;
                  callback(null,results);
             }
 
@@ -113,13 +123,14 @@ function WriteRouteDropAlarm(data,callback){
 
             request.addParameter('oper', TYPES.Int,data.operatorid);
             request.addParameter('mach', TYPES.Int,data.mach);
-            request.addParameter('date', TYPES.DateTime, new Date());
+            request.addParameter('date', TYPES.DateTime, updated());
             request.addParameter('idate', TYPES.VarChar, data.date);
             request.addParameter('itime', TYPES.VarChar, data.time);
             request.addParameter('dropsession', TYPES.Int, data.dropsession);
             request.addParameter('prop', TYPES.Int,data.propid);
             request.addParameter('alarmid', TYPES.Int,data.alarmid);
             request.addParameter('code', TYPES.Int,data.alarmcode);
+            request.addParameter('initdate', TYPES.DateTime, iDate);
        
             connection.execSql(request);
        }

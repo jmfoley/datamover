@@ -15,6 +15,7 @@ function WriteDropMeters( data,callback) {
    var connection;
    var errMsg = '';
    var sql = '';
+   var updated = new Date();
 
    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
       if (err) {
@@ -31,6 +32,7 @@ function WriteDropMeters( data,callback) {
                   connection = null;
                   sql = null;
                   delete request;
+                  delete updated;
 
                   errMsg = 'WriteDropDetail error: '  + err;
                   callback(errmsg,null);
@@ -40,6 +42,7 @@ function WriteDropMeters( data,callback) {
                   connection = null;
                   sql = null;
                   delete request;
+                  delete updated;
 
                   callback(null,rowCount);
                }
@@ -56,7 +59,7 @@ function WriteDropMeters( data,callback) {
           request.addParameter('can', TYPES.Int,data.canid);
           request.addParameter('fill', TYPES.Int,data.fillamt);
           request.addParameter('impress', TYPES.Int,data.impress);          
-          request.addParameter('date', TYPES.DateTime,new Date());
+          request.addParameter('date', TYPES.DateTime,updated);
 
           
           connection.execSql(request);
@@ -80,6 +83,7 @@ function WriteDropDetail( data,callback) {
    var connection;
    var errMsg = '';
    var sql = '';
+   var updated;
 
    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
       if (err) {
@@ -96,6 +100,7 @@ function WriteDropDetail( data,callback) {
                   connection = null;
                   sql = null;
                   delete request;
+                  delete updated;
 
                   errMsg = 'WriteDropDetail error: '  + err;
                   callback(errmsg,null);
@@ -105,6 +110,7 @@ function WriteDropDetail( data,callback) {
                   connection = null;
                   sql = null;
                   delete request;
+                  delete updated;
 
                   callback(null,rowCount);
                }
@@ -120,7 +126,7 @@ function WriteDropDetail( data,callback) {
           request.addParameter('amount', TYPES.Int,data.amount);
           request.addParameter('actamount', TYPES.Int,data.actualamount);
           request.addParameter('can', TYPES.Int,data.canid);
-          request.addParameter('date', TYPES.DateTime,new Date());
+          request.addParameter('date', TYPES.DateTime,updated);
           request.addParameter('trans1', TYPES.Int,data.kiosktrans);
           
           connection.execSql(request);
@@ -172,6 +178,7 @@ function UpdateOnlineDropMeters( data,callback) {
     var connection;
     var insert;
     var sql = '';
+    var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         if (err) {
@@ -202,6 +209,7 @@ function UpdateOnlineDropMeters( data,callback) {
                             connection = null;
                             sql = null;
                             delete request;
+                            delete updated;
 
                             callback(err,null);
                         } else {
@@ -209,6 +217,7 @@ function UpdateOnlineDropMeters( data,callback) {
                             connection = null;
                             sql = null;
                             delete request;
+                            delete updated;
 
                             callback(null,results);
                         }
@@ -224,7 +233,7 @@ function UpdateOnlineDropMeters( data,callback) {
                       request.addParameter('amount', TYPES.Int, data.amount);
                       request.addParameter('denom', TYPES.Int,data.denom);
                       request.addParameter('qty', TYPES.Int,data.quantity);
-                      request.addParameter('date', TYPES.DateTime,new Date());
+                      request.addParameter('date', TYPES.DateTime,updated);
                       request.addParameter('impress', TYPES.Int,data.impress);
                       request.addParameter('can', TYPES.Int,data.canid);
                       request.addParameter('fillamt', TYPES.Int,data.fillamt);

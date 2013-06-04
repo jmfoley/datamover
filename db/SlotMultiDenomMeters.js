@@ -52,6 +52,7 @@ function WriteDenomRecord(data,callback){
     var insert = false;
     var sql = '';
     var connection;
+    var updated = new Date();
     console.log('In Denom Meters');
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         if (err) {
@@ -83,6 +84,7 @@ function WriteDenomRecord(data,callback){
                             connection = null;
                             sql = null;
                             delete request;
+                            delete updated;
                             callback(errMsg,null);
 
                         } else {
@@ -90,6 +92,7 @@ function WriteDenomRecord(data,callback){
                            connection = null;
                            sql = null;
                            delete request;
+                           delete updated;
                            callback(null,results);
 
                         }
@@ -105,7 +108,7 @@ function WriteDenomRecord(data,callback){
                     request.addParameter('cout', TYPES.Int,data.coinout);
                     request.addParameter('games', TYPES.Int,data.gamesplayed);
                     request.addParameter('jpot', TYPES.Int,data.jackpot);
-                    request.addParameter('date', TYPES.DateTime, new Date());
+                    request.addParameter('date', TYPES.DateTime, updated);
                     request.addParameter('denom', TYPES.Float,data.denomid);
                     request.addParameter('propid', TYPES.Int,data.propid);
 

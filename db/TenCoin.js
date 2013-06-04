@@ -12,6 +12,8 @@ function StartTenCoinTest( data,callback) {
 
   var sql = '';
   var connection;
+  var reportDate = new Date(data.reportdate);
+  var updated = new Date();
 
   dbConnect.GetDbConnection(data.operatorid,function(err,results) {
   	if (err){
@@ -40,6 +42,8 @@ function StartTenCoinTest( data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete reportDate;
+                delete updated;
                 callback(errMsg,null);
 
             } else {
@@ -47,6 +51,8 @@ function StartTenCoinTest( data,callback) {
                connection = null;
                sql = null;
                delete request;
+               delete reportDate;
+               delete updated;
                callback(null,results);
 
             }
@@ -54,11 +60,11 @@ function StartTenCoinTest( data,callback) {
 
         request.addParameter('oper', TYPES.Int,data.operatorid); 
         request.addParameter('machinenumber', TYPES.Int,data.mach);
-        request.addParameter('reportdate', TYPES.DateTime, new Date(data.reportdate));
+        request.addParameter('reportdate', TYPES.DateTime, reportDate);
         request.addParameter('userId', TYPES.VarChar,data.userid);
         request.addParameter('workstation', TYPES.VarChar,data.workstation);
         request.addParameter('reportnum', TYPES.Int,data.reportnum);
-        request.addParameter('date', TYPES.DateTime, new Date());
+        request.addParameter('date', TYPES.DateTime, updated);
         request.addParameter('propid', TYPES.Int,data.propid);
 
 
@@ -82,6 +88,9 @@ function EndTenCoinTest( data,callback) {
 
   var sql = '';
   var connection;
+  var reportDate =  new Date(data.reportdate);
+  var endDate = new Date(data.enddate);
+  var updated = new Date();
 
   dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     if (err){
@@ -107,6 +116,9 @@ function EndTenCoinTest( data,callback) {
                 connection = null;
                 sql = null;
                 delete request;
+                delete reportDate;
+                delete endDate;
+                delete updated;
                 callback(errMsg,null);
 
             } else {
@@ -114,13 +126,17 @@ function EndTenCoinTest( data,callback) {
                connection = null;
                sql = null;
                delete request;
+               delete reportDate;
+               delete endDate;
+               delete updated;
+
                callback(null,results);
 
             }
         }); 
 
-        request.addParameter('rdate', TYPES.DateTime,new Date(data.reportdate));
-        request.addParameter('edate', TYPES.DateTime,new Date(data.enddate));
+        request.addParameter('rdate', TYPES.DateTime,reportDate);
+        request.addParameter('edate', TYPES.DateTime,endDate);
         request.addParameter('af_coin_in', TYPES.Int,data.afcoinin);
         request.addParameter('af_coin_out', TYPES.Int, data.afcoinout);
         request.addParameter('af_coin_drop', TYPES.Int, data.afcoindrop);
@@ -148,7 +164,7 @@ function EndTenCoinTest( data,callback) {
         request.addParameter('af_aft_promo_out', TYPES.Int, data.afaftpromoout);
         request.addParameter('updatedby', TYPES.VarChar, data.updatedby);
         request.addParameter('updatedfrom', TYPES.VarChar, data.updatedfrom);
-        request.addParameter('date', TYPES.DateTime, new Date());
+        request.addParameter('date', TYPES.DateTime, updated);
         request.addParameter('TovsCC', TYPES.Bit, data.tovscc);
         request.addParameter('TDvsCT', TYPES.Bit, data.tdvct);
         request.addParameter('FW', TYPES.Bit, data.fw);
