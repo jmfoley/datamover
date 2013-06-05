@@ -150,7 +150,7 @@ function UpdateOnlineMeters(data,callback){
                       	insert = true;
 
                       	sql = 'insert into db_onlinemeters(itemAmount,updated,unitId,unitPropId,itemId,denom,itemQty,operatorId)values(' +
-                      		  '@amount,@date,@unitid,@propid,@item,@denom,@quantity,@operatorid)';
+                      		  '@amount,@date,@unitid,@propid,@item,@denom,@quantity,@oper)';
                       }
 
 			          
