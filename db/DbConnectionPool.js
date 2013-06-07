@@ -6,13 +6,13 @@ var Request = require('tedious').Request;
 function DbConnectCallback(error,results){};
 
    var config = {
-        userName: 'db user',
+        userName: 'db username',
         password: 'db password',
         server: 'db server',
          tdsVersion: '7_2',
             options: {
                 encrypt: true,
-                database: 'database',
+                database: 'default db',
         
             debug: {
                packet:  true,
@@ -54,6 +54,7 @@ var poolConfig = {
                 DbConnectCallback(err,null);
              } else {
             //      console.log('changed fed');
+                  delete request;
                   DbConnectCallback(null,connection);
 
 

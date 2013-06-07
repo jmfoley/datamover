@@ -121,7 +121,7 @@ function WriteAtmTrans( data,callback) {
 	          request.addParameter('amt1', TYPES.Int,data.amt1);
 	          request.addParameter('amt2', TYPES.Int,data.amt2);
 	          request.addParameter('last4', TYPES.NVarChar,data.last4);
-	          request.addParameter('updated', TYPES.DateTime,new Date());
+	          request.addParameter('updated', TYPES.DateTime,updated);
 
 
 	           connection.execSql(request);
