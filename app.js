@@ -31,7 +31,7 @@ var express = require('express')
 
   var util = require('util');
 
-//var heapdump = require('heapdump');
+  //var heapdump = require('heapdump');
 
   var startDate = new Date();
   var totalTransReceived = new Number(0);
@@ -41,20 +41,19 @@ var express = require('express')
 
 memwatch.on('leak', function(info) { 
   console.log('Memory leak detected: ' + util.inspect(info));
-  var data = util.inspect(info);
-  mailer.SendMemLeakReport(data,function(err,results) {
+ // var data = util.inspect(info);
+ // mailer.SendMemLeakReport(data,function(err,results) {
 
-  });
+  //});
   
 });
 
 
-memwatch.on('stats', function(stats) { 
-  console.log('mem stats: ' + util.inspect(stats));
-});
+ memwatch.on('stats', function(stats) { 
+   //console.log('mem stats: ' + util.inspect(stats));
+ });
 
 var app = express();
-
 
 
 
@@ -64,7 +63,7 @@ app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
-  app.use(express.logger('dev'));
+  //app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser('your secret here'));
@@ -74,7 +73,7 @@ app.configure(function(){
   app.use(express.static(path.join(__dirname, 'public')));
 });
 
-app.configure('development', function(){
+app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
@@ -113,17 +112,25 @@ var stats =
 
 });
 
-
+//var hd = new memwatch.HeapDiff();
 app.post('/kioskdata',function(req,res) {
 
 
      kioskTableFilter.ProcessTrans(req.body,function(err,results){
          totalTransReceived++;
-         process.send({ cmd: 'totalTrans' });
+        // process.send({ cmd: 'totalTrans' });
 
-         // if(totalTransReceived === 200) {
-         //    heapdump.writeSnapshot();
-         //}
+         //  if(totalTransReceived === 500) {
+         //     var diff = hd.end();
+         //     console.log(util.inspect(diff));
+         //     console.log(util.inspect(diff.details));
+         // }
+         
+         // if(totalTransReceived === 500) {
+         //     console.log('gc running');
+         //     global.gc();
+         // }
+
 
          if (err) {
               totalErrorTrans++;
@@ -134,18 +141,20 @@ app.post('/kioskdata',function(req,res) {
               res.end('');
 
          } else {
-              process.send({ cmd: 'totalSuccess' });
+             // process.send({ cmd: 'totalSuccess' });
               totalSuccessfulTrans++;
               delete req; 
               //console.log('data written');
-
-              res.writeHead(200, {'Content-Type': 'text/plain'});
-              res.end('');
+              
+              res.send(200);
+              delete res;
+              res = null;
+              // res.writeHead(200, {'Content-Type': 'text/plain'});
+              // res.end('');
 
          }
      });
 
-       
 });
 
 
@@ -170,7 +179,7 @@ app.post('/slotdata',function(req,res){
 
      slotTableFilter.ProcessTrans(req.body,function(err,results){
          totalTransReceived++;
-         process.send({ cmd: 'totalTrans' });
+        // process.send({ cmd: 'totalTrans' });
 
          if (err) {
               totalErrorTrans++;
@@ -181,7 +190,7 @@ app.post('/slotdata',function(req,res){
               res.end('');
 
          } else {
-              process.send({ cmd: 'totalSuccess' });
+             // process.send({ cmd: 'totalSuccess' });
               totalSuccessfulTrans++;
               delete req; 
               //console.log('data written');
@@ -203,42 +212,56 @@ var options = {
 
 
 if (cluster.isMaster) {
-  function messageHandler(msg) {
-    if (msg.cmd && msg.cmd == 'totalTrans') {
-       totalTransReceived++;
-    } else if (msg.cmd && msg.cmd == 'totalErrors') {
-      totalErrorTrans++;
-    } else if (msg.cmd && msg.cmd == 'totalSuccess') {
-      totalSuccessfulTrans++;
-    }
-  }
+  // function messageHandler(msg) {
+  //   if (msg.cmd && msg.cmd == 'totalTrans') {
+  //      totalTransReceived++;
+  //   } else if (msg.cmd && msg.cmd == 'totalErrors') {
+  //     totalErrorTrans++;
+  //   } else if (msg.cmd && msg.cmd == 'totalSuccess') {
+  //     totalSuccessfulTrans++;
+  //   }
+  // }
 
   // Fork workers.
   for (var i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
 
-Object.keys(cluster.workers).forEach(function(id) {
-    cluster.workers[id].on('message', messageHandler);
-  });
+// Object.keys(cluster.workers).forEach(function(id) {
+//     cluster.workers[id].on('message', messageHandler);
+//   });
 
   cluster.on('exit', function(worker, code, signal) {
     console.log('worker ' + worker.process.pid + ' died');
   });
 } else {
+
+var timer = (1000 * 60) * 10;
+
+setInterval(function(){
+  global.gc();
+  console.log('Mem used: ' + util.inspect(process.memoryUsage())); 
+},timer);
+
+
   
     https.createServer(options, app).listen(app.get('port'),function(){
-
     console.log("https Express server listening on port " + app.get('port'));
 });
 
+
+ // http.createServer(app).listen(app.get('port'), function(){
+ //  console.log("Express server listening on port " + app.get('port'));
+ // });
+
+
 }
 
-//  http.createServer(app).listen(app.get('port'), function(){
-//   console.log("Express server listening on port " + app.get('port'));
-//  });
+ // http.createServer(app).listen(app.get('port'), function(){
+ //  console.log("Express server listening on port " + app.get('port'));
+ // });
 
-// });
+//});
 
 
 
