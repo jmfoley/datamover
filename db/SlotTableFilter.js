@@ -28,28 +28,29 @@ function ProcessTrans(data,callback){
   	    }
 
       });
-    } else if( data.operation === 'routedrop') {
-
-      slotAlarms.WriteRouteDropAlarm(data,function(err,results) {
-        if (err) {
-          console.log('WriteRouteDropAlarm error: ' + err);
-          Utils.LogError(data,err,function(err,results) {
-
-          });
-
-          data = null;
-          callback(err,null);
-        } else {
-          //console.log('Event written');
-          data = null;
-          callback(null,results);
-        }
-
-      });
-
-
-
     }
+    // } else if( data.operation === 'routedrop') {
+    //   console.log('******* route drop received************');
+    //   slotAlarms.WriteRouteDropAlarm(data,function(err,results) {
+    //     if (err) {
+    //       console.log('WriteRouteDropAlarm error: ' + err);
+    //       Utils.LogError(data,err,function(err,results) {
+
+    //       });
+
+    //       data = null;
+    //       callback(err,null);
+    //     } else {
+    //       //console.log('Event written');
+    //       data = null;
+    //       callback(null,results);
+    //     }
+
+    //   });
+
+
+
+    // }
   
   } else if (data.table === 'ticketmeters') {
       console.log('ticketmeters received');
@@ -228,9 +229,28 @@ function ProcessTrans(data,callback){
         }
          
         });
+    // } else if( data.operation === 'editmachine') {
+
+    //     netSock.EditMachine(data,function(err,results) {
+    //      if (err) {
+    //       console.log('EditMachine error: ' + err);
+    //       Utils.LogError(data,err,function(err,results) {
+
+    //       });
+
+    //       data = null;
+    //       callback(err,null);
+    //     } else {
+    //       //console.log('Event written');
+    //       data = null;
+    //       callback(null,results);
+    //     }
+         
+    //     });
+
+    // }
+
+
     }
-
-
-  }
-
+ }
 }exports.ProcessTrans = ProcessTrans;

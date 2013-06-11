@@ -88,6 +88,8 @@ function WriteRouteDropAlarm(data,callback){
     var connection;
     var updated =  new Date();
     var iDate = new Date(data.initdate);
+     
+     console.log('****In WriteRoueDropAlarm****');
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
       if(err){
@@ -96,8 +98,7 @@ function WriteRouteDropAlarm(data,callback){
        } else { 
           connection = results;
           sql = 'insert into sl_alarms(operatorid,mach_num,slot_id,alarm_code,initiated,initiated_date,initiated_time,' +
-                'install_mach,propid,alarm_id) select @oper,@mach,slot_id,@code,@initdate,@idate,@itime,@dropsession,@propid,@alarmid ' +
-                'from slots where mach_num = @mach and propid = @propid';
+                'install_mach,propid,alarm_id) values( @oper,@mach,@slotid,@code,@initdate,@idate,@itime,@dropsession,@propid,@alarmid)';
 
           var request = new Request(sql,function(err,results) {
             if (err) {
@@ -123,14 +124,15 @@ function WriteRouteDropAlarm(data,callback){
 
             request.addParameter('oper', TYPES.Int,data.operatorid);
             request.addParameter('mach', TYPES.Int,data.mach);
-            request.addParameter('date', TYPES.DateTime, updated());
+            request.addParameter('date', TYPES.DateTime, updated);
             request.addParameter('idate', TYPES.VarChar, data.date);
             request.addParameter('itime', TYPES.VarChar, data.time);
             request.addParameter('dropsession', TYPES.Int, data.dropsession);
-            request.addParameter('prop', TYPES.Int,data.propid);
+            request.addParameter('propid', TYPES.Int,data.propid);
             request.addParameter('alarmid', TYPES.Int,data.alarmid);
             request.addParameter('code', TYPES.Int,data.alarmcode);
             request.addParameter('initdate', TYPES.DateTime, iDate);
+            request.addParameter('slotid', TYPES.Int,data.slotid);
        
             connection.execSql(request);
        }

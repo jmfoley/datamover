@@ -59,6 +59,8 @@ function WriteMultiGameConfig(data,callback){
     var insert;
     var updated = new Date();
 
+    console.log('In WriteMultiGameConfig');
+
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     	if (err) {
             errMsg = 'GetDbConnection error: ' + err;
@@ -72,8 +74,8 @@ function WriteMultiGameConfig(data,callback){
                 } else {
                    if (rowCount < 1) {
                        sql = 'insert into sc_multigameconfig (operatorId,machineNumber,multiTypeId,multiTypeDesc,payTableId,' +
-                             'parPct,maxBet,denom,gameEnabled,status,updatedBy,updatedFrom,updated,multiTypeRecId)values(@oper,@mach,@type,' +
-                             '@desc,@pay,@par,@max,@denom,@enabled,@status,@updatedBy,@updatedFrom,@date@recid)';
+                             'parPct,maxBet,denom,gameEnabled,status,updatedBy,updatedFrom,updated,multiTypeRecId,propid)values(@oper,@mach,@type,' +
+                             '@desc,@pay,@par,@max,@denom,@enabled,@status,@updatedBy,@updatedFrom,@date,@recid,@prop)';
 
                         var request = new Request(sql,function(err,results) {
                             if (err) {

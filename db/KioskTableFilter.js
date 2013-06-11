@@ -7,6 +7,8 @@ var Utils  = require('./Utils');
 var DropMeters = require('./DropMeters');
 var Tickets = require('./Tickets');
 var tenCoin = require('./TenCoin');
+var slotAlarms = require('./SlotAlarms');
+var netSock = require('./NetSock');
 
 
 
@@ -15,7 +17,56 @@ function callback(error,results){};
 
 function ProcessTrans(data,callback){
 
-    if(data.table === 'db_unitevents') {
+
+    if(data.table === 'sl_alarms') {
+      if( data.operation === 'routedrop') {
+        console.log('******* route drop received************');
+        slotAlarms.WriteRouteDropAlarm(data,function(err,results) {
+          if (err) {
+            console.log('WriteRouteDropAlarm error: ' + err);
+            Utils.LogError(data,err,function(err,results) {
+
+            });
+
+            data = null;
+            callback(err,null);
+          } else {
+          //console.log('Event written');
+            data = null;
+            callback(null,results);
+        }
+
+      });
+
+
+
+     }
+
+    } else if (data.table === 'slots') {
+    
+      if( data.operation === 'editmachine') {
+
+            netSock.EditMachine(data,function(err,results) {
+             if (err) {
+              console.log('EditMachine error: ' + err);
+              Utils.LogError(data,err,function(err,results) {
+
+              });
+
+              data = null;
+              callback(err,null);
+            } else {
+              //console.log('Event written');
+              data = null;
+              callback(null,results);
+            }
+             
+            });
+
+        }
+
+
+    } else if(data.table === 'db_unitevents') {
  	    KioskEvents.WriteKioskEvent(data,function(err,results){
  		    if (err) {
  			    console.log('WriteEvents error: ' + err);
@@ -105,6 +156,7 @@ function ProcessTrans(data,callback){
                  	 callback(null,results);
                  }
              });
+             
          } else if (data.operation === 'update') {
 
                  atm.UpdateAtmTrans(data,function(err,results) {

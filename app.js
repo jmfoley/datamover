@@ -53,6 +53,40 @@ memwatch.on('leak', function(info) {
    //console.log('mem stats: ' + util.inspect(stats));
  });
 
+
+if (cluster.isMaster) {
+  // function messageHandler(msg) {
+  //   if (msg.cmd && msg.cmd == 'totalTrans') {
+  //      totalTransReceived++;
+  //   } else if (msg.cmd && msg.cmd == 'totalErrors') {
+  //     totalErrorTrans++;
+  //   } else if (msg.cmd && msg.cmd == 'totalSuccess') {
+  //     totalSuccessfulTrans++;
+  //   }
+  // }
+
+  // Fork workers.
+  for (var i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+// Object.keys(cluster.workers).forEach(function(id) {
+//     cluster.workers[id].on('message', messageHandler);
+//   });
+
+  cluster.on('exit', function(worker, code, signal) {
+    console.log('worker ' + worker.process.pid + ' died');
+  });
+} else {
+
+var timer = (1000 * 60) * 10;
+
+setInterval(function(){
+  global.gc();
+  console.log('Mem used: ' + util.inspect(process.memoryUsage())); 
+},timer);
+
+
 var app = express();
 
 
@@ -154,6 +188,7 @@ app.post('/kioskdata',function(req,res) {
 
          }
      });
+    //res.send(201);
 
 });
 
@@ -211,37 +246,9 @@ var options = {
 };
 
 
-if (cluster.isMaster) {
-  // function messageHandler(msg) {
-  //   if (msg.cmd && msg.cmd == 'totalTrans') {
-  //      totalTransReceived++;
-  //   } else if (msg.cmd && msg.cmd == 'totalErrors') {
-  //     totalErrorTrans++;
-  //   } else if (msg.cmd && msg.cmd == 'totalSuccess') {
-  //     totalSuccessfulTrans++;
-  //   }
-  // }
 
-  // Fork workers.
-  for (var i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
 
-// Object.keys(cluster.workers).forEach(function(id) {
-//     cluster.workers[id].on('message', messageHandler);
-//   });
 
-  cluster.on('exit', function(worker, code, signal) {
-    console.log('worker ' + worker.process.pid + ' died');
-  });
-} else {
-
-var timer = (1000 * 60) * 10;
-
-setInterval(function(){
-  global.gc();
-  console.log('Mem used: ' + util.inspect(process.memoryUsage())); 
-},timer);
 
 
   
