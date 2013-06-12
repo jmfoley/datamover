@@ -206,6 +206,7 @@ function EditMachine( data,callback) {
 
   var sql = '';
   var connection;
+  var updated = new Date();
 
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         if (err) {
@@ -217,9 +218,9 @@ function EditMachine( data,callback) {
            sql = 'update slots set slot_id = @SlotId, ' +
                  'mach_denom = (select denom from sl_type where type_id = @TypeId), mach_par = (select mach_par from sl_type where type_id = @TypeId), manuf_theor_par = (select manuf_theor_par from sl_type where type_id = @TypeId), ' +
                  'type_id = @TypeId, style_id = @StyleId, ' +
-                 'status = @Status, statusdate = getdate(), status_by = @UserID, ' +
+                 'status = @Status, statusdate = @date, status_by = @UserID, ' +
                  'point_factor = (select point_factor from sl_type where type_id = @TypeId), ' +
-                 'userid = @UserID, updated = getdate(), subtractforecast = (select subtractforecast from sl_type where type_id = @TypeId), ' +                 
+                 'userid = @UserID, updated = @date, subtractforecast = (select subtractforecast from sl_type where type_id = @TypeId), ' +                 
                  'serial_id = @serialId, model_id = @modelId, licenseNum = @licenseNum ' +                 
                  ' where mach_num = @MachNum and propid = @propid';
 
@@ -230,6 +231,7 @@ function EditMachine( data,callback) {
                     connection = null;
                     sql = null;
                     delete request;
+                    delete updated;
                     callback(errMsg,null);
 
                 } else {
@@ -238,6 +240,7 @@ function EditMachine( data,callback) {
                    connection = null;
                    sql = null;
                    delete request;
+                   delete updated;
                    callback(null,results);
 
                 }
@@ -255,6 +258,7 @@ function EditMachine( data,callback) {
             request.addParameter('modelId', TYPES.VarChar,data.modelid);
             request.addParameter('licenseNum', TYPES.VarChar,data.licnum);
             request.addParameter('propid', TYPES.Int,data.propid);
+            request.addParameter('date', TYPES.DateTime,updated);
 
 
             connection.execSql(request);
