@@ -5,6 +5,8 @@ var dbConnect = require('./DbConnectionPool')
 var errMsg = '';
 
 
+
+
 function RemoveMachineEftMeters(connection,data,callback) {
     var sql = 'update eftmeters set slot_id = 0 where mach_num = @mach and propid = @propid';
 
@@ -198,6 +200,75 @@ function RemoveMachine( data, callback) {
     });
 
 }exports.RemoveMachine = RemoveMachine;
+
+
+function EditMachine( data,callback) {
+
+  var sql = '';
+  var connection;
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+        if (err) {
+            errMsg = 'GetDbConnection error: ' + err;
+            callback(errMsg,null);
+
+        } else {
+           connection = results;
+           sql = 'update slots set slot_id = @SlotId, ' +
+                 'mach_denom = (select denom from sl_type where type_id = @TypeId), mach_par = (select mach_par from sl_type where type_id = @TypeId), manuf_theor_par = (select manuf_theor_par from sl_type where type_id = @TypeId), ' +
+                 'type_id = @TypeId, style_id = @StyleId, ' +
+                 'status = @Status, statusdate = getdate(), status_by = @UserID, ' +
+                 'point_factor = (select point_factor from sl_type where type_id = @TypeId), ' +
+                 'userid = @UserID, updated = getdate(), subtractforecast = (select subtractforecast from sl_type where type_id = @TypeId), ' +                 
+                 'serial_id = @serialId, model_id = @modelId, licenseNum = @licenseNum ' +                 
+                 ' where mach_num = @MachNum and propid = @propid';
+
+            var request = new Request(sql,function(err,results) {                 
+                if (err) {
+                    errMsg = 'EditMachine error: '  + err;
+                    connection.close();
+                    connection = null;
+                    sql = null;
+                    delete request;
+                    callback(errMsg,null);
+
+                } else {
+
+                   connection.close();
+                   connection = null;
+                   sql = null;
+                   delete request;
+                   callback(null,results);
+
+                }
+
+            });
+
+            request.addParameter('MachNum', TYPES.Int,data.mach);
+            request.addParameter('SlotId', TYPES.Int,data.slotid);
+            request.addParameter('TypeId', TYPES.VarChar,data.typeid);
+            request.addParameter('StyleId', TYPES.VarChar, data.styleid);
+            request.addParameter('Status', TYPES.VarChar,data.status);
+            request.addParameter('WorkStation', TYPES.VarChar,data.workstation);
+            request.addParameter('UserID', TYPES.VarChar,data.userid);
+            request.addParameter('serialId', TYPES.VarChar,data.serialid);
+            request.addParameter('modelId', TYPES.VarChar,data.modelid);
+            request.addParameter('licenseNum', TYPES.VarChar,data.licnum);
+            request.addParameter('propid', TYPES.Int,data.propid);
+
+
+            connection.execSql(request);
+            
+
+
+        }
+
+   });
+
+
+}exports.EditMachine = EditMachine;
+
+
 
 
 function AddMachine(data,callback) {
