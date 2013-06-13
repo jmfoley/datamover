@@ -1,7 +1,8 @@
 var Connection = require('tedious').Connection;
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
-var dbConnect = require('./DbConnectionPool')
+var dbConnect = require('./DbConnectionPool');
+var util = require('util');
 var errMsg = '';
 
 
@@ -14,6 +15,8 @@ function UpdateLastCom( data,callback) {
     var lastCom = new Date(data.lastcom);
     var updated = new Date();
     
+
+    console.log(util.inspect(data));
     console.log('In UpdateLastCom');
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         if (err) {

@@ -12,9 +12,9 @@ function callback(error,results){};
 
 function CheckMultiGameConfig(connection,data,callback) {
     var records;
-    var sql = 'select count(*) from sc_multigameconfig where machineNumber = @mach and propid = @propid';
+    var sql = 'select count(*) from sc_multigameconfig where machineNumber = @mach and propid = @propid and multiTypeId = @game';
 
-
+    console.log('in check multigame config');
     var request = new Request(sql,function(err,rowCount) {
     	if (err) {
             sql = null;
@@ -31,8 +31,8 @@ function CheckMultiGameConfig(connection,data,callback) {
 
 
         request.addParameter('mach', TYPES.Int,data.mach);
-        request.addParameter('recid', TYPES.VarChar,data.recid);
         request.addParameter('propid', TYPES.Int,data.propid);
+        request.addParameter('game', TYPES.Int,data.game);
 
        request.on('row', function(columns) {
           columns.forEach(function(column) {
@@ -72,6 +72,7 @@ function WriteMultiGameConfig(data,callback){
                 if( err ) {
                    callback(err,null) ;
                 } else {
+                  console.log('***rowcount = : ' + rowCount);
                    if (rowCount < 1) {
                        sql = 'insert into sc_multigameconfig (operatorId,machineNumber,multiTypeId,multiTypeDesc,payTableId,' +
                              'parPct,maxBet,denom,gameEnabled,status,updatedBy,updatedFrom,updated,multiTypeRecId,propid)values(@oper,@mach,@type,' +
@@ -103,9 +104,9 @@ function WriteMultiGameConfig(data,callback){
                         request.addParameter('prop', TYPES.Int,data.propid);
                         request.addParameter('mach', TYPES.Int,data.mach);
                         request.addParameter('type', TYPES.Int,data.game);
-                        request.addParameter('desc', TYPES.Varchar,'');
+                        request.addParameter('desc', TYPES.VarChar,'');
                         request.addParameter('pay',  TYPES.VarChar,data.paytable);
-                        request.addParameter('par',  TYPES.Numeric,data.par);
+                        request.addParameter('par',  TYPES.Float,data.par);
                         request.addParameter('max',  TYPES.Int,data.max);
                         request.addParameter('denom',TYPES.Int,data.denom);
                         request.addParameter('enabled', TYPES.Bit,data.enabled);
@@ -113,7 +114,7 @@ function WriteMultiGameConfig(data,callback){
                         request.addParameter('updatedby', TYPES.VarChar,data.updatedby);
                         request.addParameter('updatedfrom', TYPES.VarChar,data.updatedfrom);
                         request.addParameter('date', TYPES.DateTime,updated);
-                        request.addParameter('recid', TYPES.VarChar,data.recid);
+                        request.addParameter('recid', TYPES.UniqueIdentifierN,data.recid);
 
                         connection.execSql(request);
 

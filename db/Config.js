@@ -3,6 +3,7 @@ var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var dbConnect = require('./DbConnectionPool')
 var errMsg = '';
+var util = require('util');
 
 function callback(error,results){};
 
@@ -13,12 +14,14 @@ function UpdateMultiGameDesc( data,callback) {
   var sql = '';
   var connection;
   var updated =  new Date(); 
-
+  
+  console.log(util.inspect(data));
   dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     if (err){
       errMsg = 'GetDbConnection error: ' + err;
       callback(errMsg,null);
     } else {
+      connection = results;  
       sql = 'update sc_multigameconfig set multitypedesc = @desc,updated = @date,updatedby = @updatedby,' +
             'updatedfrom = @updatedfrom,maxbet = @max,denom = @denom where multitypeid = @gamenum and ' +
             'machinenumber = @mach and propid = @propid';
@@ -34,7 +37,7 @@ function UpdateMultiGameDesc( data,callback) {
                sql = null;
                delete request;
                delete updated;
-          callback(null,records);
+          callback(null,results);
         }
 
       });
@@ -49,7 +52,7 @@ function UpdateMultiGameDesc( data,callback) {
       request.addParameter('mach', TYPES.Int,data.mach);
       request.addParameter('propid', TYPES.Int,data.propid);
 
-
+      connection.execSql(request);
 
     }
 
