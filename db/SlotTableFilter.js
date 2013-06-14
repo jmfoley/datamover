@@ -251,6 +251,24 @@ function ProcessTrans(data,callback){
     // }
 
 
+    } else if (data.operation === 'add_update_machine') {
+       netSock.AddUpdateMachine(data,function(err,results) {
+         if (err) {
+          console.log('AddUpdateMachine error: ' + err);
+          Utils.LogError(data,err,function(err,results) {
+
+          });
+
+          data = null;
+          callback(err,null);
+        } else {
+          //console.log('Event written');
+          data = null;
+          callback(null,results);
+        }
+        
+       });
+
     }
  }
 }exports.ProcessTrans = ProcessTrans;
