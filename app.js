@@ -31,13 +31,6 @@ var express = require('express')
 
   var util = require('util');
 
-  //var heapdump = require('heapdump');
-
-  var startDate = new Date();
-  var totalTransReceived = new Number(0);
-  var totalSuccessfulTrans = new Number(0);
-  var totalErrorTrans = new Number(0);
-
 
 memwatch.on('leak', function(info) { 
   console.log('Memory leak detected: ' + util.inspect(info));
@@ -79,6 +72,14 @@ if (cluster.isMaster) {
   });
 } else {
 
+
+  var startDate = new Date();
+  var totalTransReceived = new Number(0);
+  var totalSuccessfulTrans = new Number(0);
+  var totalErrorTrans = new Number(0);
+
+
+
 var timer = (1000 * 60) * 10;
 
 setInterval(function(){
@@ -100,8 +101,8 @@ app.configure(function(){
   //app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.cookieParser('your secret here'));
-  app.use(express.session());
+  //app.use(express.cookieParser('your secret here'));
+  //app.use(express.session());
   app.use(app.router);
   app.use(require('stylus').middleware(__dirname + '/public'));
   app.use(express.static(path.join(__dirname, 'public')));
@@ -143,6 +144,10 @@ var stats =
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.end(JSON.stringify(stats));
 
+    stats = null;
+    delete req;
+    delete res;
+
 
 });
 
@@ -153,17 +158,6 @@ app.post('/kioskdata',function(req,res) {
      kioskTableFilter.ProcessTrans(req.body,function(err,results){
          totalTransReceived++;
         // process.send({ cmd: 'totalTrans' });
-
-         //  if(totalTransReceived === 500) {
-         //     var diff = hd.end();
-         //     console.log(util.inspect(diff));
-         //     console.log(util.inspect(diff.details));
-         // }
-         
-         // if(totalTransReceived === 500) {
-         //     console.log('gc running');
-         //     global.gc();
-         // }
 
 
          if (err) {
@@ -178,17 +172,15 @@ app.post('/kioskdata',function(req,res) {
              // process.send({ cmd: 'totalSuccess' });
               totalSuccessfulTrans++;
               delete req; 
-              //console.log('data written');
+
               
               res.send(200);
               delete res;
               res = null;
-              // res.writeHead(200, {'Content-Type': 'text/plain'});
-              // res.end('');
 
          }
      });
-    //res.send(201);
+
 
 });
 
