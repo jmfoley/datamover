@@ -63,6 +63,26 @@ function ProcessTrans(data,callback){
              
             });
 
+        } else if (data.operation === 'activate_pending_machine') {
+
+            netSock.ActivatePendingMachine(data,function(err,results) {
+             if (err) {
+              console.log('EditMachine error: ' + err);
+              Utils.LogError(data,err,function(err,results) {
+
+              });
+
+              data = null;
+              callback(err,null);
+            } else {
+              //console.log('Event written');
+              data = null;
+              callback(null,results);
+            }
+             
+            });
+
+
         }
 
 
@@ -772,7 +792,7 @@ function ProcessTrans(data,callback){
 
 
    } else if (data.table === 'sc_multigameconfig') {
-
+       console.log('In multigame config');
        KioskUnit.UpdateMultiGameDesc(data,function(err,results) {
 
             if (err) {

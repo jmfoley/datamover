@@ -404,4 +404,54 @@ function AddUpdateMachine(data,callback) {
 }exports.AddUpdateMachine = AddUpdateMachine;
 
 
+function ActivatePendingMachine(data,callback) {
+  var sql = '';
+  var connection;
+  var statusdate = new Date(data.statusdate);
+
+  dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+      if (err) {
+          errMsg = 'GetDbConnection error: ' + err;
+          callback(errMsg,null);
+
+      } else {
+        connection = results;
+        sql = 'update slots set status = @status,statusdate = @statusdate,status_by = @user where ' +
+              'mach_num = @mach and propid = @propid';
+
+        var request = new Request(sql,function(err,results) {
+            if (err) {
+                errMsg = 'ActivatePendingMachine error: '  + err;
+                connection.close();
+                connection = null;
+                sql = null;
+                delete request;
+                callback(errMsg,null);
+
+            } else {
+
+               connection.close();
+               connection = null;
+               sql = null;
+               delete request;
+               callback(null,results);
+
+            }
+        });
+     
+        request.addParameter('status', TYPES.VarChar,data.status);
+        request.addParameter('statusdate', TYPES.DateTime,statusdate);
+        request.addParameter('user', TYPES.VarChar,data.user);
+        request.addParameter('mach', TYPES.Int, data.mach);
+        request.addParameter('propid', TYPES.Int, data.propid);
+
+        connection.execSql(request);
+
+      }
+   
+   });
+
+}exports.ActivatePendingMachine = ActivatePendingMachine;
+
+
 

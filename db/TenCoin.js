@@ -14,7 +14,7 @@ function StartTenCoinTest( data,callback) {
   var connection;
   var reportDate = new Date(data.reportdate);
   var updated = new Date();
-
+  console.log('In StartTenCoin');
   dbConnect.GetDbConnection(data.operatorid,function(err,results) {
   	if (err){
 	    errMsg = 'GetDbConnection error: ' + err;
@@ -32,7 +32,7 @@ function StartTenCoinTest( data,callback) {
                     'b.RedeemPromo_ct, CAST(b.RedeemPromo_amt * 100 as int) as RedeemPromo_amt, b.PrintedCashable_ct, CAST(b.PrintedCashable_amt * 100 as int) as PrintedCashable_amt, b.PrintedPromo_ct, CAST(b.PrintedPromo_amt * 100 as int) as PrintedPromo_amt, ' +
                     'c.CashableCredits, c.cashableCreditsOut, c.PromoCredits, c.promoCreditsOut, @userId, @workstation, @userId, @workstation, @propId, @date, ' +
                     '@reportNum, b.machPaidExternBonus, b.attPaidExternBonus, b.machPaidProgBonus, b.attPaidProgBonus from slots a left outer join ticketMeters b on a.mach_num = b.mach_num ' +
-                    'left outer join EFTMeters c on a.mach_num = c.mach_num where a.mach_num = @machineNumber';
+                    'and a.propid = b.propid left outer join EFTMeters c on a.mach_num = c.mach_num and a.propid = c.propid where a.mach_num = @machineNumber and a.propid = @propid';
 
 
         var request = new Request(sql,function(err,results) {
