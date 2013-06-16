@@ -83,7 +83,7 @@ function WriteDropDetail( data,callback) {
    var connection;
    var errMsg = '';
    var sql = '';
-   var updated;
+   var updated = new Date();
 
    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
       if (err) {
