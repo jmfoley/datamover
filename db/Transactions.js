@@ -284,6 +284,7 @@ function WriteKioskTrans(data,callback) {
     var transTime = new Date(data.transtarttime);
     var updated = new Date();
 
+
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
          if (err) {
@@ -331,7 +332,7 @@ function WriteKioskTrans(data,callback) {
         request.addParameter('transamount', TYPES.Int,data.transamount);
         request.addParameter('transstatus', TYPES.Int,data.transstatus);
         request.addParameter('transstarttime', TYPES.DateTime,transTime);
-        request.addParameter('gameday', TYPES.DateTime,updated);
+        request.addParameter('gameday', TYPES.VarChar,data.gameday);
         request.addParameter('valnum', TYPES.NVarChar,data.valnum);
         request.addParameter('sessionid', TYPES.Int,data.sessionid);
         request.addParameter('cardid', TYPES.Int,data.cardid);
