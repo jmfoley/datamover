@@ -13,7 +13,6 @@ function UpdateLastCom( data,callback) {
     var sql = '';
     var connection;
     var lastCom = new Date(data.lastcom);
-    var updated = new Date();
     
 
     console.log(util.inspect(data));
@@ -25,7 +24,7 @@ function UpdateLastCom( data,callback) {
 
         } else {
             connection = results;
-            sql = 'update slots set last_com_datetime = @lastcom,updated = @date,netsock_ip = @port where ' +
+            sql = 'update slots set last_com_datetime = @lastcom,netsock_ip = @port where ' +
                   'mach_num = @mach and propid = @propid';
 
             var request = new Request(sql,function(err,results) {
@@ -54,7 +53,7 @@ function UpdateLastCom( data,callback) {
 
 
             request.addParameter('lastcom', TYPES.DateTime, lastCom);
-            request.addParameter('date', TYPES.DateTime,updated);
+//            request.addParameter('date', TYPES.DateTime,updated);
             request.addParameter('port', TYPES.VarChar,data.port);
             request.addParameter('mach', TYPES.Int,data.mach);
             request.addParameter('propid', TYPES.Int,data.propid);
