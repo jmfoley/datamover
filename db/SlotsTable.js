@@ -35,7 +35,6 @@ function UpdateLastCom( data,callback) {
                     sql = null;
                     delete request;
                     delete lastCom;
-                    delete updated;
                     callback(errMsg,null);
 
 
@@ -45,7 +44,6 @@ function UpdateLastCom( data,callback) {
                    sql = null;
                    delete request;
                    delete lastCom;
-                   delete updated;
                    callback(null,results);
 
                 }
