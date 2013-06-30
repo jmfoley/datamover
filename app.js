@@ -98,7 +98,7 @@ app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
-  //app.use(express.logger('dev'));
+  app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   //app.use(express.cookieParser('your secret here'));
@@ -108,7 +108,7 @@ app.configure(function(){
   app.use(express.static(path.join(__dirname, 'public')));
 });
 
-app.configure('production', function(){
+app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
@@ -117,11 +117,19 @@ app.get('/',function(req,res) {
     var agent = ua(req.headers['user-agent']);
     if( agent.Mobile === true && agent.iPad === false){
           console.log('mobile');
+          res.set({
+           'Connection': 'close',
+          })
+
           res.render('index-mobile',{
               title:'mobile'
           });
     }else {
       console.log('desktop');
+      res.set({
+       'Connection': 'close',
+      })
+
       res.render('index',{
         title:'Desktop View'
       });
@@ -173,7 +181,13 @@ app.post('/kioskdata',function(req,res) {
               totalSuccessfulTrans++;
               delete req; 
 
-              
+              res.set({
+               'Content-Type': 'text/plain',
+               'Connection': 'close',
+              })
+
+
+
               res.send(200);
               delete res;
               res = null;
@@ -222,8 +236,19 @@ app.post('/slotdata',function(req,res){
               delete req; 
               //console.log('data written');
 
-              res.writeHead(200, {'Content-Type': 'text/plain'});
-              res.end('');
+              res.set({
+               'Content-Type': 'text/plain',
+               'Connection': 'close',
+              })
+
+
+
+              res.send(200);
+
+
+
+              // res.writeHead(200, {'Content-Type': 'text/plain'});
+              // res.end('');
 
          }
      });
