@@ -15,7 +15,7 @@ function WriteDropMeters( data,callback) {
    var connection;
    var errMsg = '';
    var sql = '';
-   var updated = new Date();
+   var updated = new Date(data.date);
 
    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
       if (err) {

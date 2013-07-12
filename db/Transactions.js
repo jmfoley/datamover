@@ -331,7 +331,7 @@ function WriteKioskTrans(data,callback) {
         request.addParameter('transnumber', TYPES.Int,data.transnumber);
         request.addParameter('transamount', TYPES.Int,data.transamount);
         request.addParameter('transstatus', TYPES.Int,data.transstatus);
-        request.addParameter('transstarttime', TYPES.DateTime,transTime);
+        request.addParameter('transstarttime', TYPES.DateTime,updated);
         request.addParameter('gameday', TYPES.VarChar,data.gameday);
         request.addParameter('valnum', TYPES.NVarChar,data.valnum);
         request.addParameter('sessionid', TYPES.Int,data.sessionid);
