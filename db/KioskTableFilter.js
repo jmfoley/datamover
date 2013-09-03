@@ -16,7 +16,7 @@ function callback(error,results){};
 
 
 function ProcessTrans(data,callback){
-
+    
 
     if(data.table === 'sl_alarms') {
       if( data.operation === 'routedrop') {
@@ -261,7 +261,7 @@ function ProcessTrans(data,callback){
        
 
           if(data.operation === 'initial_write') {
-
+             console.log('initial_write');
              KioskTrans.WriteKioskTrans(data,function(err,results) {
 
              if (err) {
@@ -834,7 +834,69 @@ function ProcessTrans(data,callback){
 
        });
 
-   }
+   } else if (data.table === 'db_atmRequestMessages') {
+      atm.WriteAtmRequestMessage(data,function(err,results) {
+        if(err) {
+            console.log('WriteAtmRequestMessage error: ' + err);
+            Utils.LogError(data,err,function(err,results) {
+
+
+           });
+            data = null;
+            callback(err,null);
+
+        }
+
+      });
+
+   } else if (data.table === 'db_atmResponseMessages') {
+
+      atm.WriteAtmResponseMessage(data,function(err,results) {
+        if(err) {
+            console.log('WriteAtmResponseMessage error: ' + err);
+            Utils.LogError(data,err,function(err,results) {
+
+
+           });
+            data = null;
+            callback(err,null);
+
+        }
+
+      });
+
+
+   } else if (data.table === 'db_atmMessages'){
+      if(data.operation === 'insert'){
+        atm.WriteAtmMessage(data,function(err,results) {
+        if(err) {
+            console.log('WriteAtmMessage error: ' + err);
+            Utils.LogError(data,err,function(err,results) {
+
+
+           });
+            data = null;
+            callback(err,null);
+
+        }
+
+      });
+
+      } else if (data.operation === 'update'){
+          atm.UpdateAtmMessage(data,function(err,results) {
+            if(err) {
+                console.log('UpdateAtmMessage error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+
+               });
+             data = null;
+             callback(err,null);
+
+              }
+          });
+      }
+  }
     
 } exports.ProcessTrans = ProcessTrans
 ;
