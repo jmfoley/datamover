@@ -101,7 +101,7 @@ function WriteAtmMessage(data,callback) {
        request.addParameter('msgCon', TYPES.VarChar,data.messageContent);
        request.addParameter('trunc', TYPES.Int,data.truncated);
        request.addParameter('req', TYPES.Int,data.request);
-       request.addParameter('host', TYPES.Int,data.atmHost);
+       request.addParameter('host', TYPES.VarChar,data.atmHost);
        request.addParameter('par', TYPES.Int,data.parity);      
       request.addParameter('err', TYPES.VarChar,data.errorValue);
       request.addParameter('oper', TYPES.Int,data.operatorId);

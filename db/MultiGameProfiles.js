@@ -17,8 +17,9 @@ exports.SaveMultiGameProfileDetail = function(data,callback) {
             errMsg = 'GetDbConnection error: ' + err;
             callback(errMsg,null);
          } else {
+         	connection = results;
              sql = 'insert into sc_multigameprofiledetail(operatorId,recId,gameNumber,gameDesc,parPct,maxBet,denom,updated, ' +
-             	   'updatedBy)values(@oper,@recid,@game,@desc,@par,@max,@date,@updatedby)';
+             	   'updatedBy)values(@oper,@recid,@game,@desc,@par,@max,@denom,@date,@updatedby)';
 
 
              var request = new Request(sql,function(err,results) {
@@ -71,6 +72,7 @@ exports.SaveMultiGameProfile = function(data,callback) {
             errMsg = 'GetDbConnection error: ' + err;
             callback(errMsg,null);
          } else {
+         	connection = results;
              sql = 'insert into sc_multigameprofile(operatorId,recId,manufId,profileDesc,updated)values(@oper,@recid, ' +
              	   '@manuf,@desc,@date)';
 
@@ -150,12 +152,12 @@ exports.UpdateMachineProfile = function( data,callback) {
 
                 if(insert) {
                     request.addParameter('oper', TYPES.Int,data.operatorid);
-                    request.addParameter('prop', TYPES.Int,data.propId);
                 }
 
                 request.addParameter('mach', TYPES.Int,data.machinenumber);
                 request.addParameter('id', TYPES.VarChar,data.profileid);
-                request.addParameter('updatedby', TYPES.VarChar,updatedby);
+                request.addParameter('updatedby', TYPES.VarChar,data.updatedby);
+                request.addParameter('prop', TYPES.Int,data.propId);
                 request.addParameter('date', TYPES.DateTime, new Date());
                 
                 connection.execSql(request);
