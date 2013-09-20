@@ -7,6 +7,68 @@ var errMsg = '';
 function callback(error,results){};
 
 
+exports.UpdateMultiGameProfileDetail = function(data,callback) {
+    var sql = '';
+    var connection;
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+         if(err){
+            errMsg = 'GetDbConnection error: ' + err;
+            callback(errMsg,null);
+         } else {
+            connection = results;
+
+             sql = 'update sc_multigameprofiledetail set gameDesc = @desc,updated = @date,updatedby = @updatedby,maxbet = @max, ' +
+                   'denom = @denom,parpct = @par,paytableid = @paytableid where gamenumber = @game and recId = @recid';
+             // sql = 'insert into sc_multigameprofiledetail(operatorId,recId,gameNumber,gameDesc,parPct,maxBet,denom,updated, ' +
+             //       'updatedBy,payTableId)values(@oper,@recid,@game,@desc,@par,@max,@denom,@date,@updatedby,@paytableid)';
+
+
+             var request = new Request(sql,function(err,results) {
+
+                if (err) {
+                    errMsg = 'UpdateMultiGameProfileDetail error: '  + err;
+                    connection.close();
+                    connection = null;
+                    sql = null;
+                    delete request;
+                    callback(errMsg,null);
+                } else {
+                     connection.close();
+                     connection = null;
+                     sql = null;
+                     delete request;
+                     callback(null,results);
+                }
+
+            });
+
+                request.addParameter('recid', TYPES.UniqueIdentifierN,data.recid);
+                request.addParameter('game', TYPES.Int,data.gamenumber);
+                request.addParameter('desc', TYPES.VarChar,data.gamedesc);
+                request.addParameter('par', TYPES.Float, data.parpct);
+                request.addParameter('max', TYPES.Int, data.maxbet);
+                request.addParameter('denom', TYPES.Int, data.denom);
+                request.addParameter('date', TYPES.DateTime, new Date());
+                request.addParameter('updatedby', TYPES.VarChar,data.updatedby);
+                request.addParameter('paytableid', TYPES.VarChar,data.paytableid);
+
+                connection.execSql(request);
+
+
+
+         }
+
+     });
+
+
+}
+
+
+
+
+
+
 
 exports.SaveMultiGameProfileDetail = function(data,callback) {
 	var sql = '';

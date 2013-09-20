@@ -9,6 +9,7 @@ var Tickets = require('./Tickets');
 var tenCoin = require('./TenCoin');
 var slotAlarms = require('./SlotAlarms');
 var netSock = require('./NetSock');
+var profile = require('./MultiGameProfiles');
 
 
 
@@ -17,6 +18,9 @@ function callback(error,results){};
 
 function ProcessTrans(data,callback){
     
+
+
+
 
     if(data.table === 'sl_alarms') {
       if( data.operation === 'routedrop') {
@@ -896,6 +900,81 @@ function ProcessTrans(data,callback){
               }
           });
       }
+  } else if( data.table === 'db_multiGameMachineProfile') {
+    console.log('in db_multiGameMachineProfile');
+       profile.UpdateMachineProfile(data,function(err,results) {
+
+            if(err) {
+                console.log('UpdateMachineProfile error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+
+               });
+             data = null;
+             callback(err,null);
+
+              }
+
+
+    });
+  } else if(data.table === 'sc_multiGameProfile') {
+       console.log('in sc_multiGameProfile');
+       profile.SaveMultiGameProfile(data,function(err,results) {
+
+            if(err) {
+                console.log('SaveMultiGameProfile error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+
+               });
+             data = null;
+             callback(err,null);
+
+              }
+
+
+    });
+
+
+
+  } else if (data.table === 'sc_multiGameProfileDetail') {
+
+       if(data.operation === 'insert') {
+           profile.SaveMultiGameProfileDetail(data,function(err,results) {
+
+              if(err) {
+                  console.log('SaveMultiGameProfileDetail error: ' + err);
+                  Utils.LogError(data,err,function(err,results) {
+
+
+                 });
+                 data = null;
+                 callback(err,null);
+
+              }
+
+
+        });
+     } else if(data.operation === 'update') {
+
+           profile.UpdateMultiGameProfileDetail(data,function(err,results) {
+
+              if(err) {
+                  console.log('UpdateMultiGameProfileDetail error: ' + err);
+                  Utils.LogError(data,err,function(err,results) {
+
+
+                 });
+                 data = null;
+                 callback(err,null);
+
+              }
+
+
+        });
+
+     }
+
   }
     
 } exports.ProcessTrans = ProcessTrans
