@@ -19,7 +19,7 @@ exports.SaveMultiGameProfileDetail = function(data,callback) {
          } else {
          	connection = results;
              sql = 'insert into sc_multigameprofiledetail(operatorId,recId,gameNumber,gameDesc,parPct,maxBet,denom,updated, ' +
-             	   'updatedBy)values(@oper,@recid,@game,@desc,@par,@max,@denom,@date,@updatedby)';
+             	   'updatedBy,payTableId)values(@oper,@recid,@game,@desc,@par,@max,@denom,@date,@updatedby,@paytableid)';
 
 
              var request = new Request(sql,function(err,results) {
@@ -50,6 +50,7 @@ exports.SaveMultiGameProfileDetail = function(data,callback) {
                 request.addParameter('denom', TYPES.Int, data.denom);
                 request.addParameter('date', TYPES.DateTime, new Date());
                 request.addParameter('updatedby', TYPES.VarChar,data.updatedby);
+                request.addParameter('paytableid', TYPES.VarChar,data.paytableid);
 
                 connection.execSql(request);
 
