@@ -9,6 +9,52 @@ function callback(error,results){};
 
 
 
+function UpdateAtmId(data,callback){
+  var sql = '';
+  var connection;
+  var updated =  new Date(); 
+  
+  //console.log(util.inspect(data));
+  dbConnect.GetDbConnection(data.operatorid,function(err,results) {
+    if (err){
+      errMsg = 'GetDbConnection error: ' + err;
+      callback(errMsg,null);
+    } else {
+      connection = results;  
+      sql = 'update sc_units set atmTerminalId = @atmid where unitid = @id and ' +
+            'unitPropId = @propid';
+
+      var request = new Request(sql,function(err,results) {
+        if (err) {
+              sql = null;
+              delete request;
+              delete updated;
+              errMsg = 'UpdateAtmId error: '  + err;
+          callback(errMsg,null);
+        } else {
+               sql = null;
+               delete request;
+               delete updated;
+          callback(null,results);
+        }
+
+      });
+
+      request.addParameter('id', TYPES.Int,data.unit);
+      request.addParameter('propid', TYPES.Int,data.propid);
+      request.addParameter('atmid', TYPES.VarChar,data.atmterminal);
+
+      connection.execSql(request);
+
+    }
+
+
+  });
+
+
+}exports.UpdateAtmId = UpdateAtmId;
+
+
 function UpdateMultiGameDesc( data,callback) {
 
   var sql = '';
@@ -683,7 +729,7 @@ function UpdateDenomConfig(data,callback) {
         
         
             if (err) {
-                errMsg = 'DeleteUnitDenomConfig error: ' + err;
+                errMsg = 'UpdateDenomConfig error: ' + err;
                 connection.close();
                 connection = null;
                 sql = null;
