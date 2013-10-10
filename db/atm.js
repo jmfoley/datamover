@@ -8,6 +8,123 @@ function callback(error,results){};
 
 
 
+function UpdateAtmReversalReties(data,callback){
+  var sql = '';
+  var connection;
+  var created = new Date(data.updated);
+
+  dbConnect.GetDbConnection(data.operatorId,function(err,results) {
+    if(err){
+      errMsg = 'UpdateAtmReversalReties error ' + err;
+      callback(errMsg,null);
+    }else {
+
+      connection = results;
+      sql = 'update db_atmReversalRetries set track2 = @track2,completed = @comp,updated = @updated where recid = @recid and ' +
+            'unitId = @id and unitPropId = @prop';
+
+      var request = new Request(sql,function(err,results) {
+        if(err){
+          errMsg = 'UpdateAtmReversalReties error: ' + err;
+          connection.close();
+          connection = null;
+          sql = null;
+          delete request;
+          callback(errMsg,null);
+        } else {
+          connection.close();
+          connection = null;
+          sql = null;
+          delete request;
+  
+          callback(null,results);
+        }
+
+      });
+       request.addParameter('id', TYPES.Int,data.unitId);
+       request.addParameter('prop', TYPES.Int,data.propid);
+       request.addParameter('recid', TYPES.UniqueIdentifierN,data.recid);
+       request.addParameter('comp', TYPES.Bit,data.completed);
+       request.addParameter('track2', TYPES.VarChar,data.track2);
+       request.addParameter('updated', TYPES.DateTime,created);
+
+       
+       connection.execSql(request);
+
+
+    }
+  });
+
+
+}exports.UpdateAtmReversalReties = UpdateAtmReversalReties;
+
+
+
+
+
+function InsertAtmReversalReties(data,callback){
+  var sql = '';
+  var connection;
+  
+var created = new Date(data.updated);
+
+  dbConnect.GetDbConnection(data.operatorId,function(err,results) {
+    if(err){
+      errMsg = 'InsertAtmReversalReties error ' + err;
+      callback(errMsg,null);
+    }else {
+
+      connection = results;
+      sql = 'insert into db_atmReversalRetries(operatorId,unitId,unitPropId,recID,atmTransRecID,atmHost,terminalID,sequenceNumber,' +
+            'track2,amount1,amount2,actualDispensedAmount,reason,messageSequenceID,created,updated)values(@oper,@id,@prop,' +
+            '@recid,@transrecid,@host,@terminalid,@seqnum,@track2,@amt1,@amt2,@act,@reason,@msgseqid,@created,@updated)';
+
+      var request = new Request(sql,function(err,results) {
+        if(err){
+          errMsg = 'InsertAtmReversalReties error: ' + err;
+          connection.close();
+          connection = null;
+          sql = null;
+          delete request;
+          callback(errMsg,null);
+        } else {
+          connection.close();
+          connection = null;
+          sql = null;
+          delete request;
+  
+          callback(null,results);
+        }
+
+      });
+       request.addParameter('oper', TYPES.Int,data.operatorId);
+       request.addParameter('id', TYPES.Int,data.unitId);
+       request.addParameter('prop', TYPES.Int,data.propid);
+       request.addParameter('recid', TYPES.UniqueIdentifierN,data.recid);
+       request.addParameter('transrecid', TYPES.UniqueIdentifierN,data.atmtransrecid);
+       request.addParameter('host', TYPES.VarChar,data.atmhost);
+       request.addParameter('terminalid', TYPES.VarChar,data.terminalid);
+       request.addParameter('seqnum', TYPES.Int,data.seq);
+       request.addParameter('track2', TYPES.VarChar,data.track2);
+       request.addParameter('amt1', TYPES.Int,data.amount1);
+       request.addParameter('amt2', TYPES.Int,data.amount2);       
+       request.addParameter('act', TYPES.VarChar,data.actualdisamt);       
+       request.addParameter('reason', TYPES.Int,data.reason);
+       request.addParameter('msgseqid', TYPES.UniqueIdentifierN,data.messageid);    
+       request.addParameter('created', TYPES.DateTime,created);          
+       request.addParameter('updated', TYPES.DateTime,created);
+
+       
+       connection.execSql(request);
+
+
+    }
+  });
+
+
+}exports.InsertAtmReversalReties = InsertAtmReversalReties;
+
+
 function UpdateAtmMessage(data,callback) {
 
 var sql = '';

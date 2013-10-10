@@ -263,7 +263,7 @@ function CompleteCurrentTrans( data,callback) {
            request.addParameter('unitpropid', TYPES.Int,data.propid);
            request.addParameter('transnumber', TYPES.Int,data.transnumber);
 
-           if (data.amount > 0) {
+           if (data.transamount != '0') {
 
                request.addParameter('amount', TYPES.Int,data.transamount);               
            }
