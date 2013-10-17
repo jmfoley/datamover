@@ -135,7 +135,7 @@ function WriteMultiGameConfig(data,callback){
 
 function CheckMultiGameRecord(connection,data,callback) {
 
-    var sql = 'select count(*) from db_multigamemeters where machineNumber = @mach and gamenumber = @game and propid = @propid';
+    var sql = 'select count(*) from db_multigamemeters where machineNumber = @mach and gamenumber = @game and propid = @propid and recid = @rec';
     var records;
 
     var request = new Request(sql,function(err,rowCount) {
@@ -157,6 +157,7 @@ function CheckMultiGameRecord(connection,data,callback) {
         request.addParameter('mach', TYPES.Int,data.mach);
         request.addParameter('game', TYPES.Int,data.gamenumber);
         request.addParameter('propid', TYPES.Int,data.propid);
+        request.addParameter('rec', TYPES.Int,data.recid);
         
 
 
