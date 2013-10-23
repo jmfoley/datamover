@@ -10,6 +10,7 @@ var tenCoin = require('./TenCoin');
 var slotAlarms = require('./SlotAlarms');
 var netSock = require('./NetSock');
 var profile = require('./MultiGameProfiles');
+var util = require('util');
 
 
 
@@ -440,8 +441,28 @@ function ProcessTrans(data,callback){
                 }
            
            });
-       }
-   } else if (data.table === 'sc_unitConfig') {
+
+       }else if ( data.operation === 'update_atmid') {
+          KioskUnit.UpdateAtmId(data,function(err,results) {
+            if(err) {
+                console.log('UpdateSession error: ' + err);
+                Utils.LogError(data,err,function(err,results) {
+
+                });
+
+                data = null;
+                callback(err,null);
+
+            } else {
+             data = null;
+             callback(null,results);
+
+            }
+
+          });
+      }
+
+     } else if (data.table === 'sc_unitConfig') {
 
         if(data.operation === 'delete') {
 
@@ -974,6 +995,43 @@ function ProcessTrans(data,callback){
         });
 
      }
+
+  } else if( data.table === 'db_atmReversalRetries') {
+    if(data.operation === 'insert'){
+        atm.InsertAtmReversalReties(data,function(err,results) {
+              if(err) {
+                  console.log('InsertAtmReversalReties error: ' + err);
+                  Utils.LogError(data,err,function(err,results) {
+
+
+                 });
+                 data = null;
+                 callback(err,null);
+
+              }
+
+
+
+
+        });
+    } else if( data.operation === 'update'){
+        atm.UpdateAtmReversalReties(data,function(err,results) {
+              if(err) {
+                  console.log('UpdateAtmReversalReties error: ' + err);
+                  Utils.LogError(data,err,function(err,results) {
+
+
+                 });
+                 data = null;
+                 callback(err,null);
+
+              }
+
+
+
+    });
+
+   }
 
   }
     

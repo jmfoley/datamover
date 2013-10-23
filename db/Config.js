@@ -656,7 +656,6 @@ function DeleteUnitDenomConfig(data,callback) {
     
     var sql = '';
     var connection;
-
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     
         if (err) {
@@ -666,7 +665,7 @@ function DeleteUnitDenomConfig(data,callback) {
         } else {
 
             connection = results;
-            sql = 'delete from sc_unitconfig where unitId = @unitid and unitPropId = @prop';
+            sql = 'delete from sc_unitconfig where unitId = @unitid and unitPropId = @prop and operatorID = @oper';
 
             var request = new Request(sql,function(err,rowCount) {
         
@@ -695,6 +694,7 @@ function DeleteUnitDenomConfig(data,callback) {
 
         request.addParameter('unitid', TYPES.Int,data.unit);
         request.addParameter('prop', TYPES.Int,data.propid);
+        request.addParameter('oper', TYPES.Int,data.operatorid);
         
         connection.execSql(request);
 
@@ -713,7 +713,6 @@ function UpdateDenomConfig(data,callback) {
     var sql = '';
     var connection;
     var updated =  new Date();
-
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
 
         if (err) {
@@ -729,6 +728,7 @@ function UpdateDenomConfig(data,callback) {
         
         
             if (err) {
+                console.log('Error in UpdateDenomConfig: ' + err);
                 errMsg = 'UpdateDenomConfig error: ' + err;
                 connection.close();
                 connection = null;

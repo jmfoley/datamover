@@ -104,13 +104,13 @@ function WriteMultiGameConfig(data,callback){
                         request.addParameter('prop', TYPES.Int,data.propid);
                         request.addParameter('mach', TYPES.Int,data.mach);
                         request.addParameter('type', TYPES.Int,data.game);
-                        request.addParameter('desc', TYPES.VarChar,'');
+                        request.addParameter('desc', TYPES.VarChar,data.desc);
                         request.addParameter('pay',  TYPES.VarChar,data.paytable);
                         request.addParameter('par',  TYPES.Float,data.par);
                         request.addParameter('max',  TYPES.Int,data.max);
                         request.addParameter('denom',TYPES.Int,data.denom);
                         request.addParameter('enabled', TYPES.Bit,data.enabled);
-                        request.addParameter('status', TYPES.Int,0);
+                        request.addParameter('status', TYPES.Int,data.status);
                         request.addParameter('updatedby', TYPES.VarChar,data.updatedby);
                         request.addParameter('updatedfrom', TYPES.VarChar,data.updatedfrom);
                         request.addParameter('date', TYPES.DateTime,updated);
