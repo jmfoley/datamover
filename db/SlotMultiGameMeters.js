@@ -58,6 +58,7 @@ function WriteMultiGameConfig(data,callback){
     var connection;
     var insert;
     var updated = new Date();
+    var desc = '';
 
     console.log('In WriteMultiGameConfig');
 
@@ -99,12 +100,23 @@ function WriteMultiGameConfig(data,callback){
                             }
                         });
 
+                        try {
+                          if(data.desc == null) {
+                            desc = ' ';
+                          } else {
+                            desc = data.desc;
+                          }
+
+                        } catch(exception) {
+                          desc = ' ';
+
+                        }
 
                         request.addParameter('oper', TYPES.Int,data.operatorid);
                         request.addParameter('prop', TYPES.Int,data.propid);
                         request.addParameter('mach', TYPES.Int,data.mach);
                         request.addParameter('type', TYPES.Int,data.game);
-                        request.addParameter('desc', TYPES.VarChar,data.desc);
+                        request.addParameter('desc', TYPES.VarChar,desc);
                         request.addParameter('pay',  TYPES.VarChar,data.paytable);
                         request.addParameter('par',  TYPES.Float,data.par);
                         request.addParameter('max',  TYPES.Int,data.max);
