@@ -3,9 +3,39 @@ extends layout
 block content
   div#wrap
     h1 Overall Datasync Stats
+    
+    P
+     label Node Version:
+       label#nodever
+
+    P
+     label Platform: 
+       label#platform     
+
+    P
+     label Processor: 
+       label#proc
+    
+    
+    P
+     label Memory Usage:
+       label#mem
+    
+    P
+     label Current Directory: 
+       label#dir
+
+    
+
     p
       label Start Date:    
         label#startDate 
+
+    P
+      label Run Minutes: 
+        label#uptime
+
+
     p
       label Total Transactions:  
         label#total   
@@ -15,8 +45,10 @@ block content
     p
       label Errors:  
         label#totalErrors   
+
     p
-      button#refresh Refresh        	
+      button#refresh Refresh 
+
     
 
   script
@@ -26,11 +58,17 @@ block content
         url: "/stats",
         cache: false,
         success: function (result) {
-          //alert(JSON.stringify(result));
            $(startDate).html(result.startDate);
            $(total).html(result.totalTrans);
            $(totalGood).html(result.totalSuccessfulTrans);
            $(totalErrors).html(result.totalErrTrans);
+           $(nodever).html(result.nodeVer);
+           $(platform).html(result.platform);
+           $(proc).html(result.arch);
+           $(mem).html(result.mem);
+           $(dir).html(result.dir);
+           $(uptime).html(result.uptime);
+
         },
          error: function (request,error) {
            alert(error);
@@ -48,6 +86,13 @@ block content
              $(total).html(result.totalTrans);
              $(totalGood).html(result.totalSuccessfulTrans);
              $(totalErrors).html(result.totalErrTrans);
+             $(nodever).html(result.nodeVer);
+             $(platform).html(result.platform);
+             $(proc).html(result.arch);
+             $(mem).html(result.mem);
+             $(dir).html(result.dir);
+             $(uptime).html(result.uptime);
+
           },
            error: function (request,error) {
              alert(error);

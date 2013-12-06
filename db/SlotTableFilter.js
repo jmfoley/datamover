@@ -1,3 +1,6 @@
+
+
+
 var slotAlarms = require('./SlotAlarms');
 var slotTicketMeters = require('./SlotTicketMeters');
 var Utils = require('./Utils');
@@ -6,6 +9,8 @@ var multiDenom = require('./SlotMultiDenomMeters');
 var aft = require('./SlotAftMeters');
 var slots = require('./SlotsTable');
 var netSock = require('./NetSock');
+
+
 
 function callback(error,results){};
 
@@ -20,11 +25,11 @@ function ProcessTrans(data,callback){
           });
 
           data = null;
-  		    callback(err,null);
+  		    return callback(err,null);
   	    } else {
   		    //console.log('Event written');
           data = null;
-  		    callback(null,results);
+  		    return callback(null,results);
   	    }
 
       });
@@ -62,11 +67,11 @@ function ProcessTrans(data,callback){
         });
 
         data = null;
-		    callback(err,null);
+		    return callback(err,null);
 	    } else {
 		    //console.log('Event written');
         data = null;
-		    callback(null,results);
+		    return callback(null,results);
 	    }
 
 
@@ -82,11 +87,11 @@ function ProcessTrans(data,callback){
         });
 
         data = null;
-        callback(err,null);
+        return callback(err,null);
       } else {
         //console.log('Event written');
         data = null;
-        callback(null,results);
+        return callback(null,results);
       }
 
 
@@ -102,11 +107,11 @@ function ProcessTrans(data,callback){
         });
 
         data = null;
-        callback(err,null);
+        return callback(err,null);
       } else {
         //console.log('Event written');
         data = null;
-        callback(null,results);
+        return callback(null,results);
       }
 
 
@@ -122,11 +127,11 @@ function ProcessTrans(data,callback){
         });
 
         data = null;
-        callback(err,null);
+        return callback(err,null);
       } else {
         //console.log('Event written');
         data = null;
-        callback(null,results);
+        return callback(null,results);
       }
 
 
@@ -144,11 +149,11 @@ function ProcessTrans(data,callback){
         });
 
         data = null;
-        callback(err,null);
+        return callback(err,null);
       } else {
         //console.log('Event written');
         data = null;
-        callback(null,results);
+        return callback(null,results);
       }
 
 
@@ -164,11 +169,11 @@ function ProcessTrans(data,callback){
           });
 
           data = null;
-          callback(err,null);
+          return callback(err,null);
         } else {
           //console.log('Event written');
           data = null;
-          callback(null,results);
+          return callback(null,results);
         }
 
       });
@@ -182,11 +187,11 @@ function ProcessTrans(data,callback){
           });
 
           data = null;
-          callback(err,null);
+          return callback(err,null);
         } else {
           //console.log('Event written');
           data = null;
-          callback(null,results);
+          return callback(null,results);
         }
 
 
@@ -202,11 +207,11 @@ function ProcessTrans(data,callback){
           });
 
           data = null;
-          callback(err,null);
+          return callback(err,null);
         } else {
           //console.log('Event written');
           data = null;
-          callback(null,results);
+          return callback(null,results);
         }
 
 
@@ -221,11 +226,11 @@ function ProcessTrans(data,callback){
           });
 
           data = null;
-          callback(err,null);
+          return callback(err,null);
         } else {
           //console.log('Event written');
           data = null;
-          callback(null,results);
+          return callback(null,results);
         }
          
         });
@@ -260,15 +265,20 @@ function ProcessTrans(data,callback){
           });
 
           data = null;
-          callback(err,null);
+          return callback(err,null);
         } else {
           //console.log('Event written');
           data = null;
-          callback(null,results);
+          return callback(null,results);
         }
         
        });
 
     }
+ } else {
+      data = null;
+      console.log('***In slots catch all*******');
+      return callback(null,'OK');
+
  }
 }exports.ProcessTrans = ProcessTrans;

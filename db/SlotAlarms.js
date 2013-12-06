@@ -1,7 +1,8 @@
 var Connection = require('tedious').Connection;
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
-var dbConnect = require('./DbConnectionPool')
+var dbConnect = require('./DbConnectionPool');
+var util = require('util');
 
 
 function callback(error,results){};
@@ -13,11 +14,13 @@ function callback(error,results){};
 function WriteSlotAlarm(data,callback){
 	var sql = '';
 	var connection;
+    
 
+    console.log(util.inspect(data)); 
 	dbConnect.GetDbConnection(data.operatorid,function(err,results) {
       if(err){
         errMsg = 'GetDbConnection error: ' + err;
-        callback(errMsg,null);
+        return callback(errMsg,null);
        } else {		
        	  connection = results;
        	  sql = 'insert into sl_alarms(operatorID,propid,slot_id,alarm_code,alarm_priority,i_card,casinoid,initiated_time,initiated_date,ol_bill_1,' +
@@ -32,14 +35,15 @@ function WriteSlotAlarm(data,callback){
                 connection.close();
                 connection = null;
                 sql = null;
-                delete request;
-                callback(errMsg,null);
+                request = null;
+                return callback(errMsg,null);
             } else {
                  connection.close();
                  connection = null;
                  sql = null;
-                 delete request;
-                 callback(null,results);
+                 request = null;
+                 results = null;
+                 callback(null,'ok');
             }
 
 	      });
@@ -89,12 +93,10 @@ function WriteRouteDropAlarm(data,callback){
     var updated =  new Date();
     var iDate = new Date(data.initdate);
      
-     console.log('****In WriteRoueDropAlarm****');
-
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
       if(err){
         errMsg = 'GetDbConnection error: ' + err;
-        callback(errMsg,null);
+        return callback(errMsg,null);
        } else { 
           connection = results;
           sql = 'insert into sl_alarms(operatorid,mach_num,slot_id,alarm_code,initiated,initiated_date,initiated_time,' +
@@ -106,7 +108,7 @@ function WriteRouteDropAlarm(data,callback){
                 connection.close();
                 connection = null;
                 sql = null;
-                delete request;
+                request = null;
                 delete updated;
                 delete iDate;
                 callback(errMsg,null);
@@ -114,10 +116,11 @@ function WriteRouteDropAlarm(data,callback){
                  connection.close();
                  connection = null;
                  sql = null;
-                 delete request;
+                 request = null;
                  delete updated;
                  delete iDate;
-                 callback(null,results);
+                 results = null;
+                 callback(null,'ok');
             }
 
           });

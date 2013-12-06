@@ -1,7 +1,8 @@
 var Connection = require('tedious').Connection;
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
-var dbConnect = require('./DbConnectionPool')
+var dbConnect = require('./DbConnectionPool');
+var util = require('util');
 var errMsg = '';
 
 
@@ -14,11 +15,11 @@ function StartTenCoinTest( data,callback) {
   var connection;
   var reportDate = new Date(data.reportdate);
   var updated = new Date();
-  console.log('In StartTenCoin');
+
   dbConnect.GetDbConnection(data.operatorid,function(err,results) {
   	if (err){
 	    errMsg = 'GetDbConnection error: ' + err;
-	    callback(errMsg,null);
+	    return callback(errMsg,null);
 
   	} else {
         connection = results;
@@ -41,19 +42,20 @@ function StartTenCoinTest( data,callback) {
                 connection.close();
                 connection = null;
                 sql = null;
-                delete request;
+                request = null;
                 delete reportDate;
                 delete updated;
-                callback(errMsg,null);
+                return callback(errMsg,null);
 
             } else {
                connection.close();
                connection = null;
                sql = null;
-               delete request;
+               request = null;
                delete reportDate;
                delete updated;
-               callback(null,results);
+               results = null;
+               callback(null,'ok');
 
             }
         }); 
@@ -92,10 +94,12 @@ function EndTenCoinTest( data,callback) {
   var endDate = new Date(data.enddate);
   var updated = new Date();
 
+
+  //console.log(util.inspect(data));
   dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     if (err){
       errMsg = 'GetDbConnection error: ' + err;
-      callback(errMsg,null);
+      return callback(errMsg,null);
 
     } else {
        connection = results;
@@ -115,22 +119,22 @@ function EndTenCoinTest( data,callback) {
                 connection.close();
                 connection = null;
                 sql = null;
-                delete request;
+                request = null;
                 delete reportDate;
                 delete endDate;
                 delete updated;
-                callback(errMsg,null);
+                return callback(errMsg,null);
 
             } else {
                connection.close();
                connection = null;
                sql = null;
-               delete request;
+               request = null;
                delete reportDate;
                delete endDate;
                delete updated;
-
-               callback(null,results);
+               results = null;
+               callback(null,'ok');
 
             }
         }); 

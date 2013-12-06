@@ -10,6 +10,56 @@ var dbConnect = require('./DbConnectionPool')
 function callback(error,results){};
 
 
+function UpdateFillTrans (data, callback){
+   var connection;
+   var errMsg = "";
+   var sql = "";
+   var processed = new Date(data.processed);
+
+   dbConnect.GetDbConnection( data.operatorid, function (err, results) {
+     if (err) {
+          errMsg = 'GetDbConnection error: ' + err;
+          return callback(errMsg,null);
+      } else {
+        connection = results;
+        sql = 'update db_filltrans set transStatus = 1, kioskTransNumber = @kioskTransNumber, processed = @processed ' +
+              'where unitid = @unitid and unitPropid = @prop and transNumber = @transNumber and transStatus = 0';
+
+        var request = new Request( sql, function (err, rowCount) {
+            if (err) {
+              connection.close();
+              connection = null;
+              sql = null;
+              errMsg = 'UpdateFillTrans error: '  + err;
+              request = null;
+              return callback(errmsg,null);
+            } else {
+              connection.close();
+              connection = null;
+              sql = null;
+              rowCount = null;
+              request = null; 
+              return callback(null,'ok');
+
+            }
+        });
+          request.addParameter('kioskTransNumber', TYPES.Int,data.kioskTransNumber);
+          request.addParameter('processed', TYPES.DateTime,processed);
+          request.addParameter('unitid', TYPES.Int,data.unitId);
+          request.addParameter('prop', TYPES.Int,data.unitPropId);
+          request.addParameter('transNumber', TYPES.Int,data.transNumber);
+          
+          connection.execSql(request);
+
+
+      }
+   });
+}
+exports.UpdateFillTrans = UpdateFillTrans;
+
+
+
+
 function WriteDropMeters( data,callback) {
 
    var connection;
@@ -20,7 +70,7 @@ function WriteDropMeters( data,callback) {
    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
       if (err) {
           errMsg = 'GetDbConnection error: ' + err;
-          callback(errMsg,null);
+          return callback(errMsg,null);
       } else {
           connection = results; 
           sql = 'insert into db_unitDropMeters(operatorID,transNumber,unitId,propId,itemId,itemDenom,itemAmount,' +
@@ -31,20 +81,19 @@ function WriteDropMeters( data,callback) {
                   connection.close();
                   connection = null;
                   sql = null;
-                  delete request;
+                  request = null;
                   delete updated;
-
                   errMsg = 'WriteDropDetail error: '  + err;
-                  callback(errmsg,null);
+                  return callback(errMsg,null);
 
                } else {
                   connection.close();
                   connection = null;
                   sql = null;
-                  delete request;
+                  request = null;
                   delete updated;
-
-                  callback(null,rowCount);
+                  rowCount = null;
+                  return callback(null,'ok');
                }
 
           });
@@ -88,7 +137,7 @@ function WriteDropDetail( data,callback) {
    dbConnect.GetDbConnection(data.operatorid,function(err,results) {
       if (err) {
           errMsg = 'GetDbConnection error: ' + err;
-          callback(errMsg,null);
+          return callback(errMsg,null);
       } else {
           connection = results; 
           sql = 'insert into db_unitTransDrop(operatorID,transNumber,unitId,propId,itemId,itemDenom,itemAmount,actualAmount,' +
@@ -99,20 +148,19 @@ function WriteDropDetail( data,callback) {
                   connection.close();
                   connection = null;
                   sql = null;
-                  delete request;
+                  request = null;
                   delete updated;
-
                   errMsg = 'WriteDropDetail error: '  + err;
-                  callback(errmsg,null);
+                  return callback(errMsg,null);
 
                } else {
                   connection.close();
                   connection = null;
                   sql = null;
-                  delete request;
+                  request = null;
                   delete updated;
-
-                  callback(null,rowCount);
+                  rowCount = null;
+                  callback(null,'ok');
                }
 
           });
@@ -152,10 +200,10 @@ function CheckOnlineDropMeters(connection,data,callback) {
     	if (err) {
             errMsg = 'CheckOnlineDropMeters error: '  + err;
             sql = null;
-    		    callback(errMsg,null);
+    		    return callback(errMsg,null);
     	} else {
           sql = null;            
-    		  callback(null,rowCount);
+    		  return callback(null,rowCount);
     	}
 
     });          
@@ -183,13 +231,13 @@ function UpdateOnlineDropMeters( data,callback) {
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
         if (err) {
             errMsg = 'GetDbConnection error: ' + err;
-            callback(errMsg,null);
+            return callback(errMsg,null);
 
         } else {
             connection = results;
             CheckOnlineDropMeters(connection,data,function(err,results) {
                 if (err) {
-                    callback(err,null);                    
+                    return callback(err,null);                    
                 } else {
                     if (results > 0) {
 
@@ -208,18 +256,18 @@ function UpdateOnlineDropMeters( data,callback) {
                             connection.close();
                             connection = null;
                             sql = null;
-                            delete request;
+                            request = null;
                             delete updated;
-
-                            callback(err,null);
+                            return callback(err,null);
                         } else {
                             connection.close();
                             connection = null;
                             sql = null;
-                            delete request;
+                            request = null;
                             delete updated;
+                            results = null;
 
-                            callback(null,results);
+                            callback(null,'ok');
                         }
 
                     });

@@ -11,8 +11,8 @@ function callback(error,results){};
 
 function SendReport( data,callback) {
 
-var crashData = 'Operator: ' + data.operatorid + ' prop: ' + data.propid + ' unit: ' + data.unit + '\r\n\r\n trace: ' +
-            data.trace;
+var crashData = 'Operator: ' + data.operatorid + ' prop: ' + data.propid + ' unit: ' + data.unit + '\r\n\r\n Exception: ' +
+            data.exception + '\r\n\r\n' + 'Trace: ' + data.trace;
 
 
 var email = new Email({
@@ -67,3 +67,30 @@ sender.send(email,function(success,err){
 });
 
 }exports.SendMemLeakReport = SendMemLeakReport;
+
+
+function SendMemInfo( data,callback) {
+
+
+
+var email = new Email({
+   to: ['jfoley@m3ts.com'],
+   from: 'interfaceMemLeakReport@m3ts.com',
+   subject: 'Memory Heap Info',
+   text : data
+});
+
+
+sender.send(email,function(success,err){
+      if(success){
+        callback(null,success);
+     }
+     else {
+        callback(err,null);
+     }
+
+});
+
+}exports.SendMemInfo = SendMemInfo;
+
+

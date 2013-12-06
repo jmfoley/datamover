@@ -7,6 +7,165 @@ var errMsg = '';
 function callback(error,results){};
 
 
+
+function UpdateLtdItemDenom( data, callback) {
+  var sql = '';
+  var connection;
+  var date = new Date(data.date);
+  dbConnect.GetDbConnection(data.operatorid,function(err,results) { 
+    if (err) {
+
+    } else {
+      connection = results;
+      sql = 'update db_LtdMeters set denom = @denom, updated = @date where unitid = @id and unitpropid = @prop and itemid = @item';
+      
+      var request = new Request(sql,function(err,rowCount) {
+       if(err) {
+           var errMsg = 'UpdateLtdItemDenom error: ' + err;
+           sql = null;
+           request = null;
+           delete updated;
+           connection.close();
+           sql = null;
+           return callback(errMsg,null) ;
+        } else {
+            sql = null;
+            request = null;
+            delete date;
+            rowCount = null;
+            connection.close();
+            callback(null,'ok');
+       }
+
+      });
+
+      request.addParameter('denom', TYPES.Int,data.denom);
+      request.addParameter('date', TYPES.DateTime,date);
+      request.addParameter('id', TYPES.Int,data.unit);
+      request.addParameter('prop', TYPES.Int,data.propid);
+      request.addParameter('item', TYPES.NVarChar,data.item);
+      
+      connection.execSql(request);
+
+
+    }
+  }); 
+
+}
+exports.UpdateLtdItemDenom = UpdateLtdItemDenom;
+
+
+
+
+function UpdateItemDenom( data, callback) {
+  var sql = '';
+  var connection;
+  var date = new Date(data.date);
+  dbConnect.GetDbConnection(data.operatorid,function(err,results) { 
+    if (err) {
+
+    } else {
+      connection = results;
+      sql = 'update db_onlinemeters set denom = @denom, updated = @date where unitid = @id and unitpropid = @prop and itemid = @item';
+      
+      var request = new Request(sql,function(err,rowCount) {
+       if(err) {
+           var errMsg = 'UpdateItemDenom error: ' + err;
+           sql = null;
+           request = null;
+           delete updated;
+           connection.close();
+           sql = null;
+           return callback(errMsg,null) ;
+        } else {
+            sql = null;
+            request = null;
+            delete date;
+            rowCount = null;
+            connection.close();
+            callback(null,'ok');
+       }
+
+      });
+
+      request.addParameter('denom', TYPES.Int,data.denom);
+      request.addParameter('date', TYPES.DateTime,date);
+      request.addParameter('id', TYPES.Int,data.unit);
+      request.addParameter('prop', TYPES.Int,data.propid);
+      request.addParameter('item', TYPES.NVarChar,data.item);
+      
+      connection.execSql(request);
+
+
+    }
+  }); 
+
+}
+exports.UpdateItemDenom = UpdateItemDenom;
+
+
+
+function UpdateTftMeter( data, callback) {
+    var sql = '';
+    var connection;
+
+
+    dbConnect.GetDbConnection(data.operatorid,function(err,results) {  
+       if(err){
+          errMsg = 'GetDbConnection error: ' + err;
+        return callback(errMsg,null);
+       }else {
+         connection = results;
+         CheckOnlineMeters(connection,data,function(err,results) {
+            if(err) {
+              connection.close();
+            } else {
+              if (results > 0) {
+                 sql = 'update db_onlinemeters set itemAmount = @amount, updated = @date,itemQty = @qty where unitid = @unit and unitpropid = @prop and ' +
+                       'itemId = @itemId and denom = @denom and operatorid = @oper';
+              } else {
+                sql = 'insert into db_onlinemeters (operatorid,itemAmount,updated,unitId,unitPropId,itemId,denom,itemQty)values(' +
+                      '@oper,@amount,@date,@unit,@prop,@itemId,@denom,@qty)';
+              }
+
+              var request = new Request(sql,function(err,results) {
+                if (err) {
+                  connection.close();
+                  sql = null;
+                  return callback(err,null);
+                } else {
+                   connection.close();
+                   connection = null;
+                   sql = null;
+                   request = null;
+                   results = null;
+                   return callback(null,'ok');
+
+                }
+              });
+                var date =  new Date();
+                request.addParameter('amount', TYPES.Int,data.amount);
+                request.addParameter('date', TYPES.DateTime,date);
+                request.addParameter('qty', TYPES.Int,data.quantity);                
+                request.addParameter('unit', TYPES.Int,data.unit);
+                request.addParameter('prop', TYPES.Int,data.propid);
+                request.addParameter('itemid', TYPES.NVarChar,data.item);
+                request.addParameter('amount', TYPES.Int,data.amount);
+                request.addParameter('oper', TYPES.Int,data.operatorid);
+
+                
+                connection.execSql(request);
+
+            }
+         });
+
+       }
+
+    });
+} exports.UpdateTftMeter = UpdateTftMeter
+;
+
+
 function ZeroCoinHopper(data,callback){
 
     var sql = '';
@@ -15,7 +174,7 @@ function ZeroCoinHopper(data,callback){
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
          if(err){
             errMsg = 'GetDbConnection error: ' + err;
-            callback(errMsg,null);
+            return callback(errMsg,null);
          } else {
              connection = results;
              sql = 'update db_onlinemeters set itemAmount = @amount,itemQty = @qty where unitId = @unitid and unitPropid = @propid and ' +
@@ -28,14 +187,15 @@ function ZeroCoinHopper(data,callback){
                     connection.close();
                     connection = null;
                     sql = null;
-                    delete request;
-                    callback(errMsg,null);
+                    request = null;
+                    return callback(errMsg,null);
                 } else {
                      connection.close();
                      connection = null;
                      sql = null;
-                     delete request;
-                     callback(null,rowCount);
+                     request = null;
+                     results = null;
+                     return callback(null,'ok');
                 }
 
             });
@@ -67,13 +227,13 @@ function CheckOnlineMeters(connection,data,callback) {
     var request = new Request(sql,function(err,rowCount) {
     	if (err) {
             sql = null;
-            delete request;
+            request = null;
             errMsg = 'CheckOnlineMeters error: '  + err;
-    		callback(errMsg,null);
+    		return callback(errMsg,null);
     	} else {
              sql = null;
-             delete request;
-    		callback(null,records);
+             request = null;
+    		return callback(null,records);
     	}
 
     });          
@@ -116,14 +276,16 @@ function UpdateOnlineMeters(data,callback){
 
          if(err){
             errMsg = 'GetDbConnection error: ' + err;
-         	callback(errMsg,null);
+         	return callback(errMsg,null);
          } else {
              
              connection = results;
              CheckOnlineMeters(connection,data,function(err,results) {
                  
                  if(err){
-                 	callback(err,null);
+                  connection.close();
+                  connection = null;
+                 	return callback(err,null);
                  } else {
                  
                       if(results > 0) {
@@ -160,16 +322,17 @@ function UpdateOnlineMeters(data,callback){
                               connection.close();
                               connection = null;
                               sql = null;
-                              delete request;
+                              request = null;
                               delete updated;
-                          	  callback(errMsg,null) ;
+                          	  return callback(errMsg,null) ;
                           } else {
                                connection.close();
                                connection = null;
                                sql = null;
-                               delete request;
+                               request = null;
                                delete updated;
-                          	   callback(null,rowCount);
+                               rowCount = null;
+                          	   return callback(null,'ok');
                           }
                       }); 
                        
@@ -220,7 +383,9 @@ function UpdateTotalInMeter(connection,data,item,amount,callback) {
     CheckOnlineMeters(connection,data,function(err,results) {
 
     if (err)  {
-         callback(err,null);
+         connection.close();
+         connection = null; 
+         return callback(err,null);
     } else {
 
          if(results > 0) {
@@ -239,14 +404,15 @@ function UpdateTotalInMeter(connection,data,item,amount,callback) {
          if(err) {
              errMsg = 'UpdateTotalInMeter error: ' + err;
              sql = null;
-             delete request;
+             request = null;
              delete updated;
-             callback(errMsg,null) ;
+             return callback(errMsg,null) ;
           } else {
               sql = null;
-              delete request;
+              request = null;
               delete updated;
-              callback(null,rowCount);
+              rowCount = null;
+              return callback(null,'ok');
             }
         }); 
 
@@ -284,7 +450,7 @@ function UpdateTotalOutMeter(connection,data,item,amount,callback) {
     CheckOnlineMeters(connection,data,function(err,results) {
 
     if (err)  {
-         callback(err,null);
+         return callback(err,null);
     } else {
 
          if(results > 0) {
@@ -301,16 +467,17 @@ function UpdateTotalOutMeter(connection,data,item,amount,callback) {
 
          var request = new Request(sql,function(err,rowCount) {
          if(err) {
-             errMsg = 'GetDbConnection error: ' + err;
+             errMsg = 'UpdateTotalOutMeter error: ' + err;
              sql = null;
-             delete request;
+             request = null;
              delete updated;
-             callback(errMsg,null) ;
+             return callback(errMsg,null) ;
           } else {
               sql = null;
-              delete request;
+              request = null;
               delete updated;
-              callback(null,rowCount);
+              rowCount = null;
+              callback(null,'ok');
             }
         }); 
 
@@ -343,12 +510,12 @@ function CheckLtdMeters(connection,data,callback) {
     var request = new Request(sql,function(err,rowCount) {
     	if (err) {
             sql = null;
-            delete request; 
-    		callback(err,null);
+            request = null;
+    		return callback(err,null);
     	} else {
              sql = null;
-             delete request;
-    		callback(null,records);
+             request = null;
+    		return callback(null,records);
     	}
 
     });          
@@ -384,7 +551,7 @@ function WriteLTDMeter( connection,data,callback) {
 
     CheckLtdMeters(connection,data,function(err,results) {
         if (err) {
-            callback(err,results);
+            return callback(err,null);
         } else {
 
          if (results > 0) {
@@ -409,14 +576,14 @@ function WriteLTDMeter( connection,data,callback) {
             var request = new Request(sql,function(err,rowCount) {
                 if (err) {
                     sql = null;
-                    delete request; 
+                    request = null;
                     delete updated;
-                    callback(err,null);
+                    return callback(err,null);
                 } else {
                      sql = null;
-                     delete request;
+                     request = null;
                      delete updated;
-                    callback(null,rowCount);
+                    return callback(null,'ok');
                 }
             });
 
@@ -449,17 +616,18 @@ function UpdateLTDMeters(data,callback){
     var value = data.denom * data.quantity;
     var connection;
 
-
+    console.log('UdpateLTDMeters written000');
     dbConnect.GetDbConnection(data.operatorid,function(err,results) {
     
     if (err) {
-        callback(err,null);
+        return callback(err,null);
     } else {
 
     connection = results;
-    if(data.item === 'HP') {
- 
+      if(data.item === 'HP') {
+        return callback(null,'ok');
          value = data.amount;
+
     } else if( data.item === 'VT1' || data.item === 'VT2' || data.item === 'VC1' || data.item === 'VC2') {
 
           value = data.amount;
@@ -468,7 +636,7 @@ function UpdateLTDMeters(data,callback){
 
                 connection.close();
                 connection = null;
-                callback(err,null);
+                return callback(err,null);
              } else {
 
                 WriteLTDMeter(connection,data,function(err,results) {
@@ -476,11 +644,12 @@ function UpdateLTDMeters(data,callback){
                     if (err) {
                         connection.close();
                         connection = null;
-                        callback(err,null);
+                        return callback(err,null);
                     } else {
                         connection.close();
                         connection = null;
-                        callback(null,results);
+                        results = null;
+                        return callback(null,'ok');
                     }
                 });
              }
@@ -493,18 +662,19 @@ function UpdateLTDMeters(data,callback){
             if (err) {
                 connection.close();
                 connection = null;
-                callback(err,null);
+                return callback(err,null);
 
             } else {
                 WriteLTDMeter(connection,data,function(err,results){
                     if (err) {
                         connection.close();
                         connection = null;
-                        callback(err,null);
+                        return callback(err,null);
                     } else {
                         connection.close();
                         connection = null;
-                        callback(null,results);
+                        results = null;
+                        return callback(null,'ok');
                     }
 
                 });
@@ -516,18 +686,19 @@ function UpdateLTDMeters(data,callback){
                 if (err) {
                     connection.close();
                     connection = null;
-                    callback(err,null);
+                    return callback(err,null);
                 } else {
                     WriteLTDMeter(connection,data,function(err,results) {
                     
                         if (err) {
                             connection.close();
                             connection = null;
-                            callback(err,null);
+                            return callback(err,null);
                         } else {
                             connection.close();
                             connection = null;
-                            callback(null,results);
+                            results = null;
+                            return callback(null,'ok');
                         }
                     });
                 }
@@ -563,7 +734,7 @@ function WriteOnlineMeterSnapshot(data,callback) {
 
         if (err) {
             errMsg = 'GetDbConnection error: ' + err;
-            callback(errMsg,null);
+            return callback(errMsg,null);
         } else {
             connection = results;
             sql = 'insert into db_unitTransMeters(operatorID,unitId, unitPropId,transNumber,vc1,vc2,vt1,vt2,cc1,cc2,cc3,cc4,cc5,'  +
@@ -576,16 +747,17 @@ function WriteOnlineMeterSnapshot(data,callback) {
                 connection.close();
                 conenction = null;
                 sql = null;
-                delete request;
+                request = null;
                 delete updated;
-                callback(errMsg,null) ;
+                return callback(errMsg,null) ;
             } else {
                 connection.close();
                 connection = null;
                 sql = null;
-                delete request;
+                request = null;
                 delete updated;
-                callback(null,rowCount);
+                rowCount = null;
+                return callback(null,'ok');
             }
          }); 
 
@@ -604,7 +776,7 @@ function WriteOnlineMeterSnapshot(data,callback) {
          request.addParameter('cc5', TYPES.Int,data.cc5);
          request.addParameter('ch1', TYPES.Int,data.ch1);
          request.addParameter('ch2', TYPES.Int,data.ch2);
-         request.addParameter('ch3', TYPES.Int,data.ch2);
+         request.addParameter('ch3', TYPES.Int,data.ch3);
          request.addParameter('ccr', TYPES.Int,data.ccr);
          request.addParameter('date', TYPES.DateTime,updated);
          request.addParameter('atm', TYPES.Int,data.atm);
@@ -640,10 +812,12 @@ function CheckSwitchMeter(connection,data,callback) {
       if (err) {
         errMsg = 'CheckSwitchMeter error: ' + err;
         sql = null;
-        callback(errMsg,null);
+        request = null;
+        return callback(errMsg,null);
       } else {
-           sql = null;  
-           callback(null,records);
+           sql = null; 
+           request = null; 
+           return callback(null,records);
       }
 
     });          
@@ -681,7 +855,7 @@ function UpdateDoorSwitchMeters(data,callback) {
     
         if (err) {
             errMsg = 'GetDbConnection error: ' + err;
-            callback(errMsg,null);
+            return callback(errMsg,null);
         } else {
 
             connection = results;
@@ -691,7 +865,7 @@ function UpdateDoorSwitchMeters(data,callback) {
                     
                     connection.close();
                     connection = null;
-                    callback(err,null);
+                    return callback(err,null);
                 } else {
                     
                     if (results > 0) {
@@ -711,16 +885,17 @@ function UpdateDoorSwitchMeters(data,callback) {
                              connection.close();
                              connection = null;
                              sql = null;
-                             delete request;
+                             request = null;
                              delete updated;
-                             callback(errMsg,null);
+                             return callback(errMsg,null);
                          } else {
                              connection.close();
                              connection = null;
                              sql = null;
-                             delete request;
+                             request = null;
                              delete updated;
-                             callback(null,rowCount);
+                             rowCount = null;
+                             return callback(null,'ok');
                          }
                     });
                 
