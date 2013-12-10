@@ -16,7 +16,7 @@ var crashData = 'Operator: ' + data.operatorid + ' prop: ' + data.propid + ' uni
 
 
 var email = new Email({
-   to: ['jfoley@m3ts.com','skotova@m3ts.com'],
+   to: ['jfoley@m3ts.com','skotova@m3ts.com','cwynn@m3ts.com'],
    from: 'kioskErrorReport@m3ts.com',
    subject: 'Kiosk Error Information',
    text : crashData
