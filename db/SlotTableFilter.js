@@ -9,6 +9,7 @@ var multiDenom = require('./SlotMultiDenomMeters');
 var aft = require('./SlotAftMeters');
 var slots = require('./SlotsTable');
 var netSock = require('./NetSock');
+var slotTickets = require('./slot_tickets');
 
 
 
@@ -17,9 +18,9 @@ function callback(error,results){};
 function ProcessTrans(data,callback){
   if(data.table === 'sl_alarms') {
       if(data.operation === 'slotalarm') {
-    	slotAlarms.WriteSlotAlarm(data,function(err,results) {
-  	    if (err) {
-  		    console.log('WriteSlotAlarm error: ' + err);
+        slotAlarms.WriteSlotAlarm(data,function(err,results) {
+        if (err) {
+          console.log('WriteSlotAlarm error: ' + err);
           Utils.LogError(data,err,function(err,results) {
 
           });
@@ -178,6 +179,19 @@ function ProcessTrans(data,callback){
 
       });
 
+    } else if (data.operation === 'add_machine_locpos') {
+      slots.AddMachineLocPos(data, function (err, results) {
+        if (err) {
+          Utils.LogError(data, err, function (err, results) {
+
+          });
+          data = null;
+          return callback( err, null);
+        }
+        data = null;
+        return callback(null, results);
+
+      });
     } else if (data.operation === 'lastcom') {
       slots.UpdateLastCom(data,function(err,results) {
         if (err) {
@@ -274,6 +288,55 @@ function ProcessTrans(data,callback){
         
        });
 
+    } else if (data.table === 'tk_tickets') {
+      if(data.ooperation === 'insert') {
+        slotTickets.PrintVoucher(data, function (err, results) {
+           if (err) {
+            console.log('PrintVoucher err ' + err);
+            Utils.LogError(data,err,function(err,results) {
+ 
+            });
+            data = null;
+            return callback(err,null);
+           } else {
+          data = null;
+          return callback(null,results);
+          }
+        });
+
+
+
+      }
+      else if(data.operation === 'Inquiry') {
+        slotTickets.VoucherInq(data, function (err, results) {
+           if (err) {
+            console.log('VoucherInq err ' + err);
+            Utils.LogError(data,err,function(err,results) {
+ 
+            });
+            data = null;
+            return callback(err,null);
+           } else {
+          data = null;
+          return callback(null,results);
+          }
+        });
+
+      } else if (data.operation === 'Complete') {
+        slotTickets.VoucherComplete(data, function (err, results) {
+           if (err) {
+            console.log('Ticket Complete err ' + err);
+            Utils.LogError(data,err,function(err,results) {
+ 
+            });
+            data = null;
+            return callback(err,null);
+           } else {
+          data = null;
+          return callback(null,results);
+          }
+        });
+      }
     }
  } else {
       data = null;
