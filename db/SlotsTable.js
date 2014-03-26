@@ -9,6 +9,38 @@ var errMsg = '';
 function callback(error,results){};
 
 
+function AddMachineLocPos( data, cb ) {
+    var sql = '';
+    var connection;
+    var updated = new Date(data.updated);
+
+    dbConnect.GetDbConnection( data.operatorid, function (err,results) {
+      if (err) {
+          return cb('GetDbConnection error: ' + err);
+      }
+      connection = results;
+      sql = 'update slots set loc_id = @loc, position = @pos updated = @date where slot_id = @id';
+
+      var request = new Request(sql, function (err, results) {
+        if (err) {
+            connection.close();
+            connection = null;
+            return cb('AddMachineLocPos error: ' + err);
+        }
+        connection.close();
+        connection = null;
+        return cb(null, 'ok');
+      });
+      request.addParameter('loc,', TYPES.VarChar, data.location);
+      request.addParameter('pos', TYPES.Int, data.position);
+      request.addParameter('date', TYPES.DateTime, updated);
+      request.addParameter('id', TYPES.Int, data.slotid);
+      connection.execSql(request);
+
+
+    });
+}exports.AddMachineLocPos = AddMachineLocPos;
+
 function UpdateLastCom( data,callback) {
     var sql = '';
     var connection;
